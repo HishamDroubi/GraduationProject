@@ -1,0 +1,42 @@
+let mongoose = require("mongoose");
+const User = require("./user");
+let Schema = mongoose.Schema;
+
+let problemSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  tags: {
+    type: [String],
+  },
+  difficulty: {
+    type: Number,
+  },
+  body: {
+    type: String,
+  },
+  Author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    immutable: true,
+  },
+  lastUpdateAt: {
+    type: Date,
+    default: Date.now(),
+  },
+});
+
+problemSchema.pre("save", function (next) {
+  this.UpdatedAt = Date.now();
+  next();
+});
+
+let Problem = mongoose.model("Problem", problemSchema, "problems");
+
+module.exports = Problem;

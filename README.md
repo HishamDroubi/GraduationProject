@@ -1,7 +1,7 @@
 This is our graduation project
 
 #Project
-Learning Programing and Peoblem Solving
+Learning Programing and Problem Solving Website
 
 #Students
 Hisham Droubi
@@ -10,4 +10,4 @@ Mahmmod Abu Gozah
 Amr Hijaz
 
 #University
-Palesting technical University Khadore
+Palestine technical University Khadoori
