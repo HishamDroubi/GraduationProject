@@ -3,19 +3,20 @@ const level = require("./level");
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
+  userName: {
     type: String,
     required: true,
   },
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
+    type: String,
+    required: true,
+  },
+  handle: {
     type: String,
     required: true,
   },
