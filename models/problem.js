@@ -1,24 +1,15 @@
 let mongoose = require("mongoose");
+const Level = require("./level");
 const User = require("./user");
 let Schema = mongoose.Schema;
 
 let problemSchema = new Schema({
-  name: {
-    type: String,
+  contest: {
+    type: Number,
     required: true,
   },
-  tags: {
-    type: [String],
-  },
-  difficulty: {
-    type: Number,
-  },
-  body: {
+  index: {
     type: String,
-  },
-  Author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
     required: true,
   },
   createdAt: {

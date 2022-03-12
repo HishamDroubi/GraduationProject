@@ -5,7 +5,8 @@ let express = require("express");
 let User = require("./models/user");
 let Problem = require("./models/problem");
 let Group = require("./models/group");
-let request = require("./models/request");
+let Level = require("./models/level");
+let Request = require("./models/request");
 
 //create the server
 let server = express();
@@ -13,11 +14,16 @@ let server = express();
 //Routers
 let userRouter = require("./routes/userRouter.js");
 let authRouter = require("./routes/authRouter.js");
-const Level = require("./models/level");
+let groupRouter = require("./routes/groupRouter.js");
+let levelRouter = require("./routes/levelRouter.js");
+let problemRouter = require("./routes/problemRouter.js");
 
 //medllewaress
 server.use("/user", userRouter);
 server.use("/auth", authRouter);
+server.use("/group", groupRouter);
+server.use("/level", levelRouter);
+server.use("/problem", problemRouter);
 
 //start server
 const port = 3004;

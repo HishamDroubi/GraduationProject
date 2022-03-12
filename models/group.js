@@ -1,5 +1,6 @@
 let mongoose = require("mongoose");
 const User = require("./user");
+const Attachment = require("./attachment");
 const Request = require("./request");
 let Schema = mongoose.Schema;
 
@@ -16,6 +17,12 @@ let groupSchema = new Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+  ],
+  attachments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Attachment",
     },
   ],
   requests: [

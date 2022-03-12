@@ -2,6 +2,7 @@ let express = require("express");
 let bcrypt = require("bcrypt");
 let body_parser = require("body-parser");
 let session = require("express-session");
+let fetch = require("node-fetch");
 
 let User = require("../models/user");
 
@@ -13,6 +14,18 @@ authRouter.use(body_parser.json());
 authRouter.post("/signUp", async (req, res) => {
   try {
     let { userName, email, password, handle, phone } = req.body;
+
+    let codeforcesUser = fetch(
+      "https://codeforces.com/api/user.info?handles=" + handle
+    )
+      .then((result) => {
+        return result.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data["status"] == "FAILED")
+          throw new Error("Coddeforces Handle is not correct");
+      });
 
     //hashing password before store it in DB
     let hashedPassword = await bcrypt.hashSync(password, 10);
@@ -38,7 +51,7 @@ authRouter.post("/signUp", async (req, res) => {
         res.send(JSON.stringify(err.message));
       });
   } catch (error) {
-    res.send(error.message);
+    res.send(JSON.stringify(error.message));
   }
 });
 
@@ -69,4 +82,19 @@ authRouter.post("/signIn", async (req, res) => {
   }
 });
 
+//change password
+authRouter.put("/changePassword", (req, res) => {
+  let { curPass, newPass, rePass } = req.body;
+
+  if (newPass != rePass)
+    res.send(JSON.stringify("new Password does not match the RePassword"));
+  let userId = session.currentUser["_id"];
+
+  User.findById(userId).then(async (result) => {
+    result.password = await bcrypt.hashSync(newPass, 10);
+    result.save().then(() => {
+      res.send(JSON.stringify("password has changed successfully"));
+    });
+  });
+});
 module.exports = authRouter;
