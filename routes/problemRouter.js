@@ -13,41 +13,36 @@ let problemRouter = express.Router();
 problemRouter.use(body_parser.json());
 
 //create problem
-problemRouter.post("/create", (req, res) => {
+problemRouter.post("/create", async (req, res) => {
   let { contest, index } = req.body;
 
-  let problems = fetch("https://codeforces.com/api/problemset.problems")
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {
-      let problems = data.result.problems;
+  let result = await fetch("https://codeforces.com/api/problemset.problems");
 
-      let searchResult = problems.find((problem) => {
-        return problem.contestId == contest && problem.index == index;
-      });
+  let data = await result.json();
+  let problems = data.result.problems;
 
-      if (searchResult == undefined) throw new Error("No Such Problem");
-      else {
-        let newProblem = new Problem({
-          contest: contest,
-          index: index,
-        });
+  let searchResult = problems.find((problem) => {
+    return problem.contestId == contest && problem.index == index;
+  });
 
-        newProblem.save().then((result) => {
-          res.send(JSON.stringify(result));
-        });
-      }
+  if (searchResult == undefined) throw new Error("No Such Problem");
+  else {
+    let newProblem = new Problem({
+      contest: contest,
+      index: index,
     });
+
+    let response = newProblem.save();
+    res.send(JSON.stringify(response));
+  }
 });
 
 //delete problem
-problemRouter.delete("/delete", (req, res) => {
+problemRouter.delete("/delete", async (req, res) => {
   let { problemId } = req.body;
 
-  Problem.deleteOne({ _id: problemId }).then((result) => {
-    res.send(JSON.stringify(result));
-  });
+  let response = await Problem.deleteOne({ _id: problemId });
+  res.send(JSON.stringify(response));
 });
 
 module.exports = problemRouter;

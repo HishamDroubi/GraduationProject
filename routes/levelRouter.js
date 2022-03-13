@@ -6,14 +6,13 @@ let fetch = require("node-fetch");
 
 let User = require("../models/user");
 const Level = require("../models/level");
-const { level } = require("npmlog");
 
 //define authRouter and use json as request
 let levelRouter = express.Router();
 levelRouter.use(body_parser.json());
 
 //create level
-levelRouter.post("/create", (req, res) => {
+levelRouter.post("/create", async (req, res) => {
   let { number, topic, description } = req.body;
 
   let newLevel = new Level({
@@ -22,18 +21,16 @@ levelRouter.post("/create", (req, res) => {
     description: description,
   });
 
-  newLevel.save().then((result) => {
-    res.send(JSON.stringify(result));
-  });
+  let response = await newLevel.save();
+  res.send(JSON.stringify(response));
 });
 
 //delete level
 levelRouter.delete("/delete", (req, res) => {
   let { levelId } = req.body;
 
-  Level.deleteOne({ _id: levelId }).then((result) => {
-    res.send(JSON.stringify(result));
-  });
+  let response = await Level.deleteOne({ _id: levelId });
+  res.send(JSON.stringify(response));
 });
 
 //add problem to level
@@ -46,9 +43,9 @@ levelRouter.put("/addProblem", async (req, res) => {
 
   problems.push(problemId);
 
-  let result = await wantedLevel.save();
+  let response = await wantedLevel.save();
 
-  console.log(result);
+  res.send(JSON.stringify(response));
 });
 
 //get All Solved Problems for A User
@@ -58,13 +55,12 @@ levelRouter.get("/solvedProblems", async (req, res) => {
 
   let level = await Level.findById(levelId).populate("problems");
   let levelProblems = level.problems;
-  //console.log(levelProblems);
 
-  let data = await fetch(
+  let result = await fetch(
     "https://codeforces.com/api/user.status?handle=" + handle
-  ).then((result) => {
-    return result.json();
-  });
+  );
+
+  let data = await result.json();
 
   let submissions = data.result;
 

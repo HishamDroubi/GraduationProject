@@ -14,41 +14,33 @@ userRouter.use(body_parser.urlencoded({ extended: false }));
 userRouter.use(body_parser.json());
 
 //Delete User =>Admin
-userRouter.delete("/deleteUser", (req, res) => {
+userRouter.delete("/deleteUser", async (req, res) => {
   let userId = req.body.userId;
 
-  User.deleteOne({ _id: userId }).then((result) => {
-    res.send(JSON.stringify("user deleted successfully"));
-  });
+  let response = await User.deleteOne({ _id: userId });
+  res.send(JSON.stringify("user deleted successfully " + response));
 });
 
 //change handle
-userRouter.put("/changeHandle", (req, res) => {
+userRouter.put("/changeHandle", async (req, res) => {
   try {
     let userId = session.currentUser.id;
     let handle = req.body.handle;
 
     //chaeck if the new handle is existed on codeforces
-    let codeforcesUser = fetch(
+    let result = await fetch(
       "https://codeforces.com/api/user.info?handles=" + handle
-    )
-      .then((result) => {
-        return result.json();
-      })
-      .then((data) => {
-        console.log(data);
-        if (data["status"] == "FAILED")
-          throw new Error("Coddeforces Handle does not exist");
-        let user = User.findById(userId).then((result) => {
-          result.handle = handle;
-          result.save().then(() => {
-            res.send(JSON.stringify("handle has changed successfully"));
-          });
-        });
-      })
-      .catch((err) => {
-        res.send(err.message);
-      });
+    );
+
+    let codeforcesUser = await result.json();
+
+    if (codeforcesUser["status"] == "FAILED")
+      throw new Error("Coddeforces Handle does not exist");
+
+    let user = await User.findById(userId);
+    user.handle = handle;
+    let response = await result.save();
+    res.send(JSON.stringify("handle has changed successfully " + response));
   } catch (err) {
     res.send(err.message);
   }
