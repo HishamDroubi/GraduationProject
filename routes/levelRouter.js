@@ -26,7 +26,7 @@ levelRouter.post("/create", async (req, res) => {
 });
 
 //delete level
-levelRouter.delete("/delete", (req, res) => {
+levelRouter.delete("/delete", async (req, res) => {
   let { levelId } = req.body;
 
   let response = await Level.deleteOne({ _id: levelId });

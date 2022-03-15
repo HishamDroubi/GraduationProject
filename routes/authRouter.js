@@ -70,7 +70,7 @@ authRouter.post("/signIn", async (req, res) => {
 });
 
 //change password
-authRouter.put("/changePassword", (req, res) => {
+authRouter.put("/changePassword", async (req, res) => {
   let { curPass, newPass, rePass } = req.body;
 
   if (newPass != rePass)
