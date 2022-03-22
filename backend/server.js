@@ -1,6 +1,6 @@
 let mongoose = require("mongoose");
 let express = require("express");
-
+const { errorHandler } = require("./middleware/error");
 //models
 let User = require("./models/user");
 let Problem = require("./models/problem");
@@ -19,12 +19,14 @@ let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 
 //medllewaress
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
 server.use("/user", userRouter);
 server.use("/auth", authRouter);
 server.use("/group", groupRouter);
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
-
+server.use(errorHandler);
 //start server
 const port = 5000;
 server.listen(port);

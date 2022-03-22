@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { reset } from "../features/auth/authSlice";
+import Loader from "../components/Loader";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -11,7 +15,22 @@ const Login = () => {
 
   const { email, password } = formData;
 
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -26,6 +45,9 @@ const Login = () => {
     };
     dispatch(login(userData));
   };
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <FormContainer>
       <Form onSubmit={onSubmit}>

@@ -1,18 +1,17 @@
 let express = require("express");
 let bcrypt = require("bcrypt");
-let body_parser = require("body-parser");
 let session = require("express-session");
 let fetch = require("node-fetch");
-
 let User = require("../models/user");
-
+const asyncHandler = require("express-async-handler");
 //define authRouter and use json as request
 let authRouter = express.Router();
-authRouter.use(body_parser.json());
+
 
 //User SignUp
-authRouter.post("/signUp", async (req, res) => {
-  try {
+authRouter.post(
+  "/signUp",
+  asyncHandler(async (req, res) => {
     let { userName, email, password, handle, phone } = req.body;
     let result = await fetch(
       "https://codeforces.com/api/user.info?handles=" + handle
@@ -20,9 +19,10 @@ authRouter.post("/signUp", async (req, res) => {
     // console.log(result);
     let codeforcesUser = result.json();
 
-    if (codeforcesUser["status"] == "FAILED")
+    if (codeforcesUser["status"] == "FAILED") {
+      res.status(400);
       throw new Error("Coddeforces Handle is not correct");
-
+    }
     //hashing password before store it in DB
     let hashedPassword = await bcrypt.hashSync(password, 10);
 
@@ -39,17 +39,17 @@ authRouter.post("/signUp", async (req, res) => {
 
     // Save in DB
     let response = await newUser.save();
-    res.send(JSON.stringify("successfully SignUp " + response));
-  } catch (error) {
-    res.send(JSON.stringify(error.message));
-  }
-});
+    res.status(200).json(response);
+  })
+);
 
-authRouter.post("/signIn", async (req, res) => {
-  try {
+authRouter.post(
+  "/signIn",
+  asyncHandler(async (req, res) => {
     let { email, password } = req.body;
     let fitchedUser = await User.findOne({ email: email });
     if (fitchedUser == undefined) {
+      res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");
     }
     let fitchedPassword = fitchedUser["password"];
@@ -58,28 +58,28 @@ authRouter.post("/signIn", async (req, res) => {
     if (login) {
       session.currentUser = fitchedUser;
       const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
-      res.send(JSON.stringify(token));
+      res.status(200).json(token);
     } else {
+      res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");
     }
-  } catch (err) {
-    res.send(JSON.stringify(err.message));
-  }
-});
+  })
+);
 
 //change password
 authRouter.put("/changePassword", async (req, res) => {
   let { curPass, newPass, rePass } = req.body;
 
-  if (newPass != rePass)
-    res.send(JSON.stringify("new Password does not match the RePassword"));
-
+  if (newPass != rePass) {
+    res.status(400);
+    throw new Error("new Password does not match the RePassword");
+  }
   let userId = session.currentUser["_id"];
 
   let fitchedUser = await User.findById(userId);
   fitchedUser.password = await bcrypt.hashSync(newPass, 10);
 
   let response = await fitchedUser.save();
-  res.send(JSON.stringify("password has changed successfully ") + response);
+  res.status(200).json(response);
 });
 module.exports = authRouter;

@@ -1,9 +1,15 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, reset } from "../features/auth/authSlice";
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const onLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+  };
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -18,8 +24,8 @@ const Header = () => {
           >
             {user ? (
               <Nav className="ms-auto">
-                <LinkContainer to="/logout">
-                  <Nav.Link>Logout</Nav.Link>
+                <LinkContainer to="/">
+                  <Nav.Link onClick={onLogout}>Logout</Nav.Link>
                 </LinkContainer>
               </Nav>
             ) : (

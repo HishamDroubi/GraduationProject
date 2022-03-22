@@ -2,6 +2,8 @@ import Header from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { Container } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   return (
     <>
@@ -15,6 +17,7 @@ const App = () => {
           </Container>
         </main>
       </Router>
+      <ToastContainer />
     </>
   );
 };
