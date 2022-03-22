@@ -1,0 +1,42 @@
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useSelector } from "react-redux";
+const Header = () => {
+  const { user } = useSelector((state) => state.auth);
+  return (
+    <header>
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Container>
+          <LinkContainer to="/">
+            <Navbar.Brand>React-Bootstrap</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className="justify-content-end"
+          >
+            {user ? (
+              <Nav className="ms-auto">
+                <LinkContainer to="/logout">
+                  <Nav.Link>Logout</Nav.Link>
+                </LinkContainer>
+              </Nav>
+            ) : (
+              <Nav className="ms-auto">
+                <LinkContainer to="/login">
+                  <Nav.Link>Login</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/sign-up">
+                  <Nav.Link href="#link">Sign Up</Nav.Link>
+                </LinkContainer>
+              </Nav>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+
+export default Header;

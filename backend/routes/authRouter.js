@@ -14,11 +14,10 @@ authRouter.use(body_parser.json());
 authRouter.post("/signUp", async (req, res) => {
   try {
     let { userName, email, password, handle, phone } = req.body;
-
-    let result = fetch(
+    let result = await fetch(
       "https://codeforces.com/api/user.info?handles=" + handle
     );
-
+    // console.log(result);
     let codeforcesUser = result.json();
 
     if (codeforcesUser["status"] == "FAILED")
@@ -49,9 +48,7 @@ authRouter.post("/signUp", async (req, res) => {
 authRouter.post("/signIn", async (req, res) => {
   try {
     let { email, password } = req.body;
-
     let fitchedUser = await User.findOne({ email: email });
-
     if (fitchedUser == undefined) {
       throw new Error("The Email Or The Password Is Incorrect");
     }
@@ -60,7 +57,8 @@ authRouter.post("/signIn", async (req, res) => {
     let login = await bcrypt.compareSync(password, fitchedPassword);
     if (login) {
       session.currentUser = fitchedUser;
-      res.send(JSON.stringify("successfully loged in"));
+      const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
+      res.send(JSON.stringify(token));
     } else {
       throw new Error("The Email Or The Password Is Incorrect");
     }
