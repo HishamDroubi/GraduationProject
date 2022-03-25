@@ -3,9 +3,11 @@ let bcrypt = require("bcrypt");
 let body_parser = require("body-parser");
 let session = require("express-session");
 let fetch = require("node-fetch");
+const asyncHandler = require("express-async-handler");
 
 let User = require("../models/user");
 const Level = require("../models/level");
+const { default: mongoose } = require("mongoose");
 
 //define authRouter and use json as request
 let levelRouter = express.Router();
@@ -48,6 +50,29 @@ levelRouter.put("/addProblem", async (req, res) => {
   res.send(JSON.stringify(response));
 });
 
+//get Specifiv Level
+levelRouter.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    let levelId = req.body.levelId;
+    let level = "";
+    if (!mongoose.isValidObjectId(levelId))
+      throw new Error("levelId Is not valid");
+    if (levelId == "") {
+      level = await Level.find({}).populate("problems");
+    } else {
+      level = await Level.findById(levelId).populate("problems");
+
+      if (level == "") {
+        res.status(404);
+        throw new Error("level is not found");
+      }
+    }
+    res.status(200);
+    res.send(level);
+  })
+);
+
 //get All Solved Problems for A User
 levelRouter.get("/solvedProblems", async (req, res) => {
   let handle = session.currentUser.handle;
@@ -74,7 +99,6 @@ levelRouter.get("/solvedProblems", async (req, res) => {
       index: submission.problem.index,
     };
   });
-  console.log(actualProblems);
   let solvedProblems = levelProblems.filter((problemInLevel) => {
     let actualProblem = {
       contestId: problemInLevel["contest"],

@@ -28,7 +28,7 @@ server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use(errorHandler);
 //start server
-const port = 5000;
+const port = 3004;
 server.listen(port);
 
 //User and Password For MongoDB
