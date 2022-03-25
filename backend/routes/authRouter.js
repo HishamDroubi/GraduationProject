@@ -7,21 +7,29 @@ const asyncHandler = require("express-async-handler");
 //define authRouter and use json as request
 let authRouter = express.Router();
 
-
 //User SignUp
 authRouter.post(
   "/signUp",
   asyncHandler(async (req, res) => {
     let { userName, email, password, handle, phone } = req.body;
+    if (!userName || !email || !password || !handle || !phone) {
+      res.status(400);
+      throw new Error("Please add all fields");
+    }
+    console.log(userName, email, password, handle, phone);
     let result = await fetch(
       "https://codeforces.com/api/user.info?handles=" + handle
     );
-    // console.log(result);
-    let codeforcesUser = result.json();
 
+    let codeforcesUser = await result.json();
     if (codeforcesUser["status"] == "FAILED") {
       res.status(400);
-      throw new Error("Coddeforces Handle is not correct");
+      throw new Error("Codeforces handle is not correct");
+    }
+    const userExist = await User.findOne({ email });
+    if (userExist) {
+      res.status(400);
+      throw new Error("User already exists");
     }
     //hashing password before store it in DB
     let hashedPassword = await bcrypt.hashSync(password, 10);
@@ -39,7 +47,8 @@ authRouter.post(
 
     // Save in DB
     let response = await newUser.save();
-    res.status(200).json(response);
+    const token = await bcrypt.hashSync(response._id.toString(), 10);
+    res.status(200).json(token);
   })
 );
 
@@ -47,6 +56,10 @@ authRouter.post(
   "/signIn",
   asyncHandler(async (req, res) => {
     let { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("Please add all fields");
+    }
     let fitchedUser = await User.findOne({ email: email });
     if (fitchedUser == undefined) {
       res.status(400);
