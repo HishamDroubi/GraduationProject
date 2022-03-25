@@ -6,6 +6,7 @@ let levelSchema = new Schema({
   number: {
     type: Number,
     required: true,
+    unique: true,
   },
   topic: {
     type: String,

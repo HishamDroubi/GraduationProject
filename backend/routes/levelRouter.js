@@ -31,6 +31,11 @@ levelRouter.post("/create", async (req, res) => {
 levelRouter.delete("/delete", async (req, res) => {
   let { levelId } = req.body;
 
+  if (!mongoose.isValidObjectId(levelId)) {
+    res.status(403);
+    throw new Error("levelId Is not valid");
+  }
+
   let response = await Level.deleteOne({ _id: levelId });
   res.send(JSON.stringify(response));
 });
@@ -39,7 +44,22 @@ levelRouter.delete("/delete", async (req, res) => {
 levelRouter.put("/addProblem", async (req, res) => {
   let { problemId, levelId } = req.body;
 
+  if (!mongoose.isValidObjectId(levelId)) {
+    res.status(403);
+    throw new Error("levelId Is not valid");
+  }
+
+  if (!mongoose.isValidObjectId(problemId)) {
+    res.status(403);
+    throw new Error("ProblemId Is not valid");
+  }
+
   let wantedLevel = await Level.findById(levelId);
+
+  if (wantedLevel == "") {
+    res.status(404);
+    throw new Error("No level with this Id");
+  }
 
   let problems = wantedLevel.problems;
 
@@ -56,8 +76,10 @@ levelRouter.get(
   asyncHandler(async (req, res) => {
     let levelId = req.body.levelId;
     let level = "";
-    if (!mongoose.isValidObjectId(levelId))
+    if (!mongoose.isValidObjectId(levelId)) {
+      res.status(403);
       throw new Error("levelId Is not valid");
+    }
     if (levelId == "") {
       level = await Level.find({}).populate("problems");
     } else {
@@ -74,49 +96,57 @@ levelRouter.get(
 );
 
 //get All Solved Problems for A User
-levelRouter.get("/solvedProblems", async (req, res) => {
-  let handle = session.currentUser.handle;
-  let levelId = req.body.levelId;
+levelRouter.get(
+  "/solvedProblems",
+  asyncHandler(async (req, res) => {
+    let handle = session.currentUser.handle;
+    let levelId = req.body.levelId;
 
-  let level = await Level.findById(levelId).populate("problems");
-  let levelProblems = level.problems;
+    if (!mongoose.isValidObjectId(levelId)) {
+      res.status(403);
+      throw new Error("levelId Is not valid");
+    }
 
-  let result = await fetch(
-    "https://codeforces.com/api/user.status?handle=" + handle
-  );
+    let level = await Level.findById(levelId).populate("problems");
+    let levelProblems = level.problems;
 
-  let data = await result.json();
+    let result = await fetch(
+      "https://codeforces.com/api/user.status?handle=" + handle
+    );
 
-  let submissions = data.result;
+    let data = await result.json();
 
-  let acceptedSubmissions = submissions.filter((submission) => {
-    return submission.verdict == "OK";
-  });
+    let submissions = data.result;
 
-  let actualProblems = acceptedSubmissions.map((submission) => {
-    return {
-      contestId: submission.problem.contestId,
-      index: submission.problem.index,
-    };
-  });
-  let solvedProblems = levelProblems.filter((problemInLevel) => {
-    let actualProblem = {
-      contestId: problemInLevel["contest"],
-      index: problemInLevel["index"],
-    };
-
-    let search = actualProblems.find((problem) => {
-      console.log(problem);
-      return (
-        problem.contestId == actualProblem.contestId &&
-        problem.index == actualProblem.index
-      );
+    let acceptedSubmissions = submissions.filter((submission) => {
+      return submission.verdict == "OK";
     });
 
-    return search;
-  });
+    let actualProblems = acceptedSubmissions.map((submission) => {
+      return {
+        contestId: submission.problem.contestId,
+        index: submission.problem.index,
+      };
+    });
+    let solvedProblems = levelProblems.filter((problemInLevel) => {
+      let actualProblem = {
+        contestId: problemInLevel["contest"],
+        index: problemInLevel["index"],
+      };
 
-  res.send(JSON.stringify(solvedProblems));
-});
+      let search = actualProblems.find((problem) => {
+        console.log(problem);
+        return (
+          problem.contestId == actualProblem.contestId &&
+          problem.index == actualProblem.index
+        );
+      });
+
+      return search;
+    });
+
+    res.send(JSON.stringify(solvedProblems));
+  })
+);
 
 module.exports = levelRouter;

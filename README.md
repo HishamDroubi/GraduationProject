@@ -29,3 +29,7 @@ Palestine technical University Khadoori
 7-added logout functionality added error middleware
 
 8-added register functionality added missing validation in registerion
+
+9-add get Level API
+
+10-add validation and error handling for levelRouter
