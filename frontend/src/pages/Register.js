@@ -16,6 +16,8 @@ const Register = () => {
     userName: "",
   });
 
+  
+
   const { email, password, handle, phone, userName } = formData;
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
