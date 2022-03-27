@@ -38,6 +38,13 @@ const Header = () => {
                 </LinkContainer>
               </Nav>
             )}
+            {user && user.role === "admin" && (
+              <Nav className="ms-auto">
+                <LinkContainer to="/level/create">
+                  <Nav.Link>New Level</Nav.Link>
+                </LinkContainer>
+              </Nav>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
