@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/Register";
 import CreateLevelForm from "./pages/CreateLevelForm";
 import Profile from "./pages/Profile";
+import Level from "./pages/Level";
 const App = () => {
   return (
     <>
@@ -15,6 +16,7 @@ const App = () => {
         <main className="py-3">
           <Container>
             <Routes>
+              <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/level/create" element={<CreateLevelForm />} />

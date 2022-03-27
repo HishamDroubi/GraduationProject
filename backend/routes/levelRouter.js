@@ -85,12 +85,12 @@ levelRouter.get(
   asyncHandler(async (req, res) => {
     let levelId = req.body.levelId;
     let level = "";
-    if (!mongoose.isValidObjectId(levelId)) {
+    if (levelId && !mongoose.isValidObjectId(levelId)) {
       res.status(403);
       throw new Error("levelId Is not valid");
     }
-    if (levelId == "") {
-      level = await Level.find({}).populate("problems");
+    if (!levelId) {
+      level = await Level.find({});
     } else {
       level = await Level.findById(levelId).populate("problems");
 

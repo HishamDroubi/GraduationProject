@@ -4,9 +4,9 @@ import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { reset } from "../features/level/levelSlice";
+import { reset } from "../features/level/levelFormSlice";
 import Loader from "../components/Loader";
-import { create } from "../features/level/levelSlice";
+import { create } from "../features/level/levelFormSlice";
 const CreateLevelForm = () => {
   const [formData, setFormData] = useState({
     number: "",
@@ -17,12 +17,11 @@ const CreateLevelForm = () => {
   const { number, topic, description } = formData;
   const { user } = useSelector((state) => state.auth);
   const { level, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.level
+    (state) => state.levelForm
   );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (isError) {
       toast.error(message);
@@ -31,7 +30,7 @@ const CreateLevelForm = () => {
       navigate("/");
     }
     if (isSuccess) {
-      navigate(`level/${level._id}`);
+      navigate(`/level/${level._id}`);
     }
     dispatch(reset());
   }, [level, isError, isSuccess, message, navigate, dispatch, user]);
