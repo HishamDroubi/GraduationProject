@@ -1,13 +1,13 @@
 let express = require("express");
 let bcrypt = require("bcrypt");
 let body_parser = require("body-parser");
+let mongoose = require("mongoose");
 let session = require("express-session");
 let fetch = require("node-fetch");
-const asyncHandler = require("express-async-handler");
+let asyncHandler = require("express-async-handler");
 
 let User = require("../models/user");
 const Level = require("../models/level");
-const { default: mongoose } = require("mongoose");
 
 //define authRouter and use json as request
 let levelRouter = express.Router();
