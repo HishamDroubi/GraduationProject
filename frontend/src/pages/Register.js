@@ -81,7 +81,7 @@ const Register = () => {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="handle">
-          <Form.Label>Codeforces Handle</Form.Label>
+          <Form.Label>Codeforces handle</Form.Label>
           <Form.Control
             type="text"
             placeholder="Codeforces Handle"
