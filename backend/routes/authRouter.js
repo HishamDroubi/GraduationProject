@@ -48,7 +48,11 @@ authRouter.post(
     // Save in DB
     let response = await newUser.save();
     const token = await bcrypt.hashSync(response._id.toString(), 10);
-    res.status(200).json(token);
+    res.status(200).json({
+      userName: response.userName,
+      token,
+      role: response.role,
+    });
   })
 );
 
@@ -71,7 +75,11 @@ authRouter.post(
     if (login) {
       session.currentUser = fitchedUser;
       const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
-      res.status(200).json(token);
+      res.status(200).json({
+        userName: fitchedUser.userName,
+        token,
+        role: fitchedUser.role,
+      });
     } else {
       res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");

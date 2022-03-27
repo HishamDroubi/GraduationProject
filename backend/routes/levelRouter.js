@@ -14,61 +14,70 @@ let levelRouter = express.Router();
 levelRouter.use(body_parser.json());
 
 //create level
-levelRouter.post("/create", async (req, res) => {
-  let { number, topic, description } = req.body;
+levelRouter.post(
+  "/create",
+  asyncHandler(async (req, res) => {
+    let { number, topic, description } = req.body;
 
-  let newLevel = new Level({
-    number: number,
-    topic: topic,
-    description: description,
-  });
+    let newLevel = new Level({
+      number: number,
+      topic: topic,
+      description: description,
+    });
 
-  let response = await newLevel.save();
-  res.send(JSON.stringify(response));
-});
+    let response = await newLevel.save();
+    res.status(200).json(response);
+  })
+);
 
 //delete level
-levelRouter.delete("/delete", async (req, res) => {
-  let { levelId } = req.body;
+levelRouter.delete(
+  "/delete",
+  asyncHandler(async (req, res) => {
+    let { levelId } = req.body;
 
-  if (!mongoose.isValidObjectId(levelId)) {
-    res.status(403);
-    throw new Error("levelId Is not valid");
-  }
+    if (!mongoose.isValidObjectId(levelId)) {
+      res.status(403);
+      throw new Error("levelId Is not valid");
+    }
 
-  let response = await Level.deleteOne({ _id: levelId });
-  res.send(JSON.stringify(response));
-});
+    let response = await Level.deleteOne({ _id: levelId });
+    res.status(200).json(response);
+  })
+);
 
 //add problem to level
-levelRouter.put("/addProblem", async (req, res) => {
-  let { problemId, levelId } = req.body;
+levelRouter.put(
+  "/addProblem",
+  asyncHandler(async (req, res) => {
+    let { problemId, levelId } = req.body;
 
-  if (!mongoose.isValidObjectId(levelId)) {
-    res.status(403);
-    throw new Error("levelId Is not valid");
-  }
+    if (!mongoose.isValidObjectId(levelId)) {
+      res.status(403);
+      throw new Error("levelId Is not valid");
+    }
 
-  if (!mongoose.isValidObjectId(problemId)) {
-    res.status(403);
-    throw new Error("ProblemId Is not valid");
-  }
+    if (!mongoose.isValidObjectId(problemId)) {
+      res.status(403);
+      throw new Error("ProblemId Is not valid");
+    }
 
-  let wantedLevel = await Level.findById(levelId);
+    let wantedLevel = await Level.findById(levelId);
 
-  if (wantedLevel == "") {
-    res.status(404);
-    throw new Error("No level with this Id");
-  }
+    if (wantedLevel == "") {
+      res.status(404);
+      throw new Error("No level with this Id");
+    }
 
-  let problems = wantedLevel.problems;
+    let problems = wantedLevel.problems;
 
-  problems.push(problemId);
+    problems.push(problemId);
 
-  let response = await wantedLevel.save();
+    let response = await wantedLevel.save();
 
-  res.send(JSON.stringify(response));
-});
+    res.status(200).json(response);
+  })
+);
 
 //get Specifiv Level
 levelRouter.get(
@@ -90,8 +99,7 @@ levelRouter.get(
         throw new Error("level is not found");
       }
     }
-    res.status(200);
-    res.send(level);
+    res.status(200).json(level);
   })
 );
 
@@ -144,8 +152,7 @@ levelRouter.get(
 
       return search;
     });
-
-    res.send(JSON.stringify(solvedProblems));
+    res.status(200).json(solvedProblems);
   })
 );
 
