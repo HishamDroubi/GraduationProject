@@ -27,16 +27,21 @@ problemRouter.post(
     let searchResult = problems.find((problem) => {
       return problem.contestId == contest && problem.index == index;
     });
-
-    if (searchResult == undefined) throw new Error("No Such Problem");
-    else {
+    console.log(searchResult);
+    if (searchResult === undefined) {
+      res.status(400);
+      throw new Error("No Such Problem");
+    } else {
       let newProblem = new Problem({
         contest: contest,
         index: index,
+        name: searchResult.name,
+        rating: searchResult.rating,
+        url: `https://codeforces.com/problemset/problem/${contest}/${index}`,
       });
 
-      let response = newProblem.save();
-      res.send(JSON.stringify(response));
+      let response = await newProblem.save();
+      res.status(200).json(response);
     }
   })
 );

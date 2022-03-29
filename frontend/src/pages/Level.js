@@ -4,6 +4,7 @@ import { getLevel, reset } from "../features/level/levelSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { LinkContainer } from "react-router-bootstrap";
 const Level = () => {
   const dispatch = useDispatch();
   const { level, isLoading, isError, message } = useSelector(
@@ -25,7 +26,11 @@ const Level = () => {
     <ListGroup>
       {level &&
         level.map((level) => (
-          <ListGroup.Item key={level._id}>{level.topic}</ListGroup.Item>
+          <LinkContainer to={`/level/${level._id}`} key={level._id}>
+            <ListGroup.Item >
+              {level.topic}
+            </ListGroup.Item>
+          </LinkContainer>
         ))}
     </ListGroup>
   );

@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import CreateLevelForm from "./pages/CreateLevelForm";
 import Profile from "./pages/Profile";
 import Level from "./pages/Level";
+import LevelDetails from "./pages/LevelDetails";
 const App = () => {
   return (
     <>
@@ -21,6 +22,7 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/level/create" element={<CreateLevelForm />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/level/:id" element={<LevelDetails/>}/>
             </Routes>
           </Container>
         </main>

@@ -5,13 +5,11 @@ let mongoose = require("mongoose");
 let session = require("express-session");
 let fetch = require("node-fetch");
 let asyncHandler = require("express-async-handler");
-
 let User = require("../models/user");
 const Level = require("../models/level");
 
 //define authRouter and use json as request
 let levelRouter = express.Router();
-levelRouter.use(body_parser.json());
 
 //create level
 levelRouter.post(
@@ -83,7 +81,7 @@ levelRouter.put(
 levelRouter.get(
   "/",
   asyncHandler(async (req, res) => {
-    let levelId = req.body.levelId;
+    let levelId = req.query.levelId;
     let level = "";
     if (levelId && !mongoose.isValidObjectId(levelId)) {
       res.status(403);
@@ -98,7 +96,9 @@ levelRouter.get(
         res.status(404);
         throw new Error("level is not found");
       }
+      level.problems.sort((a, b) => a.rating - b.rating);
     }
+    
     res.status(200).json(level);
   })
 );
@@ -107,9 +107,8 @@ levelRouter.get(
 levelRouter.get(
   "/solvedProblems",
   asyncHandler(async (req, res) => {
-    let handle = session.currentUser.handle;
-    let levelId = req.body.levelId;
-
+    let { handle } = req.session.currentUser;
+    let levelId = req.query.levelId;
     if (!mongoose.isValidObjectId(levelId)) {
       res.status(403);
       throw new Error("levelId Is not valid");
@@ -143,7 +142,6 @@ levelRouter.get(
       };
 
       let search = actualProblems.find((problem) => {
-        console.log(problem);
         return (
           problem.contestId == actualProblem.contestId &&
           problem.index == actualProblem.index

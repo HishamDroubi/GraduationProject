@@ -4,6 +4,17 @@ const User = require("./user");
 let Schema = mongoose.Schema;
 
 let problemSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  rating: {
+    type: Number,
+  },
   contest: {
     type: Number,
     required: true,

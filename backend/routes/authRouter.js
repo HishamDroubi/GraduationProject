@@ -47,6 +47,7 @@ authRouter.post(
 
     // Save in DB
     let response = await newUser.save();
+    req.session.currentUser = response;
     const token = await bcrypt.hashSync(response._id.toString(), 10);
     res.status(200).json({
       userName: response.userName,
@@ -73,7 +74,7 @@ authRouter.post(
 
     let login = await bcrypt.compareSync(password, fitchedPassword);
     if (login) {
-      session.currentUser = fitchedUser;
+      req.session.currentUser = fitchedUser;
       const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
       res.status(200).json({
         userName: fitchedUser.userName,

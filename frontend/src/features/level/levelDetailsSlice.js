@@ -2,12 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import levelService from "./levelService";
 const initialState = {
   isError: false,
+  isSuccess: false,
   isLoading: false,
   message: "",
   level: null,
 };
-export const getLevel = createAsyncThunk(
-  "level/get",
+export const fetchLevel = createAsyncThunk(
+  "level/problems",
   async (levelId, thunkAPI) => {
     try {
       return await levelService.getLevel(levelId);
@@ -22,28 +23,23 @@ export const getLevel = createAsyncThunk(
     }
   }
 );
-export const levelSlice = createSlice({
-  name: "level",
+export const levelDetailsSlice = createSlice({
+  name: "levelDetails",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.isLoading = false;
-      state.isError = false;
-      state.message = "";
-      state.level = null;
-    },
+    reset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getLevel.pending, (state) => {
+      .addCase(fetchLevel.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getLevel.fulfilled, (state, action) => {
+      .addCase(fetchLevel.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.level = action.payload;
       })
-      .addCase(getLevel.rejected, (state, action) => {
+      .addCase(fetchLevel.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -51,5 +47,5 @@ export const levelSlice = createSlice({
       });
   },
 });
-export const { reset } = levelSlice.actions;
-export default levelSlice.reducer;
+export const { reset } = levelDetailsSlice.actions;
+export default levelDetailsSlice.reducer;

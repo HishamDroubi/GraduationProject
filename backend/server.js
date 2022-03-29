@@ -7,7 +7,9 @@ let Problem = require("./models/problem");
 let Group = require("./models/group");
 let Level = require("./models/level");
 let Request = require("./models/request");
-
+const MongoDBStore = require("connect-mongo");
+let secret = "abc123";
+const session = require('express-session');
 //create the server
 let server = express();
 
@@ -19,6 +21,24 @@ let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 
 //medllewaress
+const store = new MongoDBStore({
+  mongoUrl:
+    "mongodb+srv://hisham:hisham1234@cluster0.fhqit.mongodb.net/GraduationProject?retryWrites=true&w=majority",
+  secret,
+  touchAfter: 24 * 60 * 60,
+});
+const sessionConfig = {
+  store,
+  secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+server.use(session(sessionConfig));
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.use("/user", userRouter);
