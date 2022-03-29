@@ -1,9 +1,10 @@
 let express = require("express");
 let bcrypt = require("bcrypt");
-let session = require("express-session");
 let fetch = require("node-fetch");
 let User = require("../models/user");
 const asyncHandler = require("express-async-handler");
+const jwt = require("jsonwebtoken");
+const { protect } = require("../middleware/authMiddleware");
 //define authRouter and use json as request
 let authRouter = express.Router();
 
@@ -32,6 +33,7 @@ authRouter.post(
       throw new Error("User already exists");
     }
     //hashing password before store it in DB
+
     let hashedPassword = await bcrypt.hashSync(password, 10);
 
     //Create User Object
@@ -47,12 +49,12 @@ authRouter.post(
 
     // Save in DB
     let response = await newUser.save();
-    req.session.currentUser = response;
-    const token = await bcrypt.hashSync(response._id.toString(), 10);
+
     res.status(200).json({
       userName: response.userName,
-      token,
+      token: generateToken(response._id),
       role: response.role,
+      email: response.email,
     });
   })
 );
@@ -74,12 +76,11 @@ authRouter.post(
 
     let login = await bcrypt.compareSync(password, fitchedPassword);
     if (login) {
-      req.session.currentUser = fitchedUser;
-      const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
       res.status(200).json({
         userName: fitchedUser.userName,
-        token,
+        token: generateToken(fitchedUser._id),
         role: fitchedUser.role,
+        email: fitchedPassword.email,
       });
     } else {
       res.status(400);
@@ -89,14 +90,14 @@ authRouter.post(
 );
 
 //change password
-authRouter.put("/changePassword", async (req, res) => {
+authRouter.put("/changePassword", protect, async (req, res) => {
   let { curPass, newPass, rePass } = req.body;
 
   if (newPass != rePass) {
     res.status(400);
     throw new Error("new Password does not match the RePassword");
   }
-  let userId = session.currentUser["_id"];
+  let userId = req.currentUser["_id"];
 
   let fitchedUser = await User.findById(userId);
   fitchedUser.password = await bcrypt.hashSync(newPass, 10);
@@ -104,4 +105,10 @@ authRouter.put("/changePassword", async (req, res) => {
   let response = await fitchedUser.save();
   res.status(200).json(response);
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, "abc123", {
+    expiresIn: "30d",
+  });
+};
 module.exports = authRouter;

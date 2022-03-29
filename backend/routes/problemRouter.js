@@ -1,7 +1,6 @@
 let express = require("express");
 let bcrypt = require("bcrypt");
 let body_parser = require("body-parser");
-let session = require("express-session");
 let fetch = require("node-fetch");
 let asyncHandler = require("express-async-handler");
 
@@ -27,7 +26,6 @@ problemRouter.post(
     let searchResult = problems.find((problem) => {
       return problem.contestId == contest && problem.index == index;
     });
-    console.log(searchResult);
     if (searchResult === undefined) {
       res.status(400);
       throw new Error("No Such Problem");

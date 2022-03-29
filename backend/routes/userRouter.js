@@ -7,7 +7,7 @@ let mongoose = require("mongoose");
 let User = require("../models/user");
 let Group = require("../models/group");
 let Request = require("../models/request");
-const session = require("express-session");
+const { protect } = require("../middleware/authMiddleware");
 
 let userRouter = express.Router();
 
@@ -34,8 +34,9 @@ userRouter.delete(
 //change handle
 userRouter.put(
   "/changeHandle",
+  protect,
   asyncHandler(async (req, res) => {
-    let userId = session.currentUser.id;
+    let userId = req.currentUser.id;
     let handle = req.body.handle;
 
     if (!mongoose.isValidObjectId(userId)) {

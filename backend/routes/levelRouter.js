@@ -2,11 +2,11 @@ let express = require("express");
 let bcrypt = require("bcrypt");
 let body_parser = require("body-parser");
 let mongoose = require("mongoose");
-let session = require("express-session");
 let fetch = require("node-fetch");
 let asyncHandler = require("express-async-handler");
 let User = require("../models/user");
 const Level = require("../models/level");
+const { protect } = require("../middleware/authMiddleware");
 
 //define authRouter and use json as request
 let levelRouter = express.Router();
@@ -98,7 +98,7 @@ levelRouter.get(
       }
       level.problems.sort((a, b) => a.rating - b.rating);
     }
-    
+
     res.status(200).json(level);
   })
 );
@@ -106,8 +106,9 @@ levelRouter.get(
 //get All Solved Problems for A User
 levelRouter.get(
   "/solvedProblems",
+  protect,
   asyncHandler(async (req, res) => {
-    let { handle } = req.session.currentUser;
+    let { handle } = req.currentUser;
     let levelId = req.query.levelId;
     if (!mongoose.isValidObjectId(levelId)) {
       res.status(403);

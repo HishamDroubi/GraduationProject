@@ -1,11 +1,11 @@
 let express = require("express");
 let body_parser = require("body-parser");
-const session = require("express-session");
 let asyncHandler = require("express-async-handler");
 
 let Request = require("../models/request");
 let User = require("../models/user");
 let Group = require("../models/group");
+const { protect } = require("../middleware/authMiddleware");
 
 let groupRouter = new express.Router();
 
@@ -17,13 +17,11 @@ groupRouter.use(body_parser.json());
 //create group
 groupRouter.post(
   "/create",
+  protect,
   asyncHandler(async (req, res) => {
     let { name } = req.body;
-    if (session.currentUser == undefined) {
-      res.status(500);
-      throw new Error("You have to log in first");
-    }
-    let coach = session.currentUser["_id"];
+   
+    let coach = req.currentUser["_id"];
 
     let newGroup = new Group({
       name: name,
@@ -52,14 +50,10 @@ groupRouter.delete(
 //Send Group Request
 groupRouter.post(
   "/sendRequest",
+  protect,
   asyncHandler(async (req, res) => {
-    let id = session.currentUser["_id"];
+    let id = req.currentUser["_id"];
     let groupId = req.body.groupId;
-
-    if (session.currentUser == undefined) {
-      res.status(500);
-      throw new Error("You have to log in first");
-    }
 
     if (!mongoose.isValidObjectId(groupId)) {
       res.status(403);
@@ -140,12 +134,9 @@ groupRouter.post(
 //get All Groups as a coach
 groupRouter.get(
   "/getAsCoach",
+  protect,
   asyncHandler(async (req, res) => {
-    if (session.currentUser == undefined) {
-      res.status(500);
-      throw new Error("You have to log in first");
-    }
-    let userId = session.currentUser._id;
+    let userId = req.currentUser._id;
 
     let groups = await Group.find({ coach: userId });
 
@@ -156,12 +147,9 @@ groupRouter.get(
 //get All Groups as partcipent
 groupRouter.get(
   "/getAsPartcipent",
+  protect,
   asyncHandler(async (req, res) => {
-    if (session.currentUser == undefined) {
-      res.status(500);
-      throw new Error("You have to log in first");
-    }
-    let userId = session.currentUser._id;
+    let userId = req.currentUser._id;
 
     let groups = await Group.find();
 
