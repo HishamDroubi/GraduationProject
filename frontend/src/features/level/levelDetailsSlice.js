@@ -24,6 +24,25 @@ export const fetchLevel = createAsyncThunk(
     }
   }
 );
+export const addProblem = createAsyncThunk(
+  "level/addProblems",
+  async (problemData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const levelId = thunkAPI.getState().levelDetails.level._id;
+      console.log(levelId);
+      return await levelService.addProblem(problemData, token, levelId);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const levelDetailsSlice = createSlice({
   name: "levelDetails",
   initialState,
@@ -44,7 +63,20 @@ export const levelDetailsSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.level = null;
+      })
+      .addCase(addProblem.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addProblem.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.level.problems.push(action.payload);
+        state.level.problems.sort((a, b) => a.rating - b.rating);
+      })
+      .addCase(addProblem.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });

@@ -47,9 +47,10 @@ levelRouter.delete(
 //add problem to level
 levelRouter.put(
   "/addProblem",
+  protect,
   asyncHandler(async (req, res) => {
     let { problemId, levelId } = req.body;
-
+    console.log(problemId, levelId);
     if (!mongoose.isValidObjectId(levelId)) {
       res.status(403);
       throw new Error("levelId Is not valid");
@@ -60,13 +61,17 @@ levelRouter.put(
       throw new Error("ProblemId Is not valid");
     }
 
-    let wantedLevel = await Level.findById(levelId);
+    let wantedLevel = await Level.findById(levelId).populate("problems");
 
-    if (wantedLevel == "") {
+    if (!wantedLevel) {
       res.status(404);
       throw new Error("No level with this Id");
     }
 
+    if (wantedLevel.problems.find((problem) => problem._id.equals(problemId))) {
+      res.status(401);
+      throw new Error("The problem already added");
+    }
     let problems = wantedLevel.problems;
 
     problems.push(problemId);

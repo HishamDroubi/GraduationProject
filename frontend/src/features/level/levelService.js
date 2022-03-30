@@ -24,8 +24,27 @@ const getLevel = async (levelId, token) => {
   console.log(response.data);
   return response.data;
 };
+const addProblem = async (problemData, token, levelId) => {
+  const createProblem = await axios.post("/problem/create", problemData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const problemId = createProblem.data._id;
+  await axios.put(
+    API_URL + "addProblem",
+    { problemId, levelId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return createProblem.data;
+};
 const levelService = {
   create,
   getLevel,
+  addProblem,
 };
 export default levelService;

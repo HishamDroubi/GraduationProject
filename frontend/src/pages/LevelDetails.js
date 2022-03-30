@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import { useParams } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
+import AddProblemForm from "../components/AddProblemForm";
 const LevelDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { level, isLoading, isError, message } = useSelector(
     (state) => state.levelDetails
   );
+  const { user } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(fetchLevel(id));
     if (isError) {
@@ -28,6 +30,7 @@ const LevelDetails = () => {
     <>
       {level && level.problems && level.solvedProblems && (
         <FormContainer>
+          {user && user.role === "admin" && <AddProblemForm />}
           <h3 style={{ textAlign: "center" }}>{level.topic}</h3>
           <Table
             hover

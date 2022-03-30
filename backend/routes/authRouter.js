@@ -80,7 +80,7 @@ authRouter.post(
         userName: fitchedUser.userName,
         token: generateToken(fitchedUser._id),
         role: fitchedUser.role,
-        email: fitchedPassword.email,
+        email: fitchedUser.email,
       });
     } else {
       res.status(400);
