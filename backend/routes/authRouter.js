@@ -22,6 +22,8 @@ authRouter.post(
       "https://codeforces.com/api/user.info?handles=" + handle
     );
 
+    //console.log(result)
+
     let codeforcesUser = await result.json();
     if (codeforcesUser["status"] == "FAILED") {
       res.status(400);
@@ -47,14 +49,16 @@ authRouter.post(
       role: "normal",
     });
 
+    console.log(codeforcesUser);
     // Save in DB
     let response = await newUser.save();
 
     res.status(200).json({
       userName: response.userName,
-      token: generateToken(response._id),
+      token: generateToken(fitchedUser._id),
       role: response.role,
       email: response.email,
+      handle: response.handle,
     });
   })
 );
@@ -81,6 +85,7 @@ authRouter.post(
         token: generateToken(fitchedUser._id),
         role: fitchedUser.role,
         email: fitchedUser.email,
+        handle: fitchedUser.handle,
       });
     } else {
       res.status(400);

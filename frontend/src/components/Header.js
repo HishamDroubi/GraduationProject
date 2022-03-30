@@ -3,6 +3,7 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
+
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -15,8 +16,13 @@ const Header = () => {
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand>React-Bootstrap</Navbar.Brand>
+            <Navbar.Brand>CP-PTUK</Navbar.Brand>
           </LinkContainer>
+
+          {user && (<LinkContainer to={`/profile/${user.userName}`}>
+            <Navbar.Brand >{user.userName}</Navbar.Brand>
+          </LinkContainer>)}
+
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
             id="basic-navbar-nav"
@@ -27,6 +33,7 @@ const Header = () => {
                 <LinkContainer to="/">
                   <Nav.Link onClick={onLogout}>Logout</Nav.Link>
                 </LinkContainer>
+
               </Nav>
             ) : (
               <Nav className="ms-auto">

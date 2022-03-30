@@ -11,7 +11,6 @@ const { protect } = require("../middleware/authMiddleware");
 
 //define authRouter and use json as request
 let problemRouter = express.Router();
-problemRouter.use(body_parser.json());
 
 //create problem
 problemRouter.post(
@@ -55,6 +54,13 @@ problemRouter.post(
     }
   })
 );
+
+//get all problem 
+
+problemRouter.get('/', async(req, res) => {
+  const data = await Problem.find({});
+  res.json(data);
+})
 
 //delete problem
 problemRouter.delete(
