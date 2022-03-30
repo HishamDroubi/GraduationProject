@@ -44,6 +44,13 @@ problemRouter.post(
   })
 );
 
+//get all problem 
+
+problemRouter.get('/', async(req, res) => {
+  const data = await Problem.find({});
+  res.json(data);
+})
+
 //delete problem
 problemRouter.delete(
   "/delete",

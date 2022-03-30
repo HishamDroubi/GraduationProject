@@ -3,13 +3,44 @@ let body_parser = require("body-parser");
 let fetch = require("node-fetch");
 let asyncHandler = require("express-async-handler");
 let mongoose = require("mongoose");
-
+const axios = require('axios')
 let User = require("../models/user");
 let Group = require("../models/group");
 let Request = require("../models/request");
 const { protect } = require("../middleware/authMiddleware");
+const Level = require("../models/level");
 
 let userRouter = express.Router();
+
+userRouter.get('/:userName', async (req, res) => {
+  const { userName } = req.params;
+  const data = await User.findOne({ userName: userName }).populate('level');
+
+  
+  if (!data)
+    return res.json({ message: 'userName not Found' })
+  return res.json(data);
+})
+
+userRouter.get('/codeforcesInfo/:userName', async (req, res) => {
+      const { userName } = req.params;
+      const data = await User.findOne({ userName: userName })
+    
+    if (!data) {
+      res.status(400).json({er: 'errrorr '})
+    }
+    
+     const handle = data.handle;
+     const codeforcesInfo = await axios.get(
+      "https://codeforces.com/api/user.info?handles=" + handle
+    )
+    
+    if (!codeforcesInfo) {
+      throw new Error('userName not Found');
+    }
+    res.json(codeforcesInfo.data.result[0]);
+
+})
 
 userRouter.use(body_parser.urlencoded({ extended: false }));
 userRouter.use(body_parser.json());

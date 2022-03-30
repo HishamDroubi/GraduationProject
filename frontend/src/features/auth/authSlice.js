@@ -8,6 +8,7 @@ const initialState = {
   isLoading: false,
   message: "",
 };
+
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
     return await authService.login(user);

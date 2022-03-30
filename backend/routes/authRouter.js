@@ -22,6 +22,8 @@ authRouter.post(
       "https://codeforces.com/api/user.info?handles=" + handle
     );
 
+    //console.log(result)
+
     let codeforcesUser = await result.json();
     if (codeforcesUser["status"] == "FAILED") {
       res.status(400);
@@ -44,17 +46,16 @@ authRouter.post(
       phone: phone,
       password: hashedPassword,
       level: "622345c1373a2b782b593f62",
-      role: "normal",
+      role: "normal"
     });
 
+    console.log(codeforcesUser);
     // Save in DB
     let response = await newUser.save();
 
     res.status(200).json({
-      userName: response.userName,
+      ...newUser,
       token: generateToken(response._id),
-      role: response.role,
-      email: response.email,
     });
   })
 );
@@ -76,12 +77,9 @@ authRouter.post(
 
     let login = await bcrypt.compareSync(password, fitchedPassword);
     if (login) {
-      res.status(200).json({
-        userName: fitchedUser.userName,
-        token: generateToken(fitchedUser._id),
-        role: fitchedUser.role,
-        email: fitchedPassword.email,
-      });
+      session.currentUser = fitchedUser;
+      const token = await bcrypt.hashSync(fitchedUser._id.toString(), 10);
+      res.status(200).json({...fitchedUser, token: generateToken(fitchedUser._id),});
     } else {
       res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");

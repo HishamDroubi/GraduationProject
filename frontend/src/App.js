@@ -21,7 +21,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/level/create" element={<CreateLevelForm />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:userName" element={<Profile />} />
               <Route path="/level/:id" element={<LevelDetails/>}/>
             </Routes>
           </Container>
