@@ -13,6 +13,17 @@ const getCodeforcesUserProfile = async (userName) => {
         console.log(e.message)
     }
 }
+
+const getProblemSolved = async (userName) => {
+    try {
+        const { data } = await axios.get(`/user/codeforcesInfo/${userName}`);
+        return data;
+    }
+    catch(e){
+        console.log(e.message)
+    }
+}
+
 const profileService = {
     getUserProfile,
     getCodeforcesUserProfile

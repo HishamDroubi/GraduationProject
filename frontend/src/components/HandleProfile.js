@@ -12,7 +12,7 @@ import {
     ListGroupItem,
     Image
 } from 'react-bootstrap';
-import { getCodeforcesUserProfile, getUserProfile } from '../features/userInfo/profileSlice';
+import { getCodeforcesUserProfile, getUserProfile } from '../features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader';
 import Message from './Message';
@@ -37,9 +37,13 @@ const HandleProfile = (props) => {
         userProfile,
         profileType } = useSelector(state => state.profile);
 
-    useEffect(async () => {
-        await dispatch(getCodeforcesUserProfile(props.userName));
-        await dispatch(getUserProfile(props.userName));
+    useEffect( () => {
+        const doit = async() => {
+            await dispatch(getCodeforcesUserProfile(props.userName));
+            await dispatch(getUserProfile(props.userName));
+        }
+        doit();
+
     }, [dispatch, props.userName]);
 
     return (
