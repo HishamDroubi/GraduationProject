@@ -15,18 +15,15 @@ const getCodeforcesUserProfile = async (userName) => {
 }
 
 const getProblemSolved = async (userName) => {
-    try {
-        const { data } = await axios.get(`/user/codeforcesInfo/${userName}`);
-        return data;
-    }
-    catch(e){
-        console.log(e.message)
-    }
+   const {data} = await axios.get('/user/problem/' + userName);
+   return data;
+
 }
 
 const profileService = {
     getUserProfile,
-    getCodeforcesUserProfile
+    getCodeforcesUserProfile,
+    getProblemSolved
 };
 
 export default profileService;

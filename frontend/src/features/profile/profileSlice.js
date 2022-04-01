@@ -26,8 +26,10 @@ export const setProfileType = createAsyncThunk('profile/setProfileType', async (
 })
 
 export const getProblemSolved = createAsyncThunk('profile/getProblemSolved', async (userName) => {
-    const UserProfile = await profileService.getUserProfile(userName);
-    return UserProfile;
+    //console.log('dasd');
+    const problemSolved = await profileService.getProblemSolved(userName);
+    console.log('problemSolved')
+    return problemSolved;
 })
 
 export const profileSlice = createSlice({
@@ -96,6 +98,27 @@ export const profileSlice = createSlice({
             })
             .addCase(setProfileType.rejected, (state, action) => {
                 state.profileType = null;
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.payload;
+            })
+            .addCase(getProblemSolved.pending, (state) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.isSuccess = false;
+                state.message = null;
+                state.problemSolved = null;
+            })
+            .addCase(getProblemSolved.fulfilled, (state, action) => {
+                state.problemSolved = action.payload;
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = false;
+                state.message = null;
+            })
+            .addCase(getProblemSolved.rejected, (state, action) => {
+                state.problemSolved = null;
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

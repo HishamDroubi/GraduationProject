@@ -7,6 +7,7 @@ import { getCodeforcesUserProfile, getUserProfile, reset, setProfileType } from 
 import { toast } from "react-toastify";
 import Message from '../components/Message';
 import HandleProfile from '../components/HandleProfile';
+import ProblemsProfile from '../components/ProblemsProfile'
 import {
     Container,
     Navbar,
@@ -19,6 +20,7 @@ import {
     ListGroupItem,
     Image
 } from 'react-bootstrap';
+
 const Profile = (props) => {
 
     const { userName } = useParams();
@@ -27,13 +29,14 @@ const Profile = (props) => {
     //const { user } = useSelector(state => state.auth);
     //console.log(user)
 
-    const { profileType } = useSelector(state => state.Profile);
+    const { profileType } = useSelector(state => state.profile);
 
     const onClickHandler = (type) => {
-        const doit = async() => {
-         await dispatch(setProfileType(type))
+        const getTypeProfile = async () => {
+             dispatch(setProfileType(type))
         }
-        doit();
+        getTypeProfile();
+        console.log(type);
     }
     return (
         <div>
@@ -49,11 +52,16 @@ const Profile = (props) => {
                         <Nav.Link onClick={() => onClickHandler('groups')} eventKey="link-2">Groups</Nav.Link>
                     </Nav.Item>
                 </Nav>
-               
-                {profileType === 'handle' ? <HandleProfile userName={userName}/> : <Button>dsadas</Button>}
 
-            </Col>
-        </div>
+                {profileType === 'handle'
+                    ? <HandleProfile userName={userName} />
+                    : profileType === 'problems' 
+                    ? < ProblemsProfile userName={userName}/>
+                    : <Button>dsadasd</Button>
+                }
+
+        </Col>
+        </div >
     )
 }
 
