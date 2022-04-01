@@ -13,7 +13,7 @@ const ProblemSubmission = (props) => {
           <blockquote className="blockquote mb-0">
             
             <footer className="blockquote-footer">
-              {props.userName}  solved problem <a href={props.problem.url} class="text-warning stretched-link">{props.problem.contest}{props.problem.index}-{props.problem.name}</a>
+              {props.userName}  solved problem <a href={props.problem.url} className="text-warning stretched-link">{props.problem.contest}{props.problem.index}-{props.problem.name}</a>
             </footer>
           </blockquote>
         </Card.Body>

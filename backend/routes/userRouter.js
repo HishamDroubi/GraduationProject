@@ -29,7 +29,8 @@ userRouter.get("/codeforcesInfo/:userName", async (req, res) => {
   const data = await User.findOne({ userName: userName });
 
   if (!data) {
-    res.status(400).json({ er: "errrorr " });
+    res.status(400);
+    throw new Error("User not exist");
   }
 
   const handle = data.handle;
@@ -41,6 +42,7 @@ userRouter.get("/codeforcesInfo/:userName", async (req, res) => {
     res.status(400);
     throw new Error("userName not Found");
   }
+  console.log(codeforcesInfo.data);
   res.status(200).json(codeforcesInfo.data.result[0]);
 });
 
@@ -49,7 +51,7 @@ userRouter.delete(
   "/deleteUser",
   asyncHandler(async (req, res) => {
     let userId = req.body.userId;
-    console.log(userId);
+   // console.log(userId);
 
     if (!mongoose.isValidObjectId(userId)) {
       res.status(403);
@@ -108,7 +110,7 @@ userRouter.get('/problem/:userName', async(req, res) => {
 
 
   const problemSolvedOnCodeforces = acceptedSubmissions.map((accSub) => {
-    console.log(accSub.problem. name);  
+  //  console.log(accSub.problem. name);  
     return {
       contestId: accSub.problem.contestId,
       index: accSub.problem.index,
