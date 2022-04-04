@@ -7,41 +7,57 @@ const initialState = {
   message: null,
   isSuccess: false,
   userProfile: null,
-  profileType: "handle",
   problemSolved: [],
 };
 
 export const getCodeforcesUserProfile = createAsyncThunk(
   "profile/getCodeforcesUserProfile",
-  async (userName) => {
-    const userProfileCodeforcesInfo =
-      await profileService.getCodeforcesUserProfile(userName);
-    return userProfileCodeforcesInfo;
+  async (userName, thunkAPI) => {
+    try {
+      return await profileService.getCodeforcesUserProfile(userName);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
   }
 );
 
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
-  async (userName) => {
-    const UserProfile = await profileService.getUserProfile(userName);
-    return UserProfile;
-  }
-);
-
-export const setProfileType = createAsyncThunk(
-  "profile/setProfileType",
-  async (type) => {
-    return type;
+  async (userName, thunkAPI) => {
+    try {
+      return await profileService.getUserProfile(userName);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
   }
 );
 
 export const getProblemSolved = createAsyncThunk(
   "profile/getProblemSolved",
-  async (userName) => {
-    //console.log('dasd');
-    const problemSolved = await profileService.getProblemSolved(userName);
-    console.log("problemSolved");
-    return problemSolved;
+  async (userName, thunkAPI) => {
+    try {
+      return await profileService.getProblemSolved(userName);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
   }
 );
 
@@ -49,7 +65,7 @@ export const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    reset:(state)=>initialState
+    reset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -62,14 +78,14 @@ export const profileSlice = createSlice({
       })
       .addCase(getCodeforcesUserProfile.fulfilled, (state, action) => {
         state.userProfileCodeforcesInfo = action.payload;
-        state.isLoading = true;
+        state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
         state.message = null;
       })
       .addCase(getCodeforcesUserProfile.rejected, (state, action) => {
         state.userProfileCodeforcesInfo = null;
-        state.isLoading = true;
+        state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
@@ -95,27 +111,6 @@ export const profileSlice = createSlice({
         state.isSuccess = false;
         state.message = action.payload;
       })
-      .addCase(setProfileType.pending, (state) => {
-        state.profileType = null;
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = null;
-      })
-      .addCase(setProfileType.fulfilled, (state, action) => {
-        state.profileType = action.payload;
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = null;
-      })
-      .addCase(setProfileType.rejected, (state, action) => {
-        state.profileType = null;
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.payload;
-      })
       .addCase(getProblemSolved.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -127,7 +122,7 @@ export const profileSlice = createSlice({
         state.problemSolved = action.payload;
         state.isLoading = false;
         state.isError = false;
-        state.isSuccess = false;
+        state.isSuccess = true;
         state.message = null;
       })
       .addCase(getProblemSolved.rejected, (state, action) => {

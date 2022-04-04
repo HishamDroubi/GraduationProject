@@ -12,6 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Card } from "react-bootstrap";
 import ProblemSubmission from "./ProblemSubmission";
+import { toast } from "react-toastify";
 
 const ProblemsProfile = (props) => {
   const userName = props.userName;
@@ -21,21 +22,20 @@ const ProblemsProfile = (props) => {
   );
 
   useEffect(() => {
-    const codeforcesInfo = async () => {
-      await dispatch(getProblemSolved(userName));
-    };
-    codeforcesInfo();
+    if (isError) {
+      toast.error(message);
+    }
+    dispatch(getProblemSolved(userName));
     return () => {
       dispatch(reset());
     };
-  }, [dispatch, userName]);
-
-  console.log(problemSolved);
+  }, [dispatch, userName, message, isError]);
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
+        problemSolved &&
         problemSolved.map((p) => (
           <ProblemSubmission userName={userName} key={p._id} problem={p} />
         ))
