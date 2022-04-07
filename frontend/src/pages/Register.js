@@ -16,8 +16,6 @@ const Register = () => {
     userName: "",
   });
 
-  
-
   const { email, password, handle, phone, userName } = formData;
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
@@ -49,7 +47,7 @@ const Register = () => {
       password,
       handle,
       phone,
-      userName
+      userName,
     };
     dispatch(register(userData));
   };
@@ -59,7 +57,7 @@ const Register = () => {
   return (
     <FormContainer>
       <Form onSubmit={onSubmit}>
-      <Form.Group className="mb-3" controlId="userName">
+        <Form.Group className="mb-3" controlId="userName">
           <Form.Label>Name</Form.Label>
           <Form.Control
             type="text"
@@ -112,7 +110,13 @@ const Register = () => {
             value={phone}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button
+          variant="primary"
+          type="submit"
+          style={{
+            width: "100%",
+          }}
+        >
           Submit
         </Button>
       </Form>

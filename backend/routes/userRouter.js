@@ -9,6 +9,7 @@ let Group = require("../models/group");
 let Request = require("../models/request");
 const { protect } = require("../middleware/authMiddleware");
 const Level = require("../models/level");
+const Problem = require("../models/problem");
 
 let userRouter = express.Router();
 
@@ -28,7 +29,8 @@ userRouter.get("/codeforcesInfo/:userName", async (req, res) => {
   const data = await User.findOne({ userName: userName });
 
   if (!data) {
-    res.status(400).json({ er: "errrorr " });
+    res.status(400);
+    throw new Error("User not exist");
   }
 
   const handle = data.handle;
@@ -40,6 +42,7 @@ userRouter.get("/codeforcesInfo/:userName", async (req, res) => {
     res.status(400);
     throw new Error("userName not Found");
   }
+  console.log(codeforcesInfo.data);
   res.status(200).json(codeforcesInfo.data.result[0]);
 });
 
@@ -48,7 +51,7 @@ userRouter.delete(
   "/deleteUser",
   asyncHandler(async (req, res) => {
     let userId = req.body.userId;
-    console.log(userId);
+   // console.log(userId);
 
     if (!mongoose.isValidObjectId(userId)) {
       res.status(403);
@@ -90,4 +93,35 @@ userRouter.put(
   })
 );
 
+userRouter.get('/problem/:userName', async(req, res) => {
+  const {userName} = req.params;
+  const problems = await Problem.find({});
+  const user = await User.findOne({userName: userName});
+  
+  const handle = user.handle;
+
+  let result = await fetch(
+    "https://codeforces.com/api/user.status?handle=" + handle
+  );
+
+  const data = await result.json();
+  const submission = data.result;
+  const acceptedSubmissions = submission.filter(sub => sub.verdict == "OK");
+
+
+  const problemSolvedOnCodeforces = acceptedSubmissions.map((accSub) => {
+  //  console.log(accSub.problem. name);  
+    return {
+      contestId: accSub.problem.contestId,
+      index: accSub.problem.index,
+      name: accSub.problem.name
+    };
+  });
+
+  const problemSolvedHere = problems.filter((problem) => {
+    return problemSolvedOnCodeforces.find(psoc => (psoc.contestId === problem.contest && psoc.index === problem.index));
+  })
+
+  res.status(200).json(problemSolvedHere);
+})
 module.exports = userRouter;

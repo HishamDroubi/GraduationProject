@@ -72,7 +72,13 @@ const Login = () => {
             value={password}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button
+          variant="primary"
+          type="submit"
+          style={{
+            width: "100%",
+          }}
+        >
           Submit
         </Button>
       </Form>
