@@ -8,7 +8,9 @@ const initialState = {
     isSuccess: false,
     userProfile: null,
     profileType: "handle",
+    problemSolved: [],
 }
+
 export const getCodeforcesUserProfile = createAsyncThunk('profile/getCodeforcesUserProfile', async (userName) => {
     const userProfileCodeforcesInfo = await profileService.getCodeforcesUserProfile(userName);
     return userProfileCodeforcesInfo;
@@ -21,6 +23,11 @@ export const getUserProfile = createAsyncThunk('profile/getUserProfile', async (
 
 export const setProfileType = createAsyncThunk('profile/setProfileType', async (type) => {
     return type;
+})
+
+export const getProblemSolved = createAsyncThunk('profile/getProblemSolved', async (userName) => {
+    const UserProfile = await profileService.getUserProfile(userName);
+    return UserProfile;
 })
 
 export const profileSlice = createSlice({

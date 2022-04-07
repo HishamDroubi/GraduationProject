@@ -55,7 +55,7 @@ authRouter.post(
 
     res.status(200).json({
       userName: response.userName,
-      token: generateToken(fitchedUser._id),
+      token: generateToken(response._id),
       role: response.role,
       email: response.email,
       handle: response.handle,

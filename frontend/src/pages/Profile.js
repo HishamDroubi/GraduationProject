@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader';
-import { getCodeforcesUserProfile, getUserProfile, reset, setProfileType } from '../features/userInfo/profileSlice';
+import { getCodeforcesUserProfile, getUserProfile, reset, setProfileType } from '../features/profile/profileSlice';
 import { toast } from "react-toastify";
 import Message from '../components/Message';
 import HandleProfile from '../components/HandleProfile';
@@ -27,10 +27,13 @@ const Profile = (props) => {
     //const { user } = useSelector(state => state.auth);
     //console.log(user)
 
-    const { profileType } = useSelector(state => state.profile);
+    const { profileType } = useSelector(state => state.Profile);
 
-    const onClickHandler = async(type) => {
-        await dispatch(setProfileType(type))
+    const onClickHandler = (type) => {
+        const doit = async() => {
+         await dispatch(setProfileType(type))
+        }
+        doit();
     }
     return (
         <div>
