@@ -1,11 +1,13 @@
 let mongoose = require("mongoose");
 const level = require("./level");
+let invitation = require("./invitation");
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
   userName: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
@@ -40,6 +42,12 @@ let userSchema = new Schema({
     type: String,
     default: "normal",
   },
+  invitations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Invitation",
+    },
+  ],
 });
 
 userSchema.pre("save", function (next) {

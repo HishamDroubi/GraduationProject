@@ -23,4 +23,22 @@ const protect = asyncHAndler(async (req, res, next) => {
     throw new Error("No authorized, no token");
   }
 });
-module.exports = { protect };
+
+const isCoach = asyncHAndler(async (req, res, next) => {
+  if (req.user && req.user.role !== "normal") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not Authorized as a coach");
+  }
+});
+
+const isAdmin = asyncHAndler(async (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not Authorized as an admin");
+  }
+});
+module.exports = { protect, isCoach, isAdmin };
