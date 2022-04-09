@@ -9,6 +9,8 @@ import CreateLevelForm from "./pages/CreateLevelForm";
 import Profile from "./pages/Profile";
 import Level from "./pages/Level";
 import LevelDetails from "./pages/LevelDetails";
+import Groups from "./pages/Groups";
+import GroupDetails from "./pages/GroupDetails";
 const App = () => {
   return (
     <>
@@ -23,6 +25,8 @@ const App = () => {
               <Route path="/level/create" element={<CreateLevelForm />} />
               <Route path="/profile/:userName" element={<Profile />} />
               <Route path="/level/:id" element={<LevelDetails/>}/>
+              <Route path="/groups" element={<Groups/>}/>
+              <Route path="/group/:id" element={<GroupDetails/>}/>
             </Routes>
           </Container>
         </main>

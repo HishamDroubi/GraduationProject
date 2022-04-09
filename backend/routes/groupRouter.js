@@ -1,5 +1,4 @@
 let express = require("express");
-let body_parser = require("body-parser");
 let asyncHandler = require("express-async-handler");
 
 let Request = require("../models/request");
@@ -7,29 +6,40 @@ let User = require("../models/user");
 let Group = require("../models/group");
 const { protect } = require("../middleware/authMiddleware");
 
-let groupRouter = new express.Router();
-
-groupRouter.use(body_parser.urlencoded({ extended: false }));
-groupRouter.use(body_parser.json());
+let groupRouter = express.Router();
 
 //APIS
-
+//get all groups
+groupRouter.get(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const groups = await Group.find({})
+      .populate("coach")
+      .populate("participants")
+      .populate("requests");
+    res.status(200).json(groups);
+  })
+);
 //create group
 groupRouter.post(
   "/create",
   protect,
   asyncHandler(async (req, res) => {
     let { name } = req.body;
-   
+    if (!name) {
+      res.status(401);
+      throw new Error("Plesae add a name");
+    }
+    
     let coach = req.currentUser["_id"];
-
     let newGroup = new Group({
       name: name,
       coach: coach,
       participants: [coach],
     });
     let result = await newGroup.save();
-    res.send(JSON.stringify("group created ") + result);
+    res.status(200).json(result);
   })
 );
 

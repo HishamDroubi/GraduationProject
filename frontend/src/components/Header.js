@@ -52,6 +52,11 @@ const Header = () => {
                 </LinkContainer>
               </Nav>
             )}
+            <Nav className="ms-auto">
+                <LinkContainer to="/groups">
+                  <Nav.Link>Groups</Nav.Link>
+                </LinkContainer>
+              </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>

@@ -30,7 +30,6 @@ export const addProblem = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       const levelId = thunkAPI.getState().levelDetails.level._id;
-      console.log(levelId);
       return await levelService.addProblem(problemData, token, levelId);
     } catch (error) {
       const message =

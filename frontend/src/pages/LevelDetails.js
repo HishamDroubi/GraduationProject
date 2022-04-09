@@ -28,7 +28,7 @@ const LevelDetails = () => {
     return () => {
       dispatch(reset());
     };
-  }, [dispatch, isError, message, id]);
+  }, [dispatch, isError, message, id, navigate, user]);
   if (isLoading) {
     return <Loader />;
   }

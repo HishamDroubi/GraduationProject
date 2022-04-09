@@ -11,6 +11,7 @@ let groupSchema = new Schema({
   },
   coach: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   participants: [
