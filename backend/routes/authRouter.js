@@ -13,7 +13,7 @@ authRouter.post(
   "/signUp",
   asyncHandler(async (req, res) => {
     let { userName, email, password, handle, phone } = req.body;
-    if (!userName || !email || !password || !handle || !phone) {
+    if (!userName || !email || !password || !handle) {
       res.status(400);
       throw new Error("Please add all fields");
     }
@@ -22,9 +22,9 @@ authRouter.post(
       "https://codeforces.com/api/user.info?handles=" + handle
     );
 
-    //console.log(result)
-
     let codeforcesUser = await result.json();
+
+    console.log(codeforcesUser);
     if (codeforcesUser["status"] == "FAILED") {
       res.status(400);
       throw new Error("Codeforces handle is not correct");
