@@ -21,13 +21,15 @@ const LevelDetails = () => {
       toast.error("login first");
       navigate("/login");
     }
-    dispatch(fetchLevel(id));
     if (isError) {
       toast.error(message);
+      navigate("/");
     }
-    return () => {
+    const getLevel = async () => {
+      await dispatch(fetchLevel(id));
       dispatch(reset());
     };
+    getLevel();
   }, [dispatch, isError, message, id, navigate, user]);
   if (isLoading) {
     return <Loader />;

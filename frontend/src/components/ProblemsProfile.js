@@ -25,10 +25,11 @@ const ProblemsProfile = (props) => {
     if (isError) {
       toast.error(message);
     }
-    dispatch(getProblemSolved(userName));
-    return () => {
+    const getUserProblem = async () => {
+      await dispatch(getProblemSolved(userName));
       dispatch(reset());
     };
+    getUserProblem();
   }, [dispatch, userName, message, isError]);
   return (
     <>

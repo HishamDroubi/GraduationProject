@@ -6,6 +6,7 @@ import levelDetailsReducer from "./features/level/levelDetailsSlice";
 import profileReducer from "./features/profile/profileSlice";
 import groupReducer from "./features/group/groupSlice";
 import createGroupReducer from "./features/group/createGroupSlice";
+import groupDetailsReducer from "./features/group/groupDetailsSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -15,5 +16,6 @@ export const store = configureStore({
     profile: profileReducer,
     group: groupReducer,
     createGroup: createGroupReducer,
+    groupDetails: groupDetailsReducer,
   },
 });

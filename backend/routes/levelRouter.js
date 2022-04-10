@@ -97,7 +97,7 @@ levelRouter.get(
     } else {
       level = await Level.findById(levelId).populate("problems");
 
-      if (level == "") {
+      if (level === "" || !level) {
         res.status(404);
         throw new Error("level is not found");
       }

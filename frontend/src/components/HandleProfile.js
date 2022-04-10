@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Rank from "../components/Rank";
 import {
-  getCodeforcesUserProfile,
   getUserProfile,
 } from "../features/profile/profileSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,44 +19,39 @@ import {
   Image,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
-import {reset} from "../features/profile/profileSlice"
+import { reset } from "../features/profile/profileSlice";
+import { useNavigate } from "react-router-dom";
 const HandleProfile = (props) => {
   const userName = props.userName;
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const boxStyle = {
     border: "1px solid #b9b9b9",
     position: "relative",
     padding: "1em 1em 0 1em",
   };
 
-  const {
-    userProfileCodeforcesInfo,
-    isError,
-    isLoading,
-    isSuccess,
-    message,
-    userProfile,
-    profileType,
-  } = useSelector((state) => state.profile);
+  const { isError, isLoading, isSuccess, message, userProfile } = useSelector(
+    (state) => state.profile
+  );
 
   useEffect(() => {
     if (isError) {
       toast.error(message);
+      navigate("/");
     }
-    dispatch(getCodeforcesUserProfile(userName));
-    dispatch(getUserProfile(userName));
-    return () => {
+    const fetchProfile = async () => {
+      await dispatch(getUserProfile(userName));
       dispatch(reset());
     };
-  }, [dispatch, userName, isError, message]);
+    fetchProfile();
+  }, [dispatch, userName, isError, message, navigate]);
 
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
-        userProfileCodeforcesInfo &&
         userProfile && (
           <Card style={boxStyle}>
             <ListGroup>
@@ -66,7 +60,7 @@ const HandleProfile = (props) => {
                   <Col md="7">
                     <br />
                     <Row>
-                      <Rank rank={userProfileCodeforcesInfo.rank} />
+                      <Rank rank={userProfile.codeforces.rank} />
                     </Row>
                     <br />
                     <Row>
@@ -81,7 +75,7 @@ const HandleProfile = (props) => {
                   </Col>
 
                   <Col md="2">
-                    <Image src={userProfileCodeforcesInfo.titlePhoto} />
+                    <Image src={userProfile.codeforces.titlePhoto} />
                   </Col>
                 </Row>
               </ListGroupItem>

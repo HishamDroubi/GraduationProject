@@ -21,7 +21,30 @@ groupRouter.get(
   })
 );
 
-
+//get Group
+groupRouter.get(
+  "/:id",
+  protect,
+  asyncHandler(
+    asyncHandler(async (req, res) => {
+      const { id } = req.params;
+      if (!mongoose.isValidObjectId(id)) {
+        res.status(401).json("Group id is not valid");
+      }
+      const group = await Group.findById(id)
+        .populate("coach")
+        .populate("participants")
+        .populate("attachments")
+        .populate("requests");
+      if (!group) {
+        res.status(401);
+        throw new Error("Group not found");
+      } else {
+        res.status(200).json(group);
+      }
+    })
+  )
+);
 //create group
 groupRouter.post(
   "/create",
@@ -218,7 +241,6 @@ groupRouter.post(
     res.send(JSON.stringify("ResultString"));
   })
 );
-
 
 //get All Groups as a coach
 groupRouter.get(
