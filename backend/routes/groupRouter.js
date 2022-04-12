@@ -7,6 +7,7 @@ let User = require("../models/user");
 let Group = require("../models/group");
 const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
+const { FetchError } = require("node-fetch");
 
 let groupRouter = express.Router();
 
@@ -269,6 +270,48 @@ groupRouter.get(
       return participants.includes(userId);
     });
     res.send(JSON.stringify(groups));
+  })
+);
+
+groupRouter.delete(
+  "/deleteGroup",
+  protect,
+  asyncHandler(async (req, res) => {
+    let groupId = req.body.groupId;
+    let deleteResult = await Group.deleteOne({ _id: groupId });
+    let deleteCount = deleteResult["deletedCount"];
+    if (deleteCount == 0) throw new Error("This Group is not existed");
+    res.send(deleteResult);
+  })
+);
+
+groupRouter.delete(
+  "/removeUser",
+  protect,
+  asyncHandler(async (req, res) => {
+    let userId = req.body.userId;
+    let groupId = req.body.groupId;
+
+    let result = "result";
+
+    let fetchedGroup = await Group.findById(groupId);
+
+    //if the removed User is the coach then the froup should be deleted
+    if (userId == fetchedGroup["coach"]) {
+      let deleteResult = await Group.deleteOne({ _id: groupId });
+      result = deleteResult;
+    } else {
+      let participants = fetchedGroup["participants"];
+
+      let filteredParticipants = participants.filter((partcipent) => {
+        return partcipent["_id"] != userId;
+      });
+
+      fetchedGroup["participants"] = filteredParticipants;
+      let saveResult = await fetchedGroup.save();
+      result = saveResult;
+    }
+    res.send(result);
   })
 );
 
