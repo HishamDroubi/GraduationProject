@@ -3,13 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProblemSolved, reset } from "../features/profile/profileSlice";
 import Loader from "./Loader";
 import Message from "./Message";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 import { Card } from "react-bootstrap";
 import ProblemSubmission from "./ProblemSubmission";
 import { toast } from "react-toastify";
@@ -35,11 +28,26 @@ const ProblemsProfile = (props) => {
     <>
       {isLoading ? (
         <Loader />
-      ) : (
-        problemSolved &&
-        problemSolved.map((p) => (
-          <ProblemSubmission userName={userName} key={p._id} problem={p} />
-        ))
+      ) : (problemSolved &&
+        <div className="table-responsive mt-3 mb-3 submissions-table">
+          <table className="table table-striped text-center border small">
+            <thead bg="primary" variant="dark" expand="lg">
+              <tr>
+              <th scope="col">Level</th>
+                <th scope="col">Contest</th>
+                <th scope="col">Index</th>
+                <th scope="col">Problem</th>
+                <th scope="col">Difficulty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {problemSolved.map((p) => (
+                <tr><ProblemSubmission userName={userName} key={p._id} problem={p} /></tr>
+              ))}
+            </tbody>
+
+          </table>
+        </div>
       )}
     </>
   );
