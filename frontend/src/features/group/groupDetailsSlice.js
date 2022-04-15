@@ -7,6 +7,7 @@ const initialState = {
   message: "",
   group: {},
   isSuccess: false,
+  updateGroup: false,
 };
 export const getGroupDetails = createAsyncThunk(
   "group/:id",
@@ -14,6 +15,41 @@ export const getGroupDetails = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await groupService.getGroupDetails(groupId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const requestGroup = createAsyncThunk(
+  "group/:id/request",
+  async (groupId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.requestJoinGroup(groupId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const requestDecision = createAsyncThunk(
+  "group/:id/request/:id/acceptance",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.requestAcceptance(data, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -34,6 +70,14 @@ export const groupDetailsSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
+      state.updateGroup = false;
+    },
+    resetAll: (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = "";
+      state.group = {};
     },
   },
   extraReducers: (builder) => {
@@ -50,8 +94,32 @@ export const groupDetailsSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(requestGroup.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        state.group.requests.push(action.payload);
+      })
+      .addCase(requestGroup.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(requestDecision.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(requestDecision.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.updateGroup = true;
+        console.log(action.payload);
+        // if (action.payload.acceptance)
+        //   state.group.participants.push(action.payload);
+      })
+      .addCase(requestDecision.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
-export const { reset } = groupDetailsSlice.actions;
+export const { reset, resetAll } = groupDetailsSlice.actions;
 export default groupDetailsSlice.reducer;

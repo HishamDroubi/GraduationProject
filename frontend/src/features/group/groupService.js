@@ -16,7 +16,6 @@ const fetchGroups = async (token) => {
   return response.data;
 };
 const getGroupDetails = async (groupId, token) => {
-  console.log("HHHHHHHH");
   const response = await axios.get(`/group/${groupId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,10 +24,36 @@ const getGroupDetails = async (groupId, token) => {
   console.log(response.data);
   return response.data;
 };
+
+const requestJoinGroup = async (groupId, token) => {
+  const response = await axios.post(
+    "/group/sendRequest",
+    { groupId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(response.data);
+  return response.data;
+};
+
+const requestAcceptance = async (data, token) => {
+  console.log("Here bitches");
+  const response = await axios.post("/group/respondToRequest", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(response.data);
+};
 const groupService = {
   createGroup,
   fetchGroups,
   getGroupDetails,
+  requestJoinGroup,
+  requestAcceptance,
 };
 
 export default groupService;

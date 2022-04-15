@@ -35,7 +35,14 @@ groupRouter.get(
         .populate("coach")
         .populate("participants")
         .populate("attachments")
-        .populate("requests");
+        .populate({
+          path: "requests",
+          model: "Request",
+          populate: {
+            path: "requester",
+            model: "User",
+          },
+        });
       if (!group) {
         res.status(401);
         throw new Error("Group not found");
@@ -87,7 +94,6 @@ groupRouter.post(
   asyncHandler(async (req, res) => {
     let id = req.currentUser["_id"];
     let groupId = req.body.groupId;
-
     if (!mongoose.isValidObjectId(groupId)) {
       res.status(403);
       throw new Error("groupId Is not valid");
@@ -104,63 +110,81 @@ groupRouter.post(
     });
 
     let requests = WantedGroup["requests"];
+    let addRequest = true;
     requests.forEach((request) => {
-      if (id.equals(request["requester"]["id"]))
-        throw Error("You Already Request To Join This Group");
+      if (id.equals(request["requester"]["id"])) {
+        addRequest = false;
+        res.status(401);
+        throw new Error("You Already Request To Join This Group");
+      }
     });
-    let newRequest = new Request({
-      group: groupId,
-      requester: id,
-    });
-    let requestResult = await newRequest.save();
-    requests.push(requestResult);
+    if (addRequest === true) {
+      let newRequest = new Request({
+        group: groupId,
+        requester: id,
+      });
+      let requestResult = await newRequest.save();
+      requestResult.populate("requester");
+      requests.push(requestResult);
 
-    WantedGroup["requests"] = requests;
-    let response = WantedGroup.save();
-    res.send(JSON.stringify("Request Has Been Sent " + response));
+      WantedGroup["requests"] = requests;
+      await WantedGroup.save();
+      res.status(200).json(requestResult);
+    }
   })
 );
 
 //Respond To Group Request
 groupRouter.post(
   "/respondToRequest",
+  protect,
   asyncHandler(async (req, res) => {
     let requestId = req.body.requestId;
     let acceptance = req.body.acceptance;
-
     if (toString.call(acceptance) !== "[object Boolean]") {
       res.status(403);
       throw new Error("acceptance shoulde be a boolean value");
     }
-
     let requestResult = await Request.findById(requestId);
     let groupId = requestResult["group"];
     let userId = requestResult["requester"];
 
-    let WantedGroup = await Group.findById(groupId).populate({
-      path: "requests",
-      model: "Request",
-      populate: {
-        path: "requester",
-        model: "User",
-      },
-    });
+    let WantedGroup = await Group.findById(groupId)
+      .populate({
+        path: "requests",
+        model: "Request",
+        populate: {
+          path: "requester",
+          model: "User",
+        },
+      })
+      .populate("coach");
+    if (!WantedGroup.coach._id.equals(req.currentUser._id)) {
+      res.status(401);
+      throw new Error("Not authorized, not the coach of the group");
+    } else {
+      let requests = WantedGroup["requests"];
 
-    let requests = WantedGroup["requests"];
+      //Filtering Requests to remove the Specific Request
+      requests = requests.filter((request) => {
+        return !userId.equals(request["requester"]["_id"]);
+      });
+      WantedGroup["requests"] = requests;
+      if (acceptance) WantedGroup["participants"].push(userId);
 
-    //Filtering Requests to remove the Specific Request
-    requests = requests.filter((request) => {
-      return userId != request["requester"]["_id"];
-    });
+      await WantedGroup.save();
+      const response=await Request.findById(requestId).populate("requester");
 
-    if (acceptance) WantedGroup["participants"].push(userId);
-
-    let responseFromSave = await WantedGroup.save();
-
-    let responseFromDelete = await Request.deleteOne({ _id: requestId });
-    if (acceptance)
-      res.send(JSON.stringify("User Added to group " + responseFromDelete));
-    else res.send(JSON.stringify("User Rejected " + responseFromDelete));
+      await Request.deleteOne({
+        _id: requestId,
+      });
+      if (acceptance) {
+        response.acceptance = true;
+      } else {
+        response.acceptance = false;
+      }
+      res.status(200).json(response);
+    }
   })
 );
 
