@@ -5,7 +5,6 @@ import {
   requestDecision,
   requestGroup,
   reset,
-  resetAll,
 } from "../features/group/groupDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
@@ -17,7 +16,7 @@ const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { group, isError, isSuccess, message, isLoading, updateGroup } =
+  const { group, isError, isSuccess, message, isLoading } =
     useSelector((state) => state.groupDetails);
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
