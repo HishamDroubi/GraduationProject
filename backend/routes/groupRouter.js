@@ -7,6 +7,7 @@ let User = require("../models/user");
 let Group = require("../models/group");
 const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
+const { FetchError } = require("node-fetch");
 
 let groupRouter = express.Router();
 
@@ -173,17 +174,19 @@ groupRouter.post(
       if (acceptance) WantedGroup["participants"].push(userId);
 
       await WantedGroup.save();
-      const response=await Request.findById(requestId).populate("requester");
+      let response = await Request.findById(requestId).populate("requester");
 
       await Request.deleteOne({
         _id: requestId,
       });
-      if (acceptance) {
-        response.acceptance = true;
-      } else {
-        response.acceptance = false;
-      }
-      res.status(200).json(response);
+      console.log(response);
+      res
+        .status(200)
+        .json({
+          ...response.requester.toObject(),
+          acceptance: acceptance,
+          _id: response._id,
+        });
     }
   })
 );
@@ -195,14 +198,46 @@ groupRouter.post(
   asyncHandler(async (req, res) => {
     let groupId = req.body.groupId;
     let userId = req.body.userId;
-
+    if (!mongoose.isValidObjectId(groupId)) {
+      res.status(403);
+      throw new Error("groupId Is not valid");
+    }
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(403);
+      throw new Error("userId Is not valid");
+    }
+    const WantedGroup = await Group.findById(groupId);
+    if (!WantedGroup || WantedGroup === null) {
+      res.status(401);
+      throw new Error("Group not found");
+    }
+    let fetchedUser = await User.findById(userId);
+    if (!fetchedUser || fetchedUser === null) {
+      res.status(401);
+      throw new Error("User not found");
+    }
+    const userIsMember = await WantedGroup.participants.find((memeber) =>
+      memeber._id.equals(userId)
+    );
+    if (userIsMember) {
+      res.status(401);
+      throw new Error("User already joined the group");
+    }
+    //check if the invitation exist
+    const invitationExist = await Invitation.find({
+      group: groupId,
+      invitedUser: userId,
+    });
+    if (invitationExist) {
+      res.status(401);
+      throw new Error("User already invited to this group");
+    }
     let newInvitation = new Invitation({
       group: groupId,
       invitedUser: userId,
     });
 
     let invitationResult = await newInvitation.save();
-    let fetchedUser = await User.findById(userId);
 
     let invitations = fetchedUser["invitations"];
 
@@ -210,7 +245,7 @@ groupRouter.post(
 
     fetchedUser["invitations"] = invitations;
     let response = await fetchedUser.save();
-    res.send(response);
+    res.status(200).json(response);
   })
 );
 
@@ -293,6 +328,48 @@ groupRouter.get(
       return participants.includes(userId);
     });
     res.send(JSON.stringify(groups));
+  })
+);
+
+groupRouter.delete(
+  "/deleteGroup",
+  protect,
+  asyncHandler(async (req, res) => {
+    let groupId = req.body.groupId;
+    let deleteResult = await Group.deleteOne({ _id: groupId });
+    let deleteCount = deleteResult["deletedCount"];
+    if (deleteCount == 0) throw new Error("This Group is not existed");
+    res.send(deleteResult);
+  })
+);
+
+groupRouter.delete(
+  "/removeUser",
+  protect,
+  asyncHandler(async (req, res) => {
+    let userId = req.body.userId;
+    let groupId = req.body.groupId;
+
+    let result = "result";
+
+    let fetchedGroup = await Group.findById(groupId);
+
+    //if the removed User is the coach then the froup should be deleted
+    if (userId == fetchedGroup["coach"]) {
+      let deleteResult = await Group.deleteOne({ _id: groupId });
+      result = deleteResult;
+    } else {
+      let participants = fetchedGroup["participants"];
+
+      let filteredParticipants = participants.filter((partcipent) => {
+        return partcipent["_id"] != userId;
+      });
+
+      fetchedGroup["participants"] = filteredParticipants;
+      let saveResult = await fetchedGroup.save();
+      result = saveResult;
+    }
+    res.send(result);
   })
 );
 

@@ -35,18 +35,16 @@ const requestJoinGroup = async (groupId, token) => {
       },
     }
   );
-  console.log(response.data);
   return response.data;
 };
 
 const requestAcceptance = async (data, token) => {
-  console.log("Here bitches");
   const response = await axios.post("/group/respondToRequest", data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response.data);
+  return response.data;
 };
 const groupService = {
   createGroup,

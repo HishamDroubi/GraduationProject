@@ -7,7 +7,6 @@ const initialState = {
   message: "",
   group: {},
   isSuccess: false,
-  updateGroup: false,
 };
 export const getGroupDetails = createAsyncThunk(
   "group/:id",
@@ -70,14 +69,6 @@ export const groupDetailsSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
-      state.updateGroup = false;
-    },
-    resetAll: (state) => {
-      state.isLoading = false;
-      state.isError = false;
-      state.isSuccess = false;
-      state.message = "";
-      state.group = {};
     },
   },
   extraReducers: (builder) => {
@@ -109,10 +100,11 @@ export const groupDetailsSlice = createSlice({
       .addCase(requestDecision.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.updateGroup = true;
-        console.log(action.payload);
-        // if (action.payload.acceptance)
-        //   state.group.participants.push(action.payload);
+        if (action.payload.acceptance)
+          state.group.participants.push(action.payload);
+        state.group.requests = state.group.requests.filter(
+          (request) => request._id !== action.payload._id
+        );
       })
       .addCase(requestDecision.rejected, (state, action) => {
         state.isLoading = false;

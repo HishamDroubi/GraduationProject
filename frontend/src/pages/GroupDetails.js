@@ -32,7 +32,7 @@ const GroupDetails = () => {
       dispatch(reset());
     };
     fetchGroup();
-  }, [dispatch, isError, message, id, navigate, updateGroup]);
+  }, [dispatch, isError, message, id, navigate]);
 
   const requestToJoin = async () => {
     await dispatch(requestGroup(group._id));
@@ -46,7 +46,7 @@ const GroupDetails = () => {
         acceptance: val[1] === "true" ? true : false,
       })
     );
-    dispatch(resetAll());
+    dispatch(reset());
   };
   if (
     isLoading ||
