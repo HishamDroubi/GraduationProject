@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Rank from "../components/Rank";
 import {
+  getProblemSolved,
   getUserProfile,
 } from "../features/profile/profileSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +32,7 @@ const HandleProfile = (props) => {
     padding: "1em 1em 0 1em",
   };
 
-  const { isError, isLoading, isSuccess, message, userProfile } = useSelector(
+  const { isError, isLoading, isSuccess, message, userProfile, problemSolved } = useSelector(
     (state) => state.profile
   );
 
@@ -42,45 +43,83 @@ const HandleProfile = (props) => {
     }
     const fetchProfile = async () => {
       await dispatch(getUserProfile(userName));
+      await dispatch(getProblemSolved(userName));
       dispatch(reset());
     };
     fetchProfile();
   }, [dispatch, userName, isError, message, navigate]);
-
+console.log(userProfile);
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
         userProfile && (
-          <Card style={boxStyle}>
-            <ListGroup>
-              <ListGroupItem>
-                <Row>
-                  <Col md="7">
-                    <br />
-                    <Row>
-                      <Rank rank={userProfile.codeforces.rank} />
-                    </Row>
-                    <br />
-                    <Row>
-                      <h3>{userProfile.userName}</h3>
-                    </Row>
+          <div className="row mt-3">
 
-                    <Row></Row>
+            <div className="col-md-4 col-sm-12">
+              <div className="text-center">
+                <img src={userProfile.codeforces.titlePhoto} alt="Profile Picture" className="img-thumbnail img-fluid" />
+              </div>
+            </div>
 
-                    <Row>
-                      <h5> Level: {userProfile.level.number}</h5>
-                    </Row>
-                  </Col>
+            <div className="col">
+              
+              <div className="list-group list-group-striped">
 
-                  <Col md="2">
-                    <Image src={userProfile.codeforces.titlePhoto} />
-                  </Col>
-                </Row>
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4">Username:</div>
+                    <div className="col">{userProfile.userName}</div>
+                  </div>
+                </div>
+                
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4">Level:</div>
+                    <div className="col">{userProfile.level.number}</div>
+                  </div>
+                </div>
+
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4">codeforces rate:</div>
+                    <div className="col">{userProfile.codeforces.rating} ({userProfile.codeforces.rank})</div>
+                  </div>
+                </div>
+
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4"># solved propblem:</div>
+                    <div className="col">{problemSolved.length}</div>
+                  </div>
+                </div>
+
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4">codeforces handle:</div>
+                    <div className="col">{userProfile.codeforces.handle}</div>
+                  </div>
+                </div>
+
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col-4"># of friends</div>
+                    <div className="col">5</div>
+                  </div>
+                </div>
+
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col"><Button>new message</Button></div>
+                    <div className="col"><Button>your message</Button></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
         )
       )}
     </>
