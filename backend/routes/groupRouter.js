@@ -8,6 +8,7 @@ let Group = require("../models/group");
 const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
 const { FetchError } = require("node-fetch");
+const { request } = require("http");
 
 let groupRouter = express.Router();
 
@@ -165,6 +166,37 @@ groupRouter.post(
   })
 );
 
+//delete request
+groupRouter.delete(
+  "/deleteRequest",
+  protect,
+  asyncHandler(async (req, res) => {
+    let requestId = req.body.requestId;
+
+    let fetchedRequest = await Request.findById(requestId);
+
+    //first you have to delete the request from the group requests array
+    let groupId = fetchedRequest["group"];
+
+    let fetchedGroup = await Group.findById(groupId);
+
+    let requests = fetchedGroup["requests"];
+
+    requests = requests.filter((request) => {
+      return request["_id"] != requestId;
+    });
+
+    fetchedGroup["requests"] = requests;
+
+    let saveResponse = await fetchedGroup.save();
+
+    //now you can delete the request object itself
+    let deleteResponse = await Request.deleteOne({ _id: requestId });
+
+    res.send(JSON.stringify(deleteResponse));
+  })
+);
+
 //invite to group
 groupRouter.post(
   "/invite",
@@ -240,6 +272,37 @@ groupRouter.post(
     let responseFromDelete = await Invitation.deleteOne({ _id: invitationId });
 
     res.send(JSON.stringify("ResultString"));
+  })
+);
+
+//delete invite
+groupRouter.delete(
+  "/deleteInvitation",
+  protect,
+  asyncHandler(async (req, res) => {
+    let invitationId = req.body.invitationId;
+
+    let fetchedInvite = await Invitation.findById(invitationId);
+
+    //first you have to delete the invite from the User invitations array
+    let invitedUserId = fetchedInvite["invitedUser"];
+
+    let fetchedUser = await User.findById(invitedUserId);
+
+    let invitations = fetchedUser["invitations"];
+
+    invitations = invitations.filter((invitation) => {
+      return invitation["_id"] != invitationId;
+    });
+
+    fetchedUser["invitations"] = invitations;
+
+    let saveResponse = await fetchedUser.save();
+
+    //now you can delete the invitation object itself
+    let deleteResponse = await Invitation.deleteOne({ _id: invitationId });
+
+    res.send(JSON.stringify(deleteResponse));
   })
 );
 
