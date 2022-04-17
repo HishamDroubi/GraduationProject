@@ -9,7 +9,16 @@ import { fetchGroups } from "../features/group/groupSlice";
 import Loader from "../components/Loader";
 import CreateGroupForm from "../components/CreateGroupForm";
 import { Link } from "react-router-dom";
+
+
+import { useState } from "react";
+import { Button, Card, ListGroup, Row } from "react-bootstrap";
+import GroupCard from "../components/GroupCard";
 const Groups = () => {
+
+  const [basicModal, setBasicModal] = useState(false);
+  const toggleShow = () => setBasicModal(!basicModal);
+
   const { groups, isLoading, isError, message } = useSelector(
     (state) => state.group
   );
@@ -25,18 +34,19 @@ const Groups = () => {
     return <Loader />;
   }
   return (
-    <FormContainer>
-      <CreateGroupForm />
-      <ul>
-        {groups &&
-          groups.map((group) => (
-            <li key={group._id}>
-              <Link to={`/group/${group._id}`}>{group.name}</Link>
-            </li>
-          ))}
-      </ul>
-    </FormContainer>
+    <>
+
+    {groups && (
+    <>
+    <Button onClick={toggleShow}>Create Groupe</Button>
+      <CreateGroupForm basicModal={basicModal} toggleShow={toggleShow} setBasicModal={setBasicModal} /></>)}
+      {groups &&
+        groups.map((group) => (
+          <GroupCard group={group} />
+        ))}
+    </>
   );
 };
 
 export default Groups;
+

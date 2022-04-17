@@ -2,6 +2,7 @@ import axios from "axios";
 const API_URL = "/level/";
 const create = async (levelData) => {
   const response = await axios.post(API_URL + "create", levelData);
+  console.log(response.data)
   return response.data;
 };
 const getLevel = async (levelId, token) => {
