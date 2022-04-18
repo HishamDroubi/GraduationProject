@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button, Card, ListGroup, Row } from "react-bootstrap";
 import GroupCard from "../components/GroupCard";
+import { backgroundColor, color } from "../theme";
 const Groups = () => {
 
   const [basicModal, setBasicModal] = useState(false);
@@ -38,7 +39,7 @@ const Groups = () => {
 
     {groups && (
     <>
-    <Button onClick={toggleShow}>Create Groupe</Button>
+    <Button style={{backgroundColor: backgroundColor, color: color}} onClick={toggleShow}>Create Groupe</Button>
       <CreateGroupForm basicModal={basicModal} toggleShow={toggleShow} setBasicModal={setBasicModal} /></>)}
       {groups &&
         groups.map((group) => (

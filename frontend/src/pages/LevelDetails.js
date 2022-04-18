@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { fetchLevel, reset } from "../features/level/levelDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -8,7 +8,12 @@ import { useParams } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 import AddProblemForm from "../components/AddProblemForm";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 const LevelDetails = () => {
+
+  const [basicModal, setBasicModal] = useState(false);
+  const toggleShow = () => setBasicModal(!basicModal);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -38,7 +43,10 @@ const LevelDetails = () => {
     <>
       {level && level.problems && level.solvedProblems && (
         <FormContainer>
-          {user && user.role === "admin" && <AddProblemForm />}
+          {user && user.role === "admin" && (<>
+            <Button onClick={toggleShow}>Add problem</Button>
+            <AddProblemForm basicModal={basicModal} toggleShow={toggleShow} setBasicModal={setBasicModal} />
+          </>)}
           <h3 style={{ textAlign: "center" }}>{level.topic}</h3>
           <Table
             hover

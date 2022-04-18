@@ -4,12 +4,16 @@ import { Button, Card, Col, ListGroupItem, Row } from 'react-bootstrap';
 import { IconName, MdDeleteForever } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
+import { backgroundColor, color } from '../theme';
 const GroupCard = (props) => {
 
+  const onCklickHandler = (e) => {
+    props.history.push(`/${props.group._id}`)
+  }
   const { user } = useSelector((state) => state.auth);
   return (
-    <MDBCard style={{ width: '80%', marginBottom: 40, borderColor: '#2c3e50', padding: 0 }}>
-      <MDBCardHeader style={{ width: '100%', backgroundColor: '#2c3e50', color: 'white' }}>
+    <MDBCard style={{ width: '80%', marginBottom: 40, borderColor: 'black', padding: 0 }}>
+      <MDBCardHeader style={{ width: '100%', backgroundColor: backgroundColor, color: color }}>
 
         <Row>
 
@@ -28,7 +32,7 @@ const GroupCard = (props) => {
 
           {user && user.role === 'admin' && (
             <Col>
-              <Button>
+              <Button style={{backgroundColor: backgroundColor, color: color}}>
                 <MdDeleteForever />
               </Button>
             </Col>
@@ -36,17 +40,17 @@ const GroupCard = (props) => {
         </Row>
 
       </MDBCardHeader>
-      <MDBCardBody>
-        <MDBCardTitle style={{ color: '#2c3e50' }}>Binary Search</MDBCardTitle>
+      <MDBCardBody style={{ backgroundColor: 'white' }}>
+        <MDBCardTitle style={{ color: backgroundColor }}>Binary Search</MDBCardTitle>
         <Row>
           <Col md='9'>
-            <MDBCardText style={{ color: '#2c3e50' }}>
+            <MDBCardText style={{ color: backgroundColor }}>
               Talking about Binary search and its time complixty and when we use it and why
             </MDBCardText>
           </Col>
 
-          <Col style={{ marginLeft: 60, }}>
-            <MDBBtn href='#'>Join or Enter</MDBBtn>
+          <Col >
+            <Button style={{ marginLeft: 60, backgroundColor: backgroundColor, color: color }} href={`/group/${props.group._id}`}>Join or Enter</Button>
           </Col>
         </Row>
 

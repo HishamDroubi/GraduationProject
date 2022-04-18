@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import Participants from '../components/Participants'
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,16 +60,8 @@ const GroupDetails = () => {
   }
   return (
     <div>
-      {!group.participants.find((p) => p.userName === user.userName) &&
-        !group.requests.find(
-          (request) => request.requester.userName === user.userName
-        ) && <button onClick={requestToJoin}>Join Group</button>}
-
-      {group.requests.find(
-        (request) => request.requester.userName === user.userName
-      ) && <Button variant="danger">Cancel</Button>}
-
-      {user.userName === group.coach.userName && <h1>Participants</h1>}
+      
+      {user.userName === group.coach.userName && <Participants participants={group.participants}/>}
 
       {user.userName === group.coach.userName &&
         group.participants.map((participant) => (

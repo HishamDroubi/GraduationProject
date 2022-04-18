@@ -2,7 +2,17 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { addProblem } from "../features/level/levelDetailsSlice";
-const AddProblemForm = () => {
+import {
+  MDBBtn,
+  MDBModal,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalBody,
+  MDBModalFooter,
+} from 'mdb-react-ui-kit';
+const AddProblemForm = (props) => {
   const [formData, setFormData] = useState({
     contest: "",
     index: "",
@@ -25,36 +35,64 @@ const AddProblemForm = () => {
   };
   return (
     <Form onSubmit={onSubmit} style={{
-        marginBottom:"20px"
+      marginBottom: "20px"
     }}>
-      <Form.Group className="mb-3" controlId="contest">
-        <Form.Label>Contest</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Contest Number"
-          name="contest"
-          onChange={onChange}
-          value={contest}
-        />
-      </Form.Group>
+      <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
+        <MDBModalDialog>
+          <MDBModalContent>
 
-      <Form.Group className="mb-3" controlId="index">
-        <Form.Label>Index</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Problem Index"
-          name="index"
-          onChange={onChange}
-          value={index}
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit" style={{
-          width:"100%"
-      }}>
-        Add Problem
-      </Button>
-    </Form>
-  );
+            <MDBModalHeader>
+              <MDBModalTitle>Create groupe</MDBModalTitle>
+              <Button type="button" className='btn-close' color='none' onClick={props.toggleShow}></Button>
+            </MDBModalHeader>
+
+            <MDBModalBody>
+            <Form.Group className="mb-3" controlId="contest">
+
+              <Form.Label>Contest</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Contest Number"
+                name="contest"
+                onChange={onChange}
+                value={contest}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="index">
+              <Form.Label>Index</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Problem Index"
+                name="index"
+                onChange={onChange}
+                value={index}
+              />
+            </Form.Group>
+               
+            </MDBModalBody>
+
+            <MDBModalFooter>
+              <Button type="button" color='secondary' onClick={props.toggleShow}>
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                style={{
+                  width: 150,
+                  marginLeft: 3
+                }}
+              >
+                Create Group
+              </Button>
+            </MDBModalFooter>
+
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
+          </Form>
+          );
 };
 
-export default AddProblemForm;
+          export default AddProblemForm;
