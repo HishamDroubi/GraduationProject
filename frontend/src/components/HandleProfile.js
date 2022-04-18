@@ -32,9 +32,8 @@ const HandleProfile = (props) => {
     padding: "1em 1em 0 1em",
   };
 
-  const { isError, isLoading, isSuccess, message, userProfile, problemSolved } = useSelector(
-    (state) => state.profile
-  );
+  const { isError, isLoading, isSuccess, message, userProfile, problemSolved } =
+    useSelector((state) => state.profile);
 
   useEffect(() => {
     if (isError) {
@@ -43,12 +42,10 @@ const HandleProfile = (props) => {
     }
     const fetchProfile = async () => {
       await dispatch(getUserProfile(userName));
-      await dispatch(getProblemSolved(userName));
       dispatch(reset());
     };
     fetchProfile();
   }, [dispatch, userName, isError, message, navigate]);
-console.log(userProfile);
   return (
     <>
       {isLoading ? (
@@ -56,24 +53,25 @@ console.log(userProfile);
       ) : (
         userProfile && (
           <div className="row mt-3">
-
             <div className="col-md-4 col-sm-12">
               <div className="text-center">
-                <img src={userProfile.codeforces.titlePhoto} alt="Profile Picture" className="img-thumbnail img-fluid" />
+                <img
+                  src={userProfile.codeforces.titlePhoto}
+                  alt="Profile"
+                  className="img-thumbnail img-fluid"
+                />
               </div>
             </div>
 
             <div className="col">
-              
               <div className="list-group list-group-striped">
-
                 <div className="list-group-item">
                   <div className="row">
                     <div className="col-4">Username:</div>
                     <div className="col">{userProfile.userName}</div>
                   </div>
                 </div>
-                
+
                 <div className="list-group-item">
                   <div className="row">
                     <div className="col-4">Level:</div>
@@ -84,7 +82,10 @@ console.log(userProfile);
                 <div className="list-group-item">
                   <div className="row">
                     <div className="col-4">codeforces rate:</div>
-                    <div className="col">{userProfile.codeforces.rating} ({userProfile.codeforces.rank})</div>
+                    <div className="col">
+                      {userProfile.codeforces.rating} (
+                      {userProfile.codeforces.rank})
+                    </div>
                   </div>
                 </div>
 
@@ -111,14 +112,16 @@ console.log(userProfile);
 
                 <div className="list-group-item">
                   <div className="row">
-                    <div className="col"><Button>new message</Button></div>
-                    <div className="col"><Button>your message</Button></div>
+                    <div className="col">
+                      <Button>new message</Button>
+                    </div>
+                    <div className="col">
+                      <Button>your message</Button>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
         )
       )}

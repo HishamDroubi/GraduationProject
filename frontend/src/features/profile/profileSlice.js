@@ -7,6 +7,8 @@ const initialState = {
   isSuccess: false,
   userProfile: null,
   problemSolved: [],
+  page: 1,
+  pages: 1,
 };
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
@@ -26,9 +28,9 @@ export const getUserProfile = createAsyncThunk(
 );
 export const getProblemSolved = createAsyncThunk(
   "profile/getProblemSolved",
-  async (userName, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      return await profileService.getProblemSolved(userName);
+      return await profileService.getProblemSolved(data.userName, data.pageNumber);
     } catch (error) {
       const message =
         (error.response &&
@@ -71,7 +73,9 @@ export const profileSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getProblemSolved.fulfilled, (state, action) => {
-        state.problemSolved = action.payload;
+        state.problemSolved = action.payload.problemSolved;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
         state.isLoading = false;
         state.isSuccess = true;
       })

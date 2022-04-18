@@ -1,56 +1,39 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import HandleProfile from "../components/HandleProfile";
 import ProblemsProfile from "../components/ProblemsProfile";
-import {
-  Nav,
-  Col,
-  Button,
-} from "react-bootstrap";
+import { Nav, Col, Button } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import GroupsProfile from "../components/GroupsProfile";
 const Profile = (props) => {
   const { userName } = useParams();
-  const [profileType, setProfileType] = useState("handle");
-  const onClickHandler = (type) => {
-    setProfileType(type);
-  };
   return (
     <div>
       <Col>
         <Nav fill variant="tabs" defaultActiveKey="/home">
           <Nav.Item>
-            <Nav.Link
-              onClick={() => onClickHandler("handle")}
-              eventKey="link-0"
-            >
-              {userName}
-            </Nav.Link>
+            <LinkContainer to="">
+              <Nav.Link>{userName}</Nav.Link>
+            </LinkContainer>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link
-              onClick={() => onClickHandler("problems")}
-              eventKey="link-1"
-            >
-              Problems
-            </Nav.Link>
+            <LinkContainer to="problems/page/1">
+              <Nav.Link>Problems</Nav.Link>
+            </LinkContainer>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link
-              onClick={() => onClickHandler("groups")}
-              eventKey="link-2"
-            >
-              Groups
-            </Nav.Link>
+            <LinkContainer to="groups">
+              <Nav.Link>Groups</Nav.Link>
+            </LinkContainer>
           </Nav.Item>
         </Nav>
-
-        {profileType === "handle" ? (
-          <HandleProfile userName={userName} />
-        ) : profileType === "problems" ? (
-          <ProblemsProfile userName={userName} />
-        ) : (
-          <Button>dsadasd</Button>
-        )}
       </Col>
+      <Routes>
+        <Route path="/" element={<HandleProfile userName={userName} />} />
+        <Route path="/problems/page/:pageNumber" element={<ProblemsProfile userName={userName}/>} />
+        <Route path="/groups" element={<GroupsProfile />} />
+      </Routes>
     </div>
   );
 };
