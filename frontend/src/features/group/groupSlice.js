@@ -6,13 +6,15 @@ const initialState = {
   message: "",
   groups: [],
   isSuccess: false,
+  page: 1,
+  pages: 1,
 };
 export const fetchGroups = createAsyncThunk(
   "groups",
-  async (groupData, thunkAPI) => {
+  async (pageNumber, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await groupService.fetchGroups(token);
+      return await groupService.fetchGroups(pageNumber, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -33,6 +35,9 @@ export const groupSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
+      state.groups = [];
+      state.page = 1;
+      state.pages = 1;
     },
   },
   extraReducers: (builder) => {
@@ -43,7 +48,9 @@ export const groupSlice = createSlice({
       .addCase(fetchGroups.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.groups = action.payload;
+        state.groups = action.payload.groups;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
       })
       .addCase(fetchGroups.rejected, (state, action) => {
         state.isLoading = false;

@@ -18,14 +18,12 @@ const Header = () => {
 
   const [userCodeforces, setUserCodeforces] = useState({});
   useEffect(() => {
-
     const getInfo = async () => {
       const data = await profileService.getCodeforcesUserProfile(user.userName);
       setUserCodeforces(data);
-      console.log(data);
-    }
+    };
     user && getInfo();
-  })
+  }, [user]);
   return (
     <header>
       <Navbar bg="primary" variant="dark" expand="lg">
@@ -39,31 +37,41 @@ const Header = () => {
             id="basic-navbar-nav"
             className="justify-content-end"
           >
-
-            
-
             <Nav className="ms-auto">
-
-            {user && (
-                <LinkContainer to={'/profile/' + user.userName}  >
-                  <Nav.Link> {user.userName}
-                    <img src={userCodeforces ? userCodeforces.titlePhoto : 'https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA='} alt=""
-                      style={{ width: '25px', height: '25px', borderRadius: '50%', }} />
+              {user && (
+                <LinkContainer to={"/profile/" + user.userName}>
+                  <Nav.Link>
+                    {user.userName}
+                    <img
+                      src={
+                        userCodeforces
+                          ? userCodeforces.titlePhoto
+                          : "https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA="
+                      }
+                      alt=""
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        borderRadius: "50%",
+                      }}
+                    />
                   </Nav.Link>
                 </LinkContainer>
               )}
 
               {user && (
                 <LinkContainer to="/">
-                  <Nav.Link onClick={onLogout}><GoSignOut /></Nav.Link>
+                  <Nav.Link onClick={onLogout}>
+                    <GoSignOut />
+                  </Nav.Link>
                 </LinkContainer>
-
               )}
 
               {!user && (
-
                 <LinkContainer to="/login">
-                  <Nav.Link><GoSignIn /></Nav.Link>
+                  <Nav.Link>
+                    <GoSignIn />
+                  </Nav.Link>
                 </LinkContainer>
               )}
 
@@ -71,16 +79,13 @@ const Header = () => {
                 <LinkContainer to="/register">
                   <Nav.Link>Register</Nav.Link>
                 </LinkContainer>
-
               )}
 
-             
-
-              <LinkContainer to="/groups">
-                <Nav.Link><MdOutlineGroups /></Nav.Link>
+              <LinkContainer to="/groups/page/1">
+                <Nav.Link>
+                  <MdOutlineGroups />
+                </Nav.Link>
               </LinkContainer>
-
-            
             </Nav>
           </Navbar.Collapse>
         </Container>

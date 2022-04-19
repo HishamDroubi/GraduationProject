@@ -13,8 +13,10 @@ const getCodeforcesUserProfile = async (userName) => {
   return data;
 };
 
-const getProblemSolved = async (userName) => {
-  const { data } = await axios.get("/user/problem/" + userName);
+const getProblemSolved = async (userName, pageNumber) => {
+  const { data } = await axios.get(
+    `/user/problem/${userName}?pageNumber=${pageNumber}`
+  );
   return data;
 };
 

@@ -18,8 +18,16 @@ groupRouter.get(
   "/getAll",
   protect,
   asyncHandler(async (req, res) => {
-    const groups = await Group.find({}).populate("coach");
-    res.status(200).json(groups);
+    const pageSize = 4;
+    const page = Number(req.query.pageNumber) || 1;
+    const count = await Group.countDocuments({});
+    const groups = await Group.find({})
+      .populate("coach")
+      .limit(pageSize)
+      .skip((page - 1) * pageSize);
+    res
+      .status(200)
+      .json({ groups, page, pages: Math.ceil(count / pageSize )});
   })
 );
 
@@ -181,13 +189,11 @@ groupRouter.post(
         _id: requestId,
       });
       console.log(response);
-      res
-        .status(200)
-        .json({
-          ...response.requester.toObject(),
-          acceptance: acceptance,
-          _id: response._id,
-        });
+      res.status(200).json({
+        ...response.requester.toObject(),
+        acceptance: acceptance,
+        _id: response._id,
+      });
     }
   })
 );
