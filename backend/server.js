@@ -1,12 +1,14 @@
 let mongoose = require("mongoose");
 let express = require("express");
 const { errorHandler } = require("./middleware/error");
+const { test } = require("./middleware/test");
 //models
 let User = require("./models/user");
 let Problem = require("./models/problem");
 let Group = require("./models/group");
 let Level = require("./models/level");
 let Request = require("./models/request");
+let logger = require("./logger.js");
 //create the server
 let server = express();
 
@@ -22,13 +24,28 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.use("/user", userRouter);
 server.use("/auth", authRouter);
+
+server.all("*", (req, res, next) => {
+  let objToLog = {
+    Path: req.path,
+    Method: req.method,
+    Body: req.body,
+    timestamp: Date.now(),
+  };
+  logger.info(objToLog);
+  return next();
+});
+
 server.use("/group", groupRouter);
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use(errorHandler);
+
 //start server
 const port = 3004;
-server.listen(port);
+server.listen(port, () => {
+  logger.info("server is lestining on port " + port);
+});
 
 //User and Password For MongoDB
 let username = "hisham";
@@ -47,4 +64,5 @@ const dbUrI =
 
 mongoose.connect(dbUrI).then(() => {
   console.log("successfully connected");
+  logger.info("successfully connected");
 });
