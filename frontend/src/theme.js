@@ -1,4 +1,4 @@
-export const color = '#cfb53b'
-export const backgroundColor = '#000000'
+export const backgroundColor = '#343A40'
+export const color = '#FFC105'
 
 export default {color, backgroundColor};

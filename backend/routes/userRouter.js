@@ -43,7 +43,6 @@ userRouter.get(
         res.status(400);
         throw new Error("userName not Found");
       } else {
-        console.log(codeforcesInfo.data);
         res.status(200).json(codeforcesInfo.data.result[0]);
       }
     }
@@ -99,6 +98,8 @@ userRouter.put(
 userRouter.get(
   "/problem/:userName",
   asyncHandler(async (req, res) => {
+    const pageSize = 5;
+    const page = Number(req.query.pageNumber) || 1;
     const { userName } = req.params;
     const problems = await Problem.find({});
     const user = await User.findOne({ userName: userName });
@@ -133,8 +134,20 @@ userRouter.get(
             psoc.contestId === problem.contest && psoc.index === problem.index
         );
       });
-
-      res.status(200).json(problemSolvedHere);
+      let problemSolved = [];
+      for (
+        let i = (page - 1) * pageSize;
+        i <
+        Math.min((page - 1) * pageSize + pageSize, problemSolvedHere.length);
+        i++
+      ) {
+        problemSolved.push(problemSolvedHere[i]);
+      }
+      res.status(200).json({
+        problemSolved,
+        page,
+        pages: Math.ceil(problemSolvedHere.length / pageSize),
+      });
     }
   })
 );

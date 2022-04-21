@@ -16,7 +16,7 @@ import {
   MDBModalTitle,
   MDBModalBody,
   MDBModalFooter,
-} from 'mdb-react-ui-kit';
+} from "mdb-react-ui-kit";
 const CreateGroupForm = (props) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +28,6 @@ const CreateGroupForm = (props) => {
     (state) => state.createGroup
   );
   useEffect(() => {
-    console.log("dsada")
     if (isError) {
       toast.error(message);
     }
@@ -45,13 +44,12 @@ const CreateGroupForm = (props) => {
       [e.target.name]: e.target.value,
     }));
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const GroupData = {
       name,
     };
-    console.log("das")
-    dispatch(createGroup(GroupData));
+    await dispatch(createGroup(GroupData));
   };
   if (isLoading) {
     return <Loader />;
@@ -63,7 +61,7 @@ const CreateGroupForm = (props) => {
         marginBottom: "20px",
       }}
     >
-      <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
+    <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
         <MDBModalDialog>
           <MDBModalContent>
 
@@ -85,7 +83,7 @@ const CreateGroupForm = (props) => {
                   value={formData.name}
                 />
               </Form.Group>
-              
+
             </MDBModalBody>
 
             <MDBModalFooter>

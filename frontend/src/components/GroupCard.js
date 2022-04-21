@@ -50,7 +50,7 @@ const GroupCard = (props) => {
           </Col>
 
           <Col >
-            <Button style={{ marginLeft: 60, backgroundColor: backgroundColor, color: color }} href={`/group/${props.group._id}`}>Join or Enter</Button>
+            <Button onClick={onCklickHandler} style={{ marginLeft: 60, backgroundColor: backgroundColor, color: color }} href={`/groups/${props.group._id}`}>Join or Enter</Button>
           </Col>
         </Row>
 

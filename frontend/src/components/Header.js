@@ -8,7 +8,7 @@ import { GoSignOut, GoSignIn } from "react-icons/go";
 import { useEffect } from "react";
 import profileService from "../features/profile/profileService";
 import { useState } from "react";
-import {backgroundColor, color} from '../theme'
+import { backgroundColor, color } from '../theme'
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -19,67 +19,75 @@ const Header = () => {
 
   const [userCodeforces, setUserCodeforces] = useState({});
   useEffect(() => {
-
     const getInfo = async () => {
       const data = await profileService.getCodeforcesUserProfile(user.userName);
       setUserCodeforces(data);
-      console.log(data);
-    }
+    };
     user && getInfo();
-  }, [user])
+  }, [user]);
   return (
     <header>
-      <Navbar expand="lg" style={{backgroundColor: backgroundColor}}>
+      <Navbar expand="lg" style={{ backgroundColor: backgroundColor }}>
         <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand > <p style={{color: color}}>CP-PTUK</p></Navbar.Brand>
-          </LinkContainer>
+          <Nav className="ms-auto">
+
+
+            <LinkContainer to="/">
+              <Navbar.Brand > <p style={{ color: color }}>CP-PTUK</p></Navbar.Brand>
+            </LinkContainer>
+
+            <LinkContainer to="/groups/page/1">
+              <Nav.Link style={{ color: '#FFFFFF80' }}>
+                <strong style={{ color: '#FFFFFF80' }}>Group  </strong>
+              </Nav.Link>
+            </LinkContainer>
+          </Nav>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
             id="basic-navbar-nav"
             className="justify-content-end"
           >
-
             <Nav className="ms-auto">
-
-            {user && (
-                <LinkContainer to={'/profile/' + user.userName}  >
+              {user && (
+                <LinkContainer to={"/profile/" + user.userName}>
                   <Nav.Link>
-                    <img  src={userCodeforces ? userCodeforces.titlePhoto : 'https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA='} alt=""
-                      style={{ width: '25px', height: '25px', borderRadius: '50%', }} />
+                  
+                    <img
+                      src={
+                        userCodeforces
+                          ? userCodeforces.titlePhoto
+                          : "https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA="
+                      }
+                      alt=""
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <strong style={{ color: '#FFFFFF80' }}>{user.userName}</strong>
                   </Nav.Link>
                 </LinkContainer>
               )}
 
               {user && (
                 <LinkContainer to="/">
-                  <Nav.Link onClick={onLogout}><GoSignOut style={{color: color}}/></Nav.Link>
+                  <Nav.Link onClick={onLogout}><strong style={{ color: '#FFFFFF80' }}>Loguot</strong></Nav.Link>
                 </LinkContainer>
-
               )}
 
               {!user && (
-
                 <LinkContainer to="/login">
-                  <Nav.Link><GoSignIn style={{color: color}}/></Nav.Link>
+                  <Nav.Link><strong style={{ color: '#FFFFFF80' }}>Login</strong></Nav.Link>
                 </LinkContainer>
               )}
 
               {!user && (
                 <LinkContainer to="/register">
-                  <Nav.Link><p style={{color: color, fontSize: '4',}}>Register</p></Nav.Link>
+                  <Nav.Link><strong style={{ color: '#FFFFFF80' }}>Register</strong></Nav.Link>
                 </LinkContainer>
-
               )}
-
-             
-
-              <LinkContainer to="/groups">
-                <Nav.Link><MdOutlineGroups style={{color: color}} /></Nav.Link>
-              </LinkContainer>
-
-            
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -16,7 +16,7 @@ import {
   MDBModalTitle,
   MDBModalBody,
   MDBModalFooter,
-} from 'mdb-react-ui-kit';
+} from "mdb-react-ui-kit";
 const CreateLevelForm = (props) => {
   const [formData, setFormData] = useState({
     number: "",
@@ -42,7 +42,9 @@ const CreateLevelForm = (props) => {
     if (isSuccess) {
       navigate(`/level/${level._id}`);
     }
-    dispatch(reset());
+    return () => {
+      dispatch(reset());
+    };
   }, [level, isError, isSuccess, message, navigate, dispatch, user]);
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -63,17 +65,24 @@ const CreateLevelForm = (props) => {
     return <Loader />;
   }
 
-
   return (
     <FormContainer>
       <Form onSubmit={onSubmit}>
-        <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
+        <MDBModal
+          show={props.basicModal}
+          setShow={props.setBasicModal}
+          tabIndex="-1"
+        >
           <MDBModalDialog>
             <MDBModalContent>
-
               <MDBModalHeader>
                 <MDBModalTitle>Create groupe</MDBModalTitle>
-                <Button type="button" className='btn-close' color='none' onClick={props.toggleShow}></Button>
+                <Button
+                  type="button"
+                  className="btn-close"
+                  color="none"
+                  onClick={props.toggleShow}
+                ></Button>
               </MDBModalHeader>
               <MDBModalBody>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -110,7 +119,11 @@ const CreateLevelForm = (props) => {
                 </Form.Group>
               </MDBModalBody>
               <MDBModalFooter>
-                <Button type="button" color='secondary' onClick={props.toggleShow}>
+                <Button
+                  type="button"
+                  color="secondary"
+                  onClick={props.toggleShow}
+                >
                   Close
                 </Button>
                 <Button variant="primary" type="submit">

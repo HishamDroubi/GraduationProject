@@ -21,9 +21,9 @@ const App = () => {
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile/:userName" element={<Profile />} />
+              <Route path="/profile/:userName/*" element={<Profile />} />
               <Route path="/level/:id" element={<LevelDetails/>}/>
-              <Route path="/groups" element={<Groups/>}/>
+              <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
               <Route path="/group/:id" element={<GroupDetails/>}/>
             </Routes>
           </Container>

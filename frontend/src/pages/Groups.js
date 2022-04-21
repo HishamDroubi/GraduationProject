@@ -8,46 +8,51 @@ import { useDispatch } from "react-redux";
 import { fetchGroups } from "../features/group/groupSlice";
 import Loader from "../components/Loader";
 import CreateGroupForm from "../components/CreateGroupForm";
-import { Link } from "react-router-dom";
-
-
+import { Link, useParams } from "react-router-dom";
+import Paginate from "../components/Paginate";
 import { useState } from "react";
 import { Button, Card, ListGroup, Row } from "react-bootstrap";
 import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
 const Groups = () => {
-
   const [basicModal, setBasicModal] = useState(false);
-  const toggleShow = () => setBasicModal(!basicModal);
-
-  const { groups, isLoading, isError, message } = useSelector(
+  const toggleShow = () => setBasicModal((prevState) => !prevState);
+  const { pageNumber = 1 } = useParams();
+  const { groups, isLoading, isError, message, pages, page } = useSelector(
     (state) => state.group
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchGroups());
     if (isError) {
       toast.error(message);
     }
-    dispatch(reset());
-  }, [dispatch, isError, message]);
-  if (isLoading) {
+    const getGroups = async () => {
+      await dispatch(fetchGroups(pageNumber));
+    };
+    getGroups();
+    return () => {
+      dispatch(reset());
+    };
+  }, [dispatch, isError, message, pageNumber]);
+  if (!groups || isLoading) {
     return <Loader />;
   }
   return (
     <>
-
-    {groups && (
-    <>
-    <Button style={{backgroundColor: backgroundColor, color: color}} onClick={toggleShow}>Create Groupe</Button>
-      <CreateGroupForm basicModal={basicModal} toggleShow={toggleShow} setBasicModal={setBasicModal} /></>)}
-      {groups &&
-        groups.map((group) => (
-          <GroupCard group={group} />
-        ))}
+      <>
+        <Button onClick={toggleShow} style={{backgroundColor: backgroundColor, color: color}}>Create Groupe</Button>
+        <CreateGroupForm
+          basicModal={basicModal}
+          toggleShow={toggleShow}
+          setBasicModal={setBasicModal}
+        />
+      </>
+      {groups.map((group) => (
+        <GroupCard group={group} key={group._id} />
+      ))}
+      <Paginate pages={pages} page={page} />
     </>
   );
 };
 
 export default Groups;
-
