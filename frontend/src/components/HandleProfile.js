@@ -48,82 +48,80 @@ const HandleProfile = (props) => {
   }, [dispatch, userName, isError, message, navigate]);
   return (
     <>
-      {isLoading ? (
+      {isLoading || !userProfile ? (
         <Loader />
       ) : (
-        userProfile && (
-          <div className="row mt-3">
-            <div className="col-md-4 col-sm-12">
-              <div className="text-center">
-                <img
-                  src={userProfile.codeforces.titlePhoto}
-                  alt="Profile"
-                  className="img-thumbnail img-fluid"
-                />
-              </div>
+        <div className="row mt-3">
+          <div className="col-md-4 col-sm-12">
+            <div className="text-center">
+              <img
+                src={userProfile.codeforces.titlePhoto}
+                alt="Profile"
+                className="img-thumbnail img-fluid"
+              />
             </div>
+          </div>
 
-            <div className="col">
-              <div className="list-group list-group-striped">
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4">Username:</div>
-                    <div className="col">{userProfile.userName}</div>
+          <div className="col">
+            <div className="list-group list-group-striped">
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4">Username:</div>
+                  <div className="col">{userProfile.userName}</div>
+                </div>
+              </div>
+
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4">Level:</div>
+                  <div className="col">{userProfile.level.number}</div>
+                </div>
+              </div>
+
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4">codeforces rate:</div>
+                  <div className="col">
+                    {userProfile.codeforces.rating} (
+                    {userProfile.codeforces.rank})
                   </div>
                 </div>
+              </div>
 
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4">Level:</div>
-                    <div className="col">{userProfile.level.number}</div>
-                  </div>
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4"># solved propblem:</div>
+                  <div className="col">{problemSolved.length}</div>
                 </div>
+              </div>
 
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4">codeforces rate:</div>
-                    <div className="col">
-                      {userProfile.codeforces.rating} (
-                      {userProfile.codeforces.rank})
-                    </div>
-                  </div>
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4">codeforces handle:</div>
+                  <div className="col">{userProfile.codeforces.handle}</div>
                 </div>
+              </div>
 
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4"># solved propblem:</div>
-                    <div className="col">{problemSolved.length}</div>
-                  </div>
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4"># of friends</div>
+                  <div className="col">5</div>
                 </div>
+              </div>
 
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4">codeforces handle:</div>
-                    <div className="col">{userProfile.codeforces.handle}</div>
+              <div className="list-group-item">
+                <div className="row">
+                  <div className="col">
+                    <Button>new message</Button>
                   </div>
-                </div>
-
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col-4"># of friends</div>
-                    <div className="col">5</div>
-                  </div>
-                </div>
-
-                <div className="list-group-item">
-                  <div className="row">
-                    <div className="col">
-                      <Button>new message</Button>
-                    </div>
-                    <div className="col">
-                      <Button>your message</Button>
-                    </div>
+                  <div className="col">
+                    <Button>your message</Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )
+        </div>
       )}
     </>
   );

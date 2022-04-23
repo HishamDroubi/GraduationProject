@@ -7,7 +7,7 @@ const initialState = {
   groups: [],
   isSuccess: false,
   page: 1,
-  pages: 1,
+  pages: null,
 };
 export const fetchGroups = createAsyncThunk(
   "groups",
@@ -37,7 +37,7 @@ export const groupSlice = createSlice({
       state.message = "";
       state.groups = [];
       state.page = 1;
-      state.pages = 1;
+      state.pages = null;
     },
   },
   extraReducers: (builder) => {

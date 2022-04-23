@@ -25,9 +25,7 @@ groupRouter.get(
       .populate("coach")
       .limit(pageSize)
       .skip((page - 1) * pageSize);
-    res
-      .status(200)
-      .json({ groups, page, pages: Math.ceil(count / pageSize )});
+    res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
 
@@ -385,18 +383,32 @@ groupRouter.get(
 
 //get All Groups as partcipent
 groupRouter.get(
-  "/getAsPartcipent",
-  protect,
+  "/getAsPartcipent/:userName",
   asyncHandler(async (req, res) => {
-    let userId = req.currentUser._id;
+    const pageSize = 4;
+    const page = Number(req.query.pageNumber) || 1;
+    let { userName } = req.params;
+    const user = await User.findOne({ userName });
+    if (!user) {
+      res.status(401);
+      throw new Error("User not found");
+    }
+    let allGroups = await Group.find().populate("coach");
 
-    let groups = await Group.find();
-
-    groups = groups.filter((group) => {
+    allGroups = allGroups.filter((group) => {
       let participants = group.participants;
-      return participants.includes(userId);
+      return participants.includes(user._id.toString());
     });
-    res.send(JSON.stringify(groups));
+    const count = allGroups.length;
+    let groups = [];
+    for (
+      let i = (page - 1) * pageSize;
+      i < Math.min(count, page * pageSize);
+      i++
+    ) {
+      groups.push(allGroups[i]);
+    }
+    res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
 

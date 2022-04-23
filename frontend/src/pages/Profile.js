@@ -23,7 +23,7 @@ const Profile = (props) => {
             </LinkContainer>
           </Nav.Item>
           <Nav.Item>
-            <LinkContainer to="groups">
+            <LinkContainer to="groups/page/1">
               <Nav.Link>Groups</Nav.Link>
             </LinkContainer>
           </Nav.Item>
@@ -32,7 +32,7 @@ const Profile = (props) => {
       <Routes>
         <Route path="/" element={<HandleProfile userName={userName} />} />
         <Route path="/problems/page/:pageNumber" element={<ProblemsProfile userName={userName}/>} />
-        <Route path="/groups" element={<GroupsProfile />} />
+        <Route path="/groups/page/:pageNumber" element={<GroupsProfile userName={userName}/>} />
       </Routes>
     </div>
   );

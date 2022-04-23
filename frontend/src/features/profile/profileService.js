@@ -19,11 +19,17 @@ const getProblemSolved = async (userName, pageNumber) => {
   );
   return data;
 };
-
+const getUserGroups = async (userName, pageNumber) => {
+  const { data } = await axios.get(
+    `/group/getAsPartcipent/${userName}?pageNumber=${pageNumber}`
+  );
+  return data;
+};
 const profileService = {
   getUserProfile,
   getCodeforcesUserProfile,
   getProblemSolved,
+  getUserGroups,
 };
 
 export default profileService;

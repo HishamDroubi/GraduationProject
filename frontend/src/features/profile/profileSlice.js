@@ -7,8 +7,9 @@ const initialState = {
   isSuccess: false,
   userProfile: null,
   problemSolved: [],
+  userGroups: [],
   page: 1,
-  pages: 1,
+  pages: null,
 };
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
@@ -26,11 +27,30 @@ export const getUserProfile = createAsyncThunk(
     }
   }
 );
+export const getUserGroups = createAsyncThunk(
+  "profile/getUserGroups",
+  async (data, thunkAPI) => {
+    try {
+      return await profileService.getUserGroups(data.userName, data.pageNumber);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const getProblemSolved = createAsyncThunk(
   "profile/getProblemSolved",
   async (data, thunkAPI) => {
     try {
-      return await profileService.getProblemSolved(data.userName, data.pageNumber);
+      return await profileService.getProblemSolved(
+        data.userName,
+        data.pageNumber
+      );
     } catch (error) {
       const message =
         (error.response &&
@@ -83,9 +103,24 @@ export const profileSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(getUserGroups.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserGroups.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.userGroups = action.payload.groups;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
+      })
+      .addCase(getUserGroups.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
 
-export const { reset } = profileSlice.actions;
+export const { reset,resetAll } = profileSlice.actions;
 export default profileSlice.reducer;

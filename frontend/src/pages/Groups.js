@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { fetchGroups } from "../features/group/groupSlice";
 import Loader from "../components/Loader";
 import CreateGroupForm from "../components/CreateGroupForm";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Paginate from "../components/Paginate";
 import { useState } from "react";
 import { Button, Card, ListGroup, Row } from "react-bootstrap";
@@ -16,11 +16,11 @@ import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
 const Groups = () => {
   const [basicModal, setBasicModal] = useState(false);
+  const navigate = useNavigate();
   const toggleShow = () => setBasicModal((prevState) => !prevState);
   const { pageNumber = 1 } = useParams();
-  const { groups, isLoading, isError, message, pages, page } = useSelector(
-    (state) => state.group
-  );
+  const { groups, isLoading, isSuccess, isError, message, pages, page } =
+    useSelector((state) => state.group);
   const dispatch = useDispatch();
   useEffect(() => {
     if (isError) {
@@ -34,13 +34,22 @@ const Groups = () => {
       dispatch(reset());
     };
   }, [dispatch, isError, message, pageNumber]);
-  if (!groups || isLoading) {
+  if (!groups || isLoading || !pages) {
     return <Loader />;
+  } else if (pages && isSuccess) {
+    if (pageNumber > pages) {
+      navigate(`/groups/page/${pages}`);
+    }
   }
   return (
     <>
       <>
-        <Button onClick={toggleShow} style={{backgroundColor: backgroundColor, color: color}}>Create Groupe</Button>
+        <Button
+          onClick={toggleShow}
+          style={{ backgroundColor: backgroundColor, color: color }}
+        >
+          Create Groupe
+        </Button>
         <CreateGroupForm
           basicModal={basicModal}
           toggleShow={toggleShow}

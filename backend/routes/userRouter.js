@@ -134,20 +134,18 @@ userRouter.get(
             psoc.contestId === problem.contest && psoc.index === problem.index
         );
       });
+      let count = problemSolvedHere.length;
       let problemSolved = [];
       for (
         let i = (page - 1) * pageSize;
-        i <
-        Math.min((page - 1) * pageSize + pageSize, problemSolvedHere.length);
+        i < Math.min(page * pageSize, count);
         i++
       ) {
         problemSolved.push(problemSolvedHere[i]);
       }
-      res.status(200).json({
-        problemSolved,
-        page,
-        pages: Math.ceil(problemSolvedHere.length / pageSize),
-      });
+      res
+        .status(200)
+        .json({ problemSolved, page, pages: Math.ceil(count / pageSize) });
     }
   })
 );
