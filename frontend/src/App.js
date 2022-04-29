@@ -16,7 +16,7 @@ const App = () => {
       <Router>
         <Header />
         <main className="py-3">
-          <Container>
+          <div style={{padding: '15px'}}>
             <Routes>
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
@@ -24,9 +24,9 @@ const App = () => {
               <Route path="/profile/:userName/*" element={<Profile />} />
               <Route path="/level/:id" element={<LevelDetails/>}/>
               <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
-              <Route path="/group/:id" element={<GroupDetails/>}/>
+              <Route path="/group/:id/*" element={<GroupDetails/>}/>
             </Routes>
-          </Container>
+          </div>
         </main>
       </Router>
       <ToastContainer />

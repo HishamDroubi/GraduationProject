@@ -10,11 +10,31 @@ import {
 } from "mdb-react-ui-kit";
 import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
 import { IconName, MdDeleteForever } from "react-icons/md";
-import { useSelector } from "react-redux";
-import { LinkContainer } from "react-router-bootstrap";
-import { backgroundColor, color } from "../theme";
+import { useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
+import { useNavigate } from "react-router-dom";
+import { backgroundColor, color } from '../theme';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getGroupDetails, requestGroup } from '../features/group/groupDetailsSlice';
+import Loader from './Loader';
+import { reset } from '../features/group/groupDetailsSlice';
 const GroupCard = (props) => {
+
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const onCklickEnterHandler = (e) => {
+    navigate("/group/" + props.group._id);
+  }
+
+  const onCklickJoinHandler = async (e) => {
+    await dispatch(requestGroup(props.group._id));
+    dispatch(reset());
+  }
+
+  console.log(props.group.requests)
   return (
     <MDBCard
       style={{
@@ -35,15 +55,17 @@ const GroupCard = (props) => {
           <Col md="3">{props.group.name}</Col>
 
           <LinkContainer to={`/profile/${props.group.coach.userName}`}>
-            <Col md="4">{props.group.coach.userName}</Col>
+            <Col md='4'>
+              {props.group.coach.userName}
+            </Col>
           </LinkContainer>
-          <Col md="3">{props.group.participants.length} member</Col>
+          <Col md='3'>
+            {props.group.participants.length} member
+          </Col>
 
           {user && user.role === "admin" && (
             <Col>
-              <Button
-                style={{ backgroundColor: backgroundColor, color: color }}
-              >
+              <Button style={{ backgroundColor: backgroundColor, color: color }}>
                 <MdDeleteForever />
               </Button>
             </Col>
@@ -62,18 +84,14 @@ const GroupCard = (props) => {
             </MDBCardText>
           </Col>
 
-          <Col>
-            <LinkContainer to={`/group/${props.group._id}`}>
-              <Button
-                style={{
-                  marginLeft: 60,
-                  backgroundColor: backgroundColor,
-                  color: color,
-                }}
-              >
-                Join or Enter
-              </Button>
-            </LinkContainer>
+          <Col >
+            <Button
+            
+              onClick={ (user && props.group.participants && props.group.participants.find(p => user.userName === p.userName) || props.group.coach.userName === user.userName) ? onCklickEnterHandler : onCklickJoinHandler}
+              style={{ marginLeft: 60, backgroundColor: backgroundColor, color: color }}>
+              {(user && props.group.participants && props.group.participants.find(p => user.userName === p.userName) || props.group.coach.userName === user.userName) ? 'Enter' 
+              : user && user.userName && props.group.requests && props.group.requests.find(r => user.userName === r.requester.userName) ? "cancel" : "join"}
+            </Button>
           </Col>
         </Row>
       </MDBCardBody>

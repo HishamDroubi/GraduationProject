@@ -22,9 +22,20 @@ groupRouter.get(
     const page = Number(req.query.pageNumber) || 1;
     const count = await Group.countDocuments({});
     const groups = await Group.find({})
-      .populate("coach")
+    .populate("coach")
+    .populate("participants")
+    .populate("attachments")
+    .populate({
+      path: "requests",
+      model: "Request",
+      populate: {
+        path: "requester",
+        model: "User",
+      },
+    })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
+      console.log(groups)
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
@@ -51,6 +62,7 @@ groupRouter.get(
             model: "User",
           },
         });
+        
       if (!group) {
         res.status(401);
         throw new Error("Group not found");
