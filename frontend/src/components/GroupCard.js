@@ -29,9 +29,6 @@ const GroupCard = ({ group }) => {
     await dispatch(cancelRequest(request._id));
     dispatch(reset());
   };
-  if (!group || !group.coach) {
-    return <></>;
-  }
   return (
     <MDBCard
       style={{

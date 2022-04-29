@@ -58,7 +58,7 @@ const Groups = () => {
         />
       </>
       {groups.map((group) => (
-        <GroupCard group={group} key={group._id} groupId={group._id} />
+        <GroupCard group={group} key={group._id}/>
       ))}
       <Paginate pages={pages} page={page} />
     </>
