@@ -46,6 +46,16 @@ groupRouter.get(
     const count = await Group.countDocuments({});
     const groups = await Group.find({})
       .populate("coach")
+      .populate("participants")
+      .populate("attachments")
+      .populate({
+        path: "requests",
+        model: "Request",
+        populate: {
+          path: "requester",
+          model: "User",
+        },
+      })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
@@ -221,13 +231,23 @@ groupRouter.post(
 
 //delete request
 groupRouter.delete(
-  "/deleteRequest",
+  "/deleteRequest/:requestId",
   protect,
   asyncHandler(async (req, res) => {
-    let requestId = req.body.requestId;
-
+    let requestId = req.params.requestId;
+    if (!mongoose.isValidObjectId(requestId)){
+      res.status(401);
+      throw new Error("requestId not valid");
+    }
     let fetchedRequest = await Request.findById(requestId);
-
+    if (!fetchedRequest){
+      res.status(401);
+      throw new Error("Request not found");
+    }
+    if (!fetchedRequest.requester.equals(req.currentUser._id)){
+      res.status(401);
+      throw new Error ("Not Authorized");
+    }
     //first you have to delete the request from the group requests array
     let groupId = fetchedRequest["group"];
 
@@ -241,12 +261,11 @@ groupRouter.delete(
 
     fetchedGroup["requests"] = requests;
 
-    let saveResponse = await fetchedGroup.save();
+    await fetchedGroup.save();
 
     //now you can delete the request object itself
-    let deleteResponse = await Request.deleteOne({ _id: requestId });
-
-    res.send(JSON.stringify(deleteResponse));
+    await Request.deleteOne({ _id: requestId });
+    res.status(200).json(fetchedRequest);
   })
 );
 

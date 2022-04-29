@@ -1,16 +1,41 @@
-This is our graduation project
+## About The Project
+This is a web application about solving problems and teaching problem solving . It tracks the problems which the user solves in codeforces for every level. The app also contains a Groups system where every user can join groups and the coach of the group posts content related to problem solving.
 
-#Project
-Learning Programing and Problem Solving Website
+### Built With
 
-#Students
-Hisham Droubi
-Ibraheem Janajreh
-Mahmmod Abu Gozah
+
+* [React.js](https://reactjs.org/)
+* [NodeJs](https://nodejs.org/en/)
+* [ExpressJS](https://expressjs.com)
+* [MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2)
+* [Bootstrap](https://getbootstrap.com)
+
+## Getting Started
+### Install Dependencies (frontend & backend)
+```
+npm install
+cd frontend
+npm install
+```
+
+### Run
+```
+- Run frontend (:3000) & backend (:3004) 
+npm run dev
+
+- Run backend only 
+npm run server
+```
+
+## Contributing
+Hisham Droubi - [@HishamDroubi](https://github.com/HishamDroubi)
+
+Ibraheem Janajreh - [@IbraheemJanajreh](https://github.com/IbraheemJanajreh)
+
+Mahmmod Abu Gozah - [@moodgoza](https://github.com/moodgoza)
+
 Amr Hijaz
 
-#University
-Palestine technical University Khadoori
 
 ### commits
 

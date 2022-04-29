@@ -37,7 +37,12 @@ const GroupsProfile = (props) => {
       {userGroups.map((group) => (
         <GroupCard group={group} key={group._id} />
       ))}
-      <Paginate pages={pages} page={page} isProfileGroup={true} />
+      <Paginate
+        pages={pages}
+        page={page}
+        isProfileGroup={true}
+        userName={userName}
+      />
     </>
   );
 };
