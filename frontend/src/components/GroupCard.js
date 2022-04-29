@@ -10,11 +10,28 @@ import {
 } from "mdb-react-ui-kit";
 import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
 import { IconName, MdDeleteForever } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { backgroundColor, color } from "../theme";
-const GroupCard = (props) => {
+import { cancelRequest, requestGroup } from "../features/group/groupSlice";
+import { reset } from "../features/group/groupSlice";
+const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const requestToJoin = async () => {
+    await dispatch(requestGroup(group._id));
+    dispatch(reset());
+  };
+  const deleteRequest = async () => {
+    const request = group.requests.find(
+      (request) => request.requester.email === user.email
+    );
+    await dispatch(cancelRequest(request._id));
+    dispatch(reset());
+  };
+  if (!group || !group.coach) {
+    return <></>;
+  }
   return (
     <MDBCard
       style={{
@@ -32,12 +49,12 @@ const GroupCard = (props) => {
         }}
       >
         <Row>
-          <Col md="3">{props.group.name}</Col>
+          <Col md="3">{group.name}</Col>
 
-          <LinkContainer to={`/profile/${props.group.coach.userName}`}>
-            <Col md="4">{props.group.coach.userName}</Col>
+          <LinkContainer to={`/profile/${group.coach.userName}`}>
+            <Col md="4">{group.coach.userName}</Col>
           </LinkContainer>
-          <Col md="3">{props.group.participants.length} member</Col>
+          <Col md="3">{group.participants.length} member</Col>
 
           {user && user.role === "admin" && (
             <Col>
@@ -63,17 +80,53 @@ const GroupCard = (props) => {
           </Col>
 
           <Col>
-            <LinkContainer to={`/group/${props.group._id}`}>
+            {/* Join Group Button */}
+            {!group.participants.find((p) => p.userName === user.userName) &&
+              !group.requests.find(
+                (request) => request.requester.userName === user.userName
+              ) && (
+                <Button
+                  onClick={requestToJoin}
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Join
+                </Button>
+              )}
+
+            {/* Enter Group Button */}
+            {group.participants.find((p) => p.userName === user.userName) && (
+              <LinkContainer to={`/group/${group._id}`}>
+                <Button
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Enter
+                </Button>
+              </LinkContainer>
+            )}
+
+            {/* cancel Group Button */}
+            {group.requests.find(
+              (request) => request.requester.userName === user.userName
+            ) && (
               <Button
+                onClick={deleteRequest}
                 style={{
                   marginLeft: 60,
                   backgroundColor: backgroundColor,
                   color: color,
                 }}
               >
-                Join or Enter
+                Cancel
               </Button>
-            </LinkContainer>
+            )}
           </Col>
         </Row>
       </MDBCardBody>
