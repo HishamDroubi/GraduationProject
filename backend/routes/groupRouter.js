@@ -10,8 +10,6 @@ let User = require("../models/user");
 let Group = require("../models/group");
 const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
-const { FetchError } = require("node-fetch");
-const { request } = require("http");
 const Attachment = require("../models/attachment");
 
 const types = ["txt"];
@@ -235,18 +233,18 @@ groupRouter.delete(
   protect,
   asyncHandler(async (req, res) => {
     let requestId = req.params.requestId;
-    if (!mongoose.isValidObjectId(requestId)){
+    if (!mongoose.isValidObjectId(requestId)) {
       res.status(401);
       throw new Error("requestId not valid");
     }
     let fetchedRequest = await Request.findById(requestId);
-    if (!fetchedRequest){
+    if (!fetchedRequest) {
       res.status(401);
       throw new Error("Request not found");
     }
-    if (!fetchedRequest.requester.equals(req.currentUser._id)){
+    if (!fetchedRequest.requester.equals(req.currentUser._id)) {
       res.status(401);
-      throw new Error ("Not Authorized");
+      throw new Error("Not Authorized");
     }
     //first you have to delete the request from the group requests array
     let groupId = fetchedRequest["group"];
@@ -435,11 +433,23 @@ groupRouter.get(
       res.status(401);
       throw new Error("User not found");
     }
-    let allGroups = await Group.find().populate("coach");
-
+    let allGroups = await Group.find()
+      .populate("coach")
+      .populate("participants")
+      .populate("attachments")
+      .populate({
+        path: "requests",
+        model: "Request",
+        populate: {
+          path: "requester",
+          model: "User",
+        },
+      });
     allGroups = allGroups.filter((group) => {
       let participants = group.participants;
-      return participants.includes(user._id.toString());
+      return participants.some((participant) =>
+        participant._id.equals(user._id)
+      );
     });
     const count = allGroups.length;
     let groups = [];
@@ -455,14 +465,37 @@ groupRouter.get(
 );
 
 groupRouter.delete(
-  "/deleteGroup",
+  "/deleteGroup/:groupId",
   protect,
   asyncHandler(async (req, res) => {
-    let groupId = req.body.groupId;
-    let deleteResult = await Group.deleteOne({ _id: groupId });
-    let deleteCount = deleteResult["deletedCount"];
-    if (deleteCount == 0) throw new Error("This Group is not existed");
-    res.send(deleteResult);
+    const { groupId } = req.params;
+    if (!mongoose.isValidObjectId(groupId)) {
+      res.status(401);
+      throw new Error("Group not found");
+    }
+    const group = await Group.findById(groupId);
+    if (!group) {
+      res.status(401);
+      throw new Error("Group not found");
+    }
+    if (
+      group.coach.equals(req.currentUser._id) ||
+      req.currentUser.role === "admin"
+    ) {
+      const groupInvitations = await Invitation.find({ group: groupId });
+      await User.updateMany(
+        {},
+        {
+          $pull: { invitations: { $in: groupInvitations } },
+        }
+      );
+      await Invitation.deleteMany({ group: groupId });
+      await Request.deleteMany({ group: groupId });
+      await Group.deleteOne({ _id: groupId });
+      res.status(200).json(group);
+    } else {
+      res.status(401).json("Not Allowed You are not the group coach or an admin");
+    }
   })
 );
 

@@ -47,14 +47,19 @@ const requestAcceptance = async (data, token) => {
 };
 
 const cancelRequest = async (requestId, token) => {
-  const { data } = await axios.delete(
-    `/group/deleteRequest/${requestId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const { data } = await axios.delete(`/group/deleteRequest/${requestId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};
+const deleteGroup = async (groupId, token) => {
+  const { data } = await axios.delete(`/group/deleteGroup/${groupId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   console.log(data);
   return data;
 };
@@ -65,6 +70,7 @@ const groupService = {
   requestJoinGroup,
   requestAcceptance,
   cancelRequest,
+  deleteGroup,
 };
 
 export default groupService;
