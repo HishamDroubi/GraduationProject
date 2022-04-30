@@ -235,18 +235,18 @@ groupRouter.delete(
   protect,
   asyncHandler(async (req, res) => {
     let requestId = req.params.requestId;
-    if (!mongoose.isValidObjectId(requestId)){
+    if (!mongoose.isValidObjectId(requestId)) {
       res.status(401);
       throw new Error("requestId not valid");
     }
     let fetchedRequest = await Request.findById(requestId);
-    if (!fetchedRequest){
+    if (!fetchedRequest) {
       res.status(401);
       throw new Error("Request not found");
     }
-    if (!fetchedRequest.requester.equals(req.currentUser._id)){
+    if (!fetchedRequest.requester.equals(req.currentUser._id)) {
       res.status(401);
-      throw new Error ("Not Authorized");
+      throw new Error("Not Authorized");
     }
     //first you have to delete the request from the group requests array
     let groupId = fetchedRequest["group"];
