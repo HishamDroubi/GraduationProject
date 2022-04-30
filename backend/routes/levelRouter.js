@@ -50,7 +50,6 @@ levelRouter.put(
   protect,
   asyncHandler(async (req, res) => {
     let { problemId, levelId } = req.body;
-    console.log(problemId, levelId);
     if (!mongoose.isValidObjectId(levelId)) {
       res.status(403);
       throw new Error("levelId Is not valid");

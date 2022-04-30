@@ -13,7 +13,11 @@ import { IconName, MdDeleteForever } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { backgroundColor, color } from "../theme";
-import { cancelRequest, requestGroup } from "../features/group/groupSlice";
+import {
+  cancelRequest,
+  deleteGroup,
+  requestGroup,
+} from "../features/group/groupSlice";
 import { reset } from "../features/group/groupSlice";
 const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
@@ -28,6 +32,12 @@ const GroupCard = ({ group }) => {
     );
     await dispatch(cancelRequest(request._id));
     dispatch(reset());
+  };
+  const ondeleteGroup = async (e) => {
+    if (window.confirm("are you sure want to delete the group ?")) {
+      await dispatch(deleteGroup(group._id));
+      dispatch(reset());
+    }
   };
   return (
     <MDBCard
@@ -56,6 +66,7 @@ const GroupCard = ({ group }) => {
           {user && user.role === "admin" && (
             <Col>
               <Button
+                onClick={ondeleteGroup}
                 style={{ backgroundColor: backgroundColor, color: color }}
               >
                 <MdDeleteForever />
@@ -75,9 +86,7 @@ const GroupCard = ({ group }) => {
               it and why
             </MDBCardText>
           </Col>
-
           <Col>
-            {/* Join Group Button */}
             {!group.participants.find((p) => p.userName === user.userName) &&
               !group.requests.find(
                 (request) => request.requester.userName === user.userName
@@ -93,8 +102,6 @@ const GroupCard = ({ group }) => {
                   Join
                 </Button>
               )}
-
-            {/* Enter Group Button */}
             {group.participants.find((p) => p.userName === user.userName) && (
               <LinkContainer to={`/group/${group._id}`}>
                 <Button
@@ -108,8 +115,6 @@ const GroupCard = ({ group }) => {
                 </Button>
               </LinkContainer>
             )}
-
-            {/* cancel Group Button */}
             {group.requests.find(
               (request) => request.requester.userName === user.userName
             ) && (
