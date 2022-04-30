@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/ServerLogs.log
 node_modules/
 /.pnp
 .pnp.js

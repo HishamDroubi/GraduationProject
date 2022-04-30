@@ -10,31 +10,25 @@ import {
 } from "mdb-react-ui-kit";
 import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
 import { IconName, MdDeleteForever } from "react-icons/md";
-import { useSelector } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate } from "react-router-dom";
-import { backgroundColor, color } from '../theme';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { getGroupDetails, requestGroup } from '../features/group/groupDetailsSlice';
-import Loader from './Loader';
-import { reset } from '../features/group/groupDetailsSlice';
-const GroupCard = (props) => {
-
+import { useDispatch, useSelector } from "react-redux";
+import { LinkContainer } from "react-router-bootstrap";
+import { backgroundColor, color } from "../theme";
+import { cancelRequest, requestGroup } from "../features/group/groupSlice";
+import { reset } from "../features/group/groupSlice";
+const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const onCklickEnterHandler = (e) => {
-    navigate("/group/" + props.group._id);
-  }
-
-  const onCklickJoinHandler = async (e) => {
-    await dispatch(requestGroup(props.group._id));
+  const requestToJoin = async () => {
+    await dispatch(requestGroup(group._id));
     dispatch(reset());
-  }
-
-  console.log(props.group.requests)
+  };
+  const deleteRequest = async () => {
+    const request = group.requests.find(
+      (request) => request.requester.email === user.email
+    );
+    await dispatch(cancelRequest(request._id));
+    dispatch(reset());
+  };
   return (
     <MDBCard
       style={{
@@ -52,16 +46,12 @@ const GroupCard = (props) => {
         }}
       >
         <Row>
-          <Col md="3">{props.group.name}</Col>
+          <Col md="3">{group.name}</Col>
 
-          <LinkContainer to={`/profile/${props.group.coach.userName}`}>
-            <Col md='4'>
-              {props.group.coach.userName}
-            </Col>
+          <LinkContainer to={`/profile/${group.coach.userName}`}>
+            <Col md="4">{group.coach.userName}</Col>
           </LinkContainer>
-          <Col md='3'>
-            {props.group.participants.length} member
-          </Col>
+          <Col md="3">{group.participants.length} member</Col>
 
           {user && user.role === "admin" && (
             <Col>
@@ -84,14 +74,54 @@ const GroupCard = (props) => {
             </MDBCardText>
           </Col>
 
-          <Col >
-            <Button
-            
-              onClick={ (user && props.group.participants && props.group.participants.find(p => user.userName === p.userName) || props.group.coach.userName === user.userName) ? onCklickEnterHandler : onCklickJoinHandler}
-              style={{ marginLeft: 60, backgroundColor: backgroundColor, color: color }}>
-              {(user && props.group.participants && props.group.participants.find(p => user.userName === p.userName) || props.group.coach.userName === user.userName) ? 'Enter' 
-              : user && user.userName && props.group.requests && props.group.requests.find(r => user.userName === r.requester.userName) ? "cancel" : "join"}
-            </Button>
+          <Col>
+            {/* Join Group Button */}
+            {!group.participants.find((p) => p.userName === user.userName) &&
+              !group.requests.find(
+                (request) => request.requester.userName === user.userName
+              ) && (
+                <Button
+                  onClick={requestToJoin}
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Join
+                </Button>
+              )}
+
+            {/* Enter Group Button */}
+            {group.participants.find((p) => p.userName === user.userName) && (
+              <LinkContainer to={`/group/${group._id}`}>
+                <Button
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Enter
+                </Button>
+              </LinkContainer>
+            )}
+
+            {/* cancel Group Button */}
+            {group.requests.find(
+              (request) => request.requester.userName === user.userName
+            ) && (
+              <Button
+                onClick={deleteRequest}
+                style={{
+                  marginLeft: 60,
+                  backgroundColor: backgroundColor,
+                  color: color,
+                }}
+              >
+                Cancel
+              </Button>
+            )}
           </Col>
         </Row>
       </MDBCardBody>

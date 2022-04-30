@@ -61,7 +61,7 @@ const ProblemsProfile = (props) => {
         </table>
       </div>
 
-      <Paginate pages={pages} page={page} isProblemProfile={true} />
+      <Paginate pages={pages} page={page} isProblemProfile={true} userName={userName}/>
     </>
   );
 };

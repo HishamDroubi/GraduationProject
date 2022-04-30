@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   getGroupDetails,
   requestDecision,
-  requestGroup,
   reset,
 } from "../features/group/groupDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +27,7 @@ const GroupDetails = () => {
     if (isError) {
       toast.error(message);
       if (message === "Group not found") {
-        navigate("/groups");
+        navigate("/groups/page/1");
       }
     }
     const fetchGroup = async () => {
@@ -37,7 +36,6 @@ const GroupDetails = () => {
     };
     fetchGroup();
   }, [dispatch, isError, message, id, navigate]);
-
 
   const requestAcceptance = async (e) => {
     const val = e.target.value.split("/");

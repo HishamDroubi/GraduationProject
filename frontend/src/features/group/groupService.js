@@ -7,27 +7,25 @@ const createGroup = async (groupData, token) => {
   });
   return response.data;
 };
-const fetchGroups = async (pageNumber,token) => {
-  const response = await axios.get(`/group/getAll?pageNumber=${pageNumber}`, {
+const fetchGroups = async (pageNumber, token) => {
+  const { data } = await axios.get(`/group/getAll?pageNumber=${pageNumber}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response.data);
-  return response.data;
+  return data;
 };
 const getGroupDetails = async (groupId, token) => {
-  const response = await axios.get(`/group/${groupId}`, {
+  const { data } = await axios.get(`/group/${groupId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response.data);
-  return response.data;
+  return data;
 };
 
 const requestJoinGroup = async (groupId, token) => {
-  const response = await axios.post(
+  const { data } = await axios.post(
     "/group/sendRequest",
     { groupId },
     {
@@ -36,7 +34,7 @@ const requestJoinGroup = async (groupId, token) => {
       },
     }
   );
-  return response.data;
+  return data;
 };
 
 const requestAcceptance = async (data, token) => {
@@ -47,12 +45,26 @@ const requestAcceptance = async (data, token) => {
   });
   return response.data;
 };
+
+const cancelRequest = async (requestId, token) => {
+  const { data } = await axios.delete(
+    `/group/deleteRequest/${requestId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(data);
+  return data;
+};
 const groupService = {
   createGroup,
   fetchGroups,
   getGroupDetails,
   requestJoinGroup,
   requestAcceptance,
+  cancelRequest,
 };
 
 export default groupService;

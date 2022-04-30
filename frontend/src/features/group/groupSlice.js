@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import groupService from "./groupService";
 const initialState = {
   isError: false,
@@ -26,6 +26,40 @@ export const fetchGroups = createAsyncThunk(
     }
   }
 );
+export const requestGroup = createAsyncThunk(
+  "group/:id/request",
+  async (groupId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.requestJoinGroup(groupId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const cancelRequest = createAsyncThunk(
+  "group/:id/cancelRequest",
+  async (requestId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.cancelRequest(requestId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const groupSlice = createSlice({
   name: "group",
   initialState,
@@ -35,9 +69,6 @@ export const groupSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
-      state.groups = [];
-      state.page = 1;
-      state.pages = null;
     },
   },
   extraReducers: (builder) => {
@@ -54,6 +85,31 @@ export const groupSlice = createSlice({
       })
       .addCase(fetchGroups.rejected, (state, action) => {
         state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(requestGroup.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        const groupIdx = state.groups.findIndex(
+          (group) => group._id === action.payload.group
+        );
+        state.groups[groupIdx].requests.push(action.payload);
+      })
+      .addCase(requestGroup.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(cancelRequest.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        const groupIdx = state.groups.findIndex(
+          (group) => group._id === action.payload.group
+        );
+        const requestIdx = state.groups[groupIdx].requests.findIndex(
+          (request) => request.requester === action.payload.requester
+        );
+        state.groups[groupIdx].requests.splice(requestIdx, 1);
+      })
+      .addCase(cancelRequest.rejected, (state, action) => {
         state.isError = true;
         state.message = action.payload;
       });
