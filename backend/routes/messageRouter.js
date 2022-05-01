@@ -7,6 +7,7 @@ let CryptoJS = require("crypto-js");
 
 const Message = require("../models/message");
 const { protect } = require("../middleware/authMiddleware");
+const serverConstants = require("../serverConstants.js");
 
 //define messageRouter
 let messageRouter = express.Router();
@@ -19,7 +20,7 @@ messageRouter.post(
     let senderId = req.currentUser._id;
     let receiverId = req.body.receiverId;
 
-    let key = "CP-PTUK";
+    let key = serverConstants.hash_key;
 
     // Encrypt
     let ciphertext = CryptoJS.AES.encrypt(value, key).toString();
@@ -43,7 +44,7 @@ messageRouter.get(
     let fetchedMessage = await Message.findById(messageId);
     let value = fetchedMessage["value"];
 
-    let key = "CP-PTUK";
+    let key = serverConstants.hash_key;
     // Decrypt
     var bytes = CryptoJS.AES.decrypt(value, key);
     var originalText = bytes.toString(CryptoJS.enc.Utf8);
@@ -61,7 +62,7 @@ messageRouter.get(
     let firstUser = req.currentUser._id;
     let secondUser = req.body.otherUser;
 
-    let key = "CP-PTUK";
+    let key = serverConstants.hash_key;
 
     let messages = await Message.find({
       $or: [

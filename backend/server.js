@@ -20,7 +20,7 @@ let groupRouter = require("./routes/groupRouter.js");
 let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
-const Message = require("./models/message");
+const serverConstants = require("./serverConstants.js");
 
 //medllewaress
 server.use(express.json());
@@ -46,21 +46,17 @@ server.use("/message", messageRouter);
 server.use(errorHandler);
 
 //start server
-const port = 3004;
-server.listen(port, () => {
-  logger.info("server is lestining on port " + port);
-});
 
-//User and Password For MongoDB
-let username = "hisham";
-let password = "hisham1234";
+server.listen(serverConstants.server_port, () => {
+  logger.info("server is lestining on port " + serverConstants.server_port);
+});
 
 //connect to mongoDB
 const dbUrI =
   "mongodb+srv://" +
-  username +
+  serverConstants.MongoDBusername +
   ":" +
-  password +
+  serverConstants.MongoDBpassword +
   "@cluster0.fhqit.mongodb.net/GraduationProject?retryWrites=true&w=majority";
 
 //for testing
