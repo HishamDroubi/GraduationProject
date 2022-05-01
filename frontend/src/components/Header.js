@@ -34,7 +34,7 @@ const Header = () => {
   }, [user]);
   return (
     <header>
-      <Navbar expand="lg" style={{ backgroundColor: backgroundColor }}>
+      <Navbar  expand="lg" style={{ paddingBottom: "0", backgroundColor: backgroundColor }}>
         <Container>
           <Nav className="ms-auto">
             <LinkContainer to="/">
@@ -47,6 +47,12 @@ const Header = () => {
             <LinkContainer to="/groups/page/1">
               <Nav.Link style={{ color: "#FFFFFF80" }}>
                 <strong style={{ color: "#FFFFFF80" }}>Group </strong>
+              </Nav.Link>
+            </LinkContainer>
+
+            <LinkContainer to="/groups/page/1">
+              <Nav.Link style={{ color: '#FFFFFF80' }}>
+                <strong style={{ color: '#FFFFFF80' }}>Level  </strong>
               </Nav.Link>
             </LinkContainer>
           </Nav>
@@ -72,10 +78,8 @@ const Header = () => {
                         height: "25px",
                         borderRadius: "50%",
                       }}
-                    />
-                    <strong style={{ color: "#FFFFFF80" }}>
-                      {user.userName}
-                    </strong>
+                    /> <strong style={{ color: '#FFFFFF80' }}>{user.userName}</strong>
+                    
                   </Nav.Link>
                 </LinkContainer>
               )}

@@ -17,11 +17,17 @@ const App = () => {
       <Router>
         <Header />
         <main className="py-3">
-          <Container>
+          <div style={{padding: '15px'}}>
             <Routes>
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+<<<<<<< HEAD
+              <Route path="/profile/:userName/*" element={<Profile />} />
+              <Route path="/level/:id" element={<LevelDetails/>}/>
+              <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
+              <Route path="/group/:id/*" element={<GroupDetails/>}/>
+=======
               <Route
                 path="/profile/:userName/*"
                 element={
@@ -54,8 +60,9 @@ const App = () => {
                   </Protect>
                 }
               />
+>>>>>>> 29eed5dfd229292ae594ca4335e2926eff461778
             </Routes>
-          </Container>
+          </div>
         </main>
       </Router>
       <ToastContainer />

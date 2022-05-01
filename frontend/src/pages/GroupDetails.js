@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getGroupDetails,
   requestDecision,
@@ -9,9 +9,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Nav, Col, Row, Card } from "react-bootstrap";
 import Participants from '../components/Participants'
+import Requests from '../components/Requests'
+import { LinkContainer } from "react-router-bootstrap";
+import Sheet from "../components/Sheet";
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,30 +57,44 @@ const GroupDetails = () => {
   ) {
     return <Loader />;
   }
+
+
   return (
-    <div>
-      
-      {user.userName === group.coach.userName && <Participants participants={group.participants}/>}
+    <div style={{ marginLeft: '0px' }}>
+      {group && <Nav fill variant="tabs" defaultActiveKey="/home">
+        
+        {group && group.coach.userName === user.userName && <Nav.Item>
+          <LinkContainer to="request">
+            <Nav.Link>requests</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+}
+{group && group.coach.userName === user.userName && <Nav.Item>
+          <LinkContainer to="request">
+            <Nav.Link>requests</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+}       {group && group.coach.userName === user.userName && <Nav.Item>
+          <LinkContainer to="participants">
+            <Nav.Link>participants  </Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+}
+        <Nav.Item>
+          <LinkContainer to="sheet">
+            <Nav.Link>sheet</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+      </Nav>}
 
-      {user.userName === group.coach.userName &&
-        group.participants.map((participant) => (
-          <li key={participant._id}>{participant.userName}</li>
-        ))}
 
-      {user.userName === group.coach.userName && <h1>Resquests</h1>}
-
-      {user.userName === group.coach.userName &&
-        group.requests.map((request) => (
-          <li key={request.requester.userName}>
-            {request.requester.userName}
-            <Button onClick={requestAcceptance} value={request._id + "/true"}>
-              Accept
-            </Button>
-            <Button onClick={requestAcceptance} value={request._id + "/false"}>
-              Decline
-            </Button>
-          </li>
-        ))}
+      {group &&
+        <Routes>
+          <Route path="/request" element={<Requests requestAcceptance={requestAcceptance} requests={group.requests} />} />
+          <Route path="/participants" element={<Participants participants={group.participants} />} />
+          <Route path="/sheet" element={<Sheet />} />
+        </Routes>
+      }
     </div>
   );
 };
