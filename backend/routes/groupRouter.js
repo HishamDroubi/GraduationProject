@@ -1,6 +1,9 @@
 let express = require("express");
 let asyncHandler = require("express-async-handler");
 let mongoose = require("mongoose");
+let multer = require("multer");
+let uuid = require("uuid").v4;
+const fs = require("fs");
 
 let Request = require("../models/request");
 let User = require("../models/user");
@@ -9,6 +12,26 @@ const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
 const { FetchError } = require("node-fetch");
 const { request } = require("http");
+const Attachment = require("../models/attachment");
+
+const types = ["txt"];
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+
+  filename: (req, file, cb) => {
+    const { originalname } = file;
+    const splitResult = originalname.split(".");
+    const extension = splitResult[splitResult.length - 1];
+    //if (types.includes(extension))
+    cb(null, uuid() + "-" + originalname);
+    //else throw new Error("this file tpye is not allowed");
+  },
+});
+
+const upload = multer({ storage });
 
 let groupRouter = express.Router();
 
@@ -472,6 +495,74 @@ groupRouter.delete(
       result = saveResult;
     }
     res.send(result);
+  })
+);
+
+//add an attachment for a group
+groupRouter.post(
+  "/addAttachment",
+  upload.single("attach"),
+  asyncHandler(async (req, res) => {
+    let groupId = req.body.groupId;
+    let file = req.file;
+
+    let newAttachment = new Attachment({
+      originalname: file["originalname"],
+      newName: file["filename"],
+      path: file["path"],
+      size: file["size"],
+      type: file["mimetype"],
+      group: groupId,
+    });
+
+    let attachResponse = await newAttachment.save();
+
+    let fetchedGroup = await Group.findById(groupId);
+
+    let attachments = fetchedGroup["attachments"];
+
+    attachments.push(attachResponse);
+
+    fetchedGroup[attachments] = attachments;
+
+    let groupResonse = await fetchedGroup.save();
+
+    res.json(attachResponse);
+  })
+);
+
+//delete an attachment from a group
+groupRouter.delete(
+  "/deleteAttachment",
+  asyncHandler(async (req, res) => {
+    let attachmentId = req.body.attachmentId;
+
+    let fetchedAttachment = await Attachment.findById(attachmentId);
+
+    let groupId = fetchedAttachment["group"];
+
+    //delete the Actual Attachment File
+    fs.unlink(fetchedAttachment["path"], (deleteFileResponse) => {
+      console.log(deleteFileResponse);
+    });
+
+    //delete the attachment from the Database
+    let deleteResponse = await Attachment.deleteOne({ _id: attachmentId });
+
+    let fetchedGroup = await Group.findById(groupId);
+
+    let attachments = fetchedGroup["attachments"];
+
+    //delete the attachment id from the group's attachments list
+    let filteredAttachmetns = attachments.filter((attachment) => {
+      return attachment["_id"] != attachmentId;
+    });
+
+    fetchedGroup["attachments"] = filteredAttachmetns;
+
+    let saveResponse = await fetchedGroup.save();
+
+    res.json(deleteResponse);
   })
 );
 
