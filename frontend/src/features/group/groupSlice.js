@@ -87,6 +87,7 @@ export const groupSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    resetGroup: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -146,5 +147,5 @@ export const groupSlice = createSlice({
       });
   },
 });
-export const { reset } = groupSlice.actions;
+export const { reset, resetGroup } = groupSlice.actions;
 export default groupSlice.reducer;

@@ -13,15 +13,18 @@ const Level = () => {
   const toggleShow = () => setBasicModal(!basicModal);
 
   const dispatch = useDispatch();
-  const { level, isLoading, isError, message } = useSelector(
+  const { levels, isLoading, isError, message } = useSelector(
     (state) => state.level
   );
   useEffect(() => {
-    dispatch(getLevel());
     if (isError) {
       toast.error(message);
     }
-    dispatch(reset());
+    const fetchLevels = async () => {
+      await dispatch(getLevel());
+      dispatch(reset());
+    };
+    fetchLevels();
   }, [dispatch, isError, message]);
   if (isLoading) {
     return <Loader />;
@@ -29,8 +32,8 @@ const Level = () => {
   return (
     <>
       <ListGroup>
-        {level &&
-          level.map((level) => (
+        {levels &&
+          levels.map((level) => (
             <LinkContainer to={`/level/${level._id}`} key={level._id}>
               <ListGroup.Item>{level.topic}</ListGroup.Item>
             </LinkContainer>

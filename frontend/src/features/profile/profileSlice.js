@@ -73,6 +73,7 @@ export const profileSlice = createSlice({
       state.isSuccess = false;
       state.message = null;
     },
+    resetProfile: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -122,5 +123,5 @@ export const profileSlice = createSlice({
   },
 });
 
-export const { reset,resetAll } = profileSlice.actions;
+export const { reset, resetProfile } = profileSlice.actions;
 export default profileSlice.reducer;
