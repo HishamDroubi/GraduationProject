@@ -4,11 +4,12 @@ let body_parser = require("body-parser");
 let mongoose = require("mongoose");
 let fetch = require("node-fetch");
 let asyncHandler = require("express-async-handler");
+
 let User = require("../models/user");
 const Level = require("../models/level");
 const { protect } = require("../middleware/authMiddleware");
 
-//define authRouter and use json as request
+//define levelRouter
 let levelRouter = express.Router();
 
 //create level

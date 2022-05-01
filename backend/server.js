@@ -1,7 +1,7 @@
 let mongoose = require("mongoose");
 let express = require("express");
 const { errorHandler } = require("./middleware/error");
-const { test } = require("./middleware/test");
+
 //models
 let User = require("./models/user");
 let Problem = require("./models/problem");
@@ -70,30 +70,3 @@ mongoose.connect(dbUrI).then(() => {
   console.log("successfully connected");
   logger.info("successfully connected");
 });
-
-// let key = "CP-PTUK";
-
-// // Encrypt
-// var ciphertext = CryptoJS.AES.encrypt("my message", key).toString();
-
-// console.log(ciphertext);
-
-// // Decrypt
-// var bytes = CryptoJS.AES.decrypt(ciphertext, key);
-// var originalText = bytes.toString(CryptoJS.enc.Utf8);
-
-// console.log(originalText); // 'my message'
-
-let fun = async () => {
-  let newMessage = new Message({
-    value: "U2FsdGVkX19raKORcQiHiinfDJJFRH1pK4Za7CnC3MY=",
-    sender: "622b4880e970d427177c8fdb",
-    receiver: "622b48e2e970d427177c8fdf",
-  });
-
-  //await newMessage.save();
-
-  //let fetchedMessage = await Message.findById("626db155cb29dce384f97a69");
-  // console.log(fetchedMessage);
-};
-fun();

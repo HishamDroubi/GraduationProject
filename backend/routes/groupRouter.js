@@ -12,8 +12,6 @@ const { protect } = require("../middleware/authMiddleware");
 const Invitation = require("../models/invitation");
 const Attachment = require("../models/attachment");
 
-const types = ["txt"];
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -21,11 +19,7 @@ const storage = multer.diskStorage({
 
   filename: (req, file, cb) => {
     const { originalname } = file;
-    const splitResult = originalname.split(".");
-    const extension = splitResult[splitResult.length - 1];
-    //if (types.includes(extension))
     cb(null, uuid() + "-" + originalname);
-    //else throw new Error("this file tpye is not allowed");
   },
 });
 
@@ -494,7 +488,9 @@ groupRouter.delete(
       await Group.deleteOne({ _id: groupId });
       res.status(200).json(group);
     } else {
-      res.status(401).json("Not Allowed You are not the group coach or an admin");
+      res
+        .status(401)
+        .json("Not Allowed You are not the group coach or an admin");
     }
   })
 );

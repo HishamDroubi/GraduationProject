@@ -7,7 +7,6 @@ let CryptoJS = require("crypto-js");
 
 const Message = require("../models/message");
 const { protect } = require("../middleware/authMiddleware");
-const { Session } = require("inspector");
 
 //define messageRouter
 let messageRouter = express.Router();
@@ -24,10 +23,6 @@ messageRouter.post(
 
     // Encrypt
     let ciphertext = CryptoJS.AES.encrypt(value, key).toString();
-
-    // // Decrypt
-    // var bytes = CryptoJS.AES.decrypt(ciphertext, key);
-    // var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
     let newMessage = new Message({
       value: ciphertext,
