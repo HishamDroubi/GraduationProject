@@ -62,16 +62,24 @@ const GroupDetails = () => {
   return (
     <div style={{ marginLeft: '0px' }}>
       {group && <Nav fill variant="tabs" defaultActiveKey="/home">
-        <Nav.Item>
+        
+        {group && group.coach.userName === user.userName && <Nav.Item>
           <LinkContainer to="request">
             <Nav.Link>requests</Nav.Link>
           </LinkContainer>
         </Nav.Item>
-        <Nav.Item>
-          <LinkContainer to="participants">
-            <Nav.Link>participants</Nav.Link>
+}
+{group && group.coach.userName === user.userName && <Nav.Item>
+          <LinkContainer to="request">
+            <Nav.Link>requests</Nav.Link>
           </LinkContainer>
         </Nav.Item>
+}       {group && group.coach.userName === user.userName && <Nav.Item>
+          <LinkContainer to="participants">
+            <Nav.Link>participants  </Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+}
         <Nav.Item>
           <LinkContainer to="sheet">
             <Nav.Link>sheet</Nav.Link>

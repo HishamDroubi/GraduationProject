@@ -26,7 +26,6 @@ const Requests = (props) => {
           </tbody>
         </table>
       </div>
-
     </>
   );
 }

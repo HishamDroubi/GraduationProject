@@ -9,7 +9,7 @@ const Level = require("../models/level");
 const Problem = require("../models/problem");
 const { protect } = require("../middleware/authMiddleware");
 
-//define authRouter and use json as request
+//define problemRouter
 let problemRouter = express.Router();
 
 //create problem
@@ -55,12 +55,12 @@ problemRouter.post(
   })
 );
 
-//get all problem 
+//get all problem
 
-problemRouter.get('/', async(req, res) => {
+problemRouter.get("/", async (req, res) => {
   const data = await Problem.find({});
   res.json(data);
-})
+});
 
 //delete problem
 problemRouter.delete(

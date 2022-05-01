@@ -1,7 +1,7 @@
 let mongoose = require("mongoose");
 let express = require("express");
 const { errorHandler } = require("./middleware/error");
-const { test } = require("./middleware/test");
+
 //models
 let User = require("./models/user");
 let Problem = require("./models/problem");
@@ -9,6 +9,7 @@ let Group = require("./models/group");
 let Level = require("./models/level");
 let Request = require("./models/request");
 let logger = require("./logger.js");
+const CryptoJS = require("crypto-js");
 //create the server
 let server = express();
 
@@ -18,6 +19,8 @@ let authRouter = require("./routes/authRouter.js");
 let groupRouter = require("./routes/groupRouter.js");
 let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
+let messageRouter = require("./routes/messageRouter.js");
+const Message = require("./models/message");
 
 //medllewaress
 server.use(express.json());
@@ -39,6 +42,7 @@ server.all("*", (req, res, next) => {
 server.use("/group", groupRouter);
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
+server.use("/message", messageRouter);
 server.use(errorHandler);
 
 //start server

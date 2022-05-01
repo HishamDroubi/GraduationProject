@@ -1,11 +1,13 @@
 let express = require("express");
 let bcrypt = require("bcrypt");
 let fetch = require("node-fetch");
-let User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/authMiddleware");
-//define authRouter and use json as request
+
+let User = require("../models/user");
+
+//define authRouter
 let authRouter = express.Router();
 
 //User SignUp
