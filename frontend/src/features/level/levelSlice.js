@@ -4,7 +4,7 @@ const initialState = {
   isError: false,
   isLoading: false,
   message: "",
-  level: null,
+  levels: [],
 };
 export const getLevel = createAsyncThunk(
   "level/get",
@@ -30,7 +30,6 @@ export const levelSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.message = "";
-      state.level = null;
     },
   },
   extraReducers: (builder) => {
@@ -41,13 +40,12 @@ export const levelSlice = createSlice({
       .addCase(getLevel.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.level = action.payload;
+        state.levels = action.payload;
       })
       .addCase(getLevel.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.level = null;
       });
   },
 });

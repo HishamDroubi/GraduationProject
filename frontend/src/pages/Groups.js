@@ -21,7 +21,6 @@ const Groups = () => {
   const { pageNumber = 1 } = useParams();
   const { groups, isLoading, isSuccess, isError, message, pages, page } =
     useSelector((state) => state.group);
-  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     if (isError) {
@@ -58,7 +57,7 @@ const Groups = () => {
         />
       </>
       {groups.map((group) => (
-        <GroupCard group={group} key={group._id}/>
+        <GroupCard group={group} key={group._id} />
       ))}
       <Paginate pages={pages} page={page} />
     </>

@@ -10,7 +10,6 @@ import AddProblemForm from "../components/AddProblemForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 const LevelDetails = () => {
-
   const [basicModal, setBasicModal] = useState(false);
   const toggleShow = () => setBasicModal(!basicModal);
 
@@ -22,10 +21,6 @@ const LevelDetails = () => {
   );
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
-    if (!user) {
-      toast.error("login first");
-      navigate("/login");
-    }
     if (isError) {
       toast.error(message);
       navigate("/");
@@ -35,7 +30,7 @@ const LevelDetails = () => {
       dispatch(reset());
     };
     getLevel();
-  }, [dispatch, isError, message, id, navigate, user]);
+  }, [dispatch, isError, message, id, navigate]);
   if (isLoading) {
     return <Loader />;
   }
@@ -43,10 +38,16 @@ const LevelDetails = () => {
     <>
       {level && level.problems && level.solvedProblems && (
         <FormContainer>
-          {user && user.role === "admin" && (<>
-            <Button onClick={toggleShow}>Add problem</Button>
-            <AddProblemForm basicModal={basicModal} toggleShow={toggleShow} setBasicModal={setBasicModal} />
-          </>)}
+          {user && user.role === "admin" && (
+            <>
+              <Button onClick={toggleShow}>Add problem</Button>
+              <AddProblemForm
+                basicModal={basicModal}
+                toggleShow={toggleShow}
+                setBasicModal={setBasicModal}
+              />
+            </>
+          )}
           <h3 style={{ textAlign: "center" }}>{level.topic}</h3>
           <Table
             hover

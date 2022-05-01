@@ -10,6 +10,7 @@ import Level from "./pages/Level";
 import LevelDetails from "./pages/LevelDetails";
 import Groups from "./pages/Groups";
 import GroupDetails from "./pages/GroupDetails";
+import Protect from "./components/Protect";
 const App = () => {
   return (
     <>
@@ -21,10 +22,45 @@ const App = () => {
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+<<<<<<< HEAD
               <Route path="/profile/:userName/*" element={<Profile />} />
               <Route path="/level/:id" element={<LevelDetails/>}/>
               <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
               <Route path="/group/:id/*" element={<GroupDetails/>}/>
+=======
+              <Route
+                path="/profile/:userName/*"
+                element={
+                  <Protect>
+                    <Profile />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/level/:id"
+                element={
+                  <Protect>
+                    <LevelDetails />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/groups/page/:pageNumber"
+                element={
+                  <Protect>
+                    <Groups />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/group/:id"
+                element={
+                  <Protect>
+                    <GroupDetails />
+                  </Protect>
+                }
+              />
+>>>>>>> 29eed5dfd229292ae594ca4335e2926eff461778
             </Routes>
           </div>
         </main>

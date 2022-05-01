@@ -8,13 +8,20 @@ import { GoSignOut, GoSignIn } from "react-icons/go";
 import { useEffect } from "react";
 import profileService from "../features/profile/profileService";
 import { useState } from "react";
-import { backgroundColor, color } from '../theme'
+import { backgroundColor, color } from "../theme";
+import { useNavigate } from "react-router-dom";
+import { resetGroup } from "../features/group/groupSlice";
+import { resetProfile } from "../features/profile/profileSlice";
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
+    navigate("/");
+    dispatch(resetGroup());
+    dispatch(resetProfile());
   };
 
   const [userCodeforces, setUserCodeforces] = useState({});
@@ -30,15 +37,16 @@ const Header = () => {
       <Navbar  expand="lg" style={{ paddingBottom: "0", backgroundColor: backgroundColor }}>
         <Container>
           <Nav className="ms-auto">
-
-
             <LinkContainer to="/">
-              <Navbar.Brand > <p style={{ color: color }}>CP-PTUK</p></Navbar.Brand>
+              <Navbar.Brand>
+                {" "}
+                <p style={{ color: color }}>CP-PTUK</p>
+              </Navbar.Brand>
             </LinkContainer>
 
             <LinkContainer to="/groups/page/1">
-              <Nav.Link style={{ color: '#FFFFFF80' }}>
-                <strong style={{ color: '#FFFFFF80' }}>Group  </strong>
+              <Nav.Link style={{ color: "#FFFFFF80" }}>
+                <strong style={{ color: "#FFFFFF80" }}>Group </strong>
               </Nav.Link>
             </LinkContainer>
 
@@ -58,7 +66,6 @@ const Header = () => {
               {user && (
                 <LinkContainer to={"/profile/" + user.userName}>
                   <Nav.Link>
-                  
                     <img
                       src={
                         userCodeforces
@@ -79,19 +86,25 @@ const Header = () => {
 
               {user && (
                 <LinkContainer to="/">
-                  <Nav.Link onClick={onLogout}><strong style={{ color: '#FFFFFF80' }}>Loguot</strong></Nav.Link>
+                  <Nav.Link onClick={onLogout}>
+                    <strong style={{ color: "#FFFFFF80" }}>Loguot</strong>
+                  </Nav.Link>
                 </LinkContainer>
               )}
 
               {!user && (
                 <LinkContainer to="/login">
-                  <Nav.Link><strong style={{ color: '#FFFFFF80' }}>Login</strong></Nav.Link>
+                  <Nav.Link>
+                    <strong style={{ color: "#FFFFFF80" }}>Login</strong>
+                  </Nav.Link>
                 </LinkContainer>
               )}
 
               {!user && (
                 <LinkContainer to="/register">
-                  <Nav.Link><strong style={{ color: '#FFFFFF80' }}>Register</strong></Nav.Link>
+                  <Nav.Link>
+                    <strong style={{ color: "#FFFFFF80" }}>Register</strong>
+                  </Nav.Link>
                 </LinkContainer>
               )}
             </Nav>
