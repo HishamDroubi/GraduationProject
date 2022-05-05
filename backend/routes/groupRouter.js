@@ -196,6 +196,7 @@ groupRouter.post(
       })
       .populate("coach");
     if (!WantedGroup.coach._id.equals(req.currentUser._id)) {
+      v;
       res.status(401);
       throw new Error("Not authorized, not the coach of the group");
     } else {
@@ -289,22 +290,23 @@ groupRouter.post(
       res.status(401);
       throw new Error("User not found");
     }
-    const userIsMember = await WantedGroup.participants.find((memeber) =>
-      memeber._id.equals(userId)
-    );
-    if (userIsMember) {
-      res.status(401);
-      throw new Error("User already joined the group");
-    }
+    // const userIsMember = await WantedGroup.participants.find((memeber) =>
+    //   memeber._id.equals(userId)
+    // );
+    // console.log(userIsMember);
+    // if (userIsMember) {
+    //   res.status(401);
+    //   throw new Error("User already joined the group");
+    // }
     //check if the invitation exist
-    const invitationExist = await Invitation.find({
-      group: groupId,
-      invitedUser: userId,
-    });
-    if (invitationExist) {
-      res.status(401);
-      throw new Error("User already invited to this group");
-    }
+    // const invitationExist = await Invitation.find({
+    //   group: groupId,
+    //   invitedUser: userId,
+    // });
+    // if (invitationExist) {
+    //   res.status(401);
+    //   throw new Error("User already invited to this group");
+    // }
     let newInvitation = new Invitation({
       group: groupId,
       invitedUser: userId,
@@ -499,7 +501,7 @@ groupRouter.delete(
 );
 
 groupRouter.delete(
-  "/removeUser",
+  "/removeParticipants",
   protect,
   asyncHandler(async (req, res) => {
     let userId = req.body.userId;
