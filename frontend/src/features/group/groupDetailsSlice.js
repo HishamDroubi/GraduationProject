@@ -43,6 +43,40 @@ export const requestDecision = createAsyncThunk(
     }
   }
 );
+export const uploadFile = createAsyncThunk(
+  "group/:id/sheet/uploadFile",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.uploadFile(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const deleteFile = createAsyncThunk(
+  "group/:id/sheet/deleteFile/:id",
+  async (attachmentId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.deleteFile(attachmentId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const groupDetailsSlice = createSlice({
   name: "groupDetails",
   initialState,
@@ -69,7 +103,7 @@ export const groupDetailsSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-     
+
       .addCase(requestDecision.pending, (state) => {
         state.isLoading = true;
       })
@@ -83,6 +117,34 @@ export const groupDetailsSlice = createSlice({
         );
       })
       .addCase(requestDecision.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(uploadFile.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.group.attachments.push(action.payload);
+      })
+      .addCase(uploadFile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteFile.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteFile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.group.attachments = state.group.attachments.filter(
+          (attachment) => attachment._id !== action.payload._id
+        );
+      })
+      .addCase(deleteFile.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

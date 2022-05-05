@@ -22,12 +22,6 @@ const App = () => {
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-<<<<<<< HEAD
-              <Route path="/profile/:userName/*" element={<Profile />} />
-              <Route path="/level/:id" element={<LevelDetails/>}/>
-              <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
-              <Route path="/group/:id/*" element={<GroupDetails/>}/>
-=======
               <Route
                 path="/profile/:userName/*"
                 element={
@@ -53,14 +47,13 @@ const App = () => {
                 }
               />
               <Route
-                path="/group/:id"
+                path="/group/:id/*"
                 element={
                   <Protect>
                     <GroupDetails />
                   </Protect>
                 }
               />
->>>>>>> 29eed5dfd229292ae594ca4335e2926eff461778
             </Routes>
           </div>
         </main>

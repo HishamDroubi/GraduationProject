@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
+    console.log(file);
     const { originalname } = file;
     cb(null, uuid() + "-" + originalname);
   },
@@ -50,7 +51,7 @@ groupRouter.get(
       })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
-      console.log(groups)
+    console.log(groups);
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
@@ -77,7 +78,7 @@ groupRouter.get(
             model: "User",
           },
         });
-        
+
       if (!group) {
         res.status(401);
         throw new Error("Group not found");
@@ -529,12 +530,12 @@ groupRouter.delete(
 
 //add an attachment for a group
 groupRouter.post(
-  "/addAttachment",
+  "/addAttachment/:groupId",
+  protect,
   upload.single("attach"),
   asyncHandler(async (req, res) => {
-    let groupId = req.body.groupId;
+    let groupId = req.params.groupId;
     let file = req.file;
-
     let newAttachment = new Attachment({
       originalname: file["originalname"],
       newName: file["filename"],
@@ -562,9 +563,10 @@ groupRouter.post(
 
 //delete an attachment from a group
 groupRouter.delete(
-  "/deleteAttachment",
+  "/deleteAttachment/:attachmentId",
+  protect,
   asyncHandler(async (req, res) => {
-    let attachmentId = req.body.attachmentId;
+    let { attachmentId } = req.params;
 
     let fetchedAttachment = await Attachment.findById(attachmentId);
 
@@ -591,7 +593,7 @@ groupRouter.delete(
 
     let saveResponse = await fetchedGroup.save();
 
-    res.json(deleteResponse);
+    res.json(fetchedAttachment);
   })
 );
 

@@ -12,7 +12,7 @@ let logger = require("./logger.js");
 const CryptoJS = require("crypto-js");
 //create the server
 let server = express();
-
+const path = require("path");
 //Routers
 let userRouter = require("./routes/userRouter.js");
 let authRouter = require("./routes/authRouter.js");
@@ -40,9 +40,12 @@ server.all("*", (req, res, next) => {
 });
 
 server.use("/group", groupRouter);
+//server.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+server.use('/uploads', express.static('uploads'));
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
+
 server.use(errorHandler);
 
 //start server
