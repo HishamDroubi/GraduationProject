@@ -27,6 +27,7 @@ let getMessages = async function (firstUser, secondUser) {
       },
     ],
   }).sort({ createdAt: -1 });
+  //console.log(messages);
   return messages;
 };
 
@@ -106,11 +107,17 @@ messageRouter.get(
     let users = await User.find();
 
     //filter the users to find which user the current user has a messages with him
-    let contacts = users.filter((user) => {
-      let messages = getMessages(userId, user["_id"]);
-      return messages;
+    let contacts = [];
+    let counter = 0;
+    users.forEach(async (user) => {
+      let messages = await getMessages(userId, user["_id"]);
+      console.log(messages);
+      if (messages.length > 0) contacts.push(user);
+      counter++;
+      if (counter == users.length) {
+        res.json(contacts);
+      }
     });
-    res.json(contacts);
   })
 );
 
