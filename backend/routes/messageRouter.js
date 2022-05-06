@@ -6,8 +6,29 @@ let asyncHandler = require("express-async-handler");
 let CryptoJS = require("crypto-js");
 
 const Message = require("../models/message");
+const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
 const serverConstants = require("../serverConstants.js");
+
+//helper function to find the messages between two users
+let getMessages = async function (firstUser, secondUser) {
+  let messages = await Message.find({
+    /*
+    the query should be like this 
+      if you find a message with sender as first and reciever as second or vice versathen it is between them
+      and then return this messages ordered by the message date
+    */
+    $or: [
+      {
+        $and: [{ sender: firstUser }, { receiver: secondUser }],
+      },
+      {
+        $and: [{ sender: secondUser }, { receiver: firstUser }],
+      },
+    ],
+  }).sort({ createdAt: -1 });
+  return messages;
+};
 
 //define messageRouter
 let messageRouter = express.Router();
@@ -62,18 +83,9 @@ messageRouter.get(
     let firstUser = req.currentUser._id;
     let secondUser = req.body.otherUser;
 
-    let key = serverConstants.hash_key;
+    let messages = await getMessages(firstUser, secondUser);
 
-    let messages = await Message.find({
-      $or: [
-        {
-          $and: [{ sender: firstUser }, { receiver: secondUser }],
-        },
-        {
-          $and: [{ sender: secondUser }, { receiver: firstUser }],
-        },
-      ],
-    }).sort({ createdAt: -1 });
+    let key = serverConstants.hash_key;
 
     messages.forEach((message) => {
       // Decrypt
@@ -83,6 +95,22 @@ messageRouter.get(
     });
 
     res.json(messages);
+  })
+);
+
+messageRouter.get(
+  "/contacts",
+  protect,
+  asyncHandler(async (req, res) => {
+    let userId = req.currentUser._id;
+    let users = await User.find();
+
+    //filter the users to find which user the current user has a messages with him
+    let contacts = users.filter((user) => {
+      let messages = getMessages(userId, user["_id"]);
+      return messages;
+    });
+    res.json(contacts);
   })
 );
 
