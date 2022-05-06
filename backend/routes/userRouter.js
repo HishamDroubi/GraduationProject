@@ -92,7 +92,7 @@ userRouter.delete(
       invitedUser: userId,
     });
 
-    //delete the user itself
+    //delete the user itself626dc052cf3574fd2d0ef595
     let response = await User.deleteOne({ _id: userId });
     res.send(JSON.stringify(response));
   })
