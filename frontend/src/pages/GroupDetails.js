@@ -69,12 +69,7 @@ const GroupDetails = () => {
           </LinkContainer>
         </Nav.Item>
 }
-{group && group.coach.userName === user.userName && <Nav.Item>
-          <LinkContainer to="request">
-            <Nav.Link>requests</Nav.Link>
-          </LinkContainer>
-        </Nav.Item>
-}       {group && group.coach.userName === user.userName && <Nav.Item>
+     {group && group.coach.userName === user.userName && <Nav.Item>
           <LinkContainer to="participants">
             <Nav.Link>participants  </Nav.Link>
           </LinkContainer>
