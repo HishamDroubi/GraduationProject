@@ -10,26 +10,6 @@ const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
 const serverConstants = require("../serverConstants.js");
 
-//helper function to find the messages between two users
-let getMessages = async function (firstUser, secondUser) {
-  let messages = await Message.find({
-    /*
-    the query should be like this 
-      if you find a message with sender as first and reciever as second or vice versathen it is between them
-      and then return this messages ordered by the message date
-    */
-    $or: [
-      {
-        $and: [{ sender: firstUser }, { receiver: secondUser }],
-      },
-      {
-        $and: [{ sender: secondUser }, { receiver: firstUser }],
-      },
-    ],
-  }).sort({ createdAt: -1 });
-  return messages;
-};
-
 //define messageRouter
 let messageRouter = express.Router();
 
@@ -37,23 +17,25 @@ messageRouter.post(
   "/create",
   protect,
   asyncHandler(async (req, res) => {
-    let value = req.body.value;
+    let val = req.body.value;
     let senderId = req.currentUser._id;
-    let receiverId = req.body.receiverId;
-
+    let { receiverName } = req.body;
+    let receiver = await User.findOne({ userName: receiverName });
     let key = serverConstants.hash_key;
-
     // Encrypt
-    let ciphertext = CryptoJS.AES.encrypt(value, key).toString();
-
+    let value = CryptoJS.AES.encrypt(val, key).toString();
     let newMessage = new Message({
-      value: ciphertext,
+      value,
       sender: senderId,
-      receiver: receiverId,
+      receiver: receiver._id,
     });
-
     let saveRespone = await newMessage.save();
-    res.json(saveRespone);
+
+    var bytes = CryptoJS.AES.decrypt(saveRespone["value"], key);
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+    saveRespone["value"] = originalText;
+    res.status(200).json(saveRespone);
   })
 );
 
@@ -77,13 +59,13 @@ messageRouter.get(
 );
 
 messageRouter.get(
-  "/chat",
+  "/chat/:secondUser",
   protect,
   asyncHandler(async (req, res) => {
     let firstUser = req.currentUser._id;
-    let secondUser = req.body.otherUser;
-
-    let messages = await getMessages(firstUser, secondUser);
+    let { secondUser } = req.params;
+    const otherUser = await User.find({ userName: secondUser });
+    let messages = await getMessages(firstUser, otherUser);
 
     let key = serverConstants.hash_key;
 
@@ -94,9 +76,29 @@ messageRouter.get(
       message["value"] = originalText;
     });
 
-    res.json(messages);
+    res.status(200).json(messages);
   })
 );
+
+//helper function to find the messages between two users
+let getMessages = async function (firstUser, secondUser) {
+  let messages = await Message.find({
+    /*
+    the query should be like this 
+      if you find a message with sender as first and reciever as second or vice versathen it is between them
+      and then return this messages ordered by the message date
+    */
+    $or: [
+      {
+        $and: [{ sender: firstUser }, { receiver: secondUser }],
+      },
+      {
+        $and: [{ sender: secondUser }, { receiver: firstUser }],
+      },
+    ],
+  }).populate("sender");
+  return messages;
+};
 
 messageRouter.get(
   "/contacts",
@@ -106,11 +108,30 @@ messageRouter.get(
     let users = await User.find();
 
     //filter the users to find which user the current user has a messages with him
-    let contacts = users.filter((user) => {
-      let messages = getMessages(userId, user["_id"]);
-      return messages;
+    let contacts = [];
+    let counter = 0;
+    users.forEach(async (user) => {
+      let messages = await getMessages(userId, user["_id"]);
+      if (messages.length > 0) {
+        let key = serverConstants.hash_key;
+        // Decrypt
+        var bytes = CryptoJS.AES.decrypt(
+          messages[messages.length - 1]["value"],
+          key
+        );
+        var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+        messages[messages.length - 1]["value"] = originalText;
+        contacts.push({
+          user,
+          latestMessage: messages[messages.length - 1],
+        });
+      }
+      counter++;
+      if (counter == users.length) {
+        res.status(200).json(contacts);
+      }
     });
-    res.json(contacts);
   })
 );
 

@@ -7,6 +7,8 @@ import profileReducer from "./features/profile/profileSlice";
 import groupReducer from "./features/group/groupSlice";
 import createGroupReducer from "./features/group/createGroupSlice";
 import groupDetailsReducer from "./features/group/groupDetailsSlice";
+import chatsReducer from "./features/chat/chatsSlice";
+import chatDetailsReducer from "./features/chat/chatDetailsSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -17,5 +19,7 @@ export const store = configureStore({
     group: groupReducer,
     createGroup: createGroupReducer,
     groupDetails: groupDetailsReducer,
+    chats: chatsReducer,
+    chatDetails:chatDetailsReducer
   },
 });

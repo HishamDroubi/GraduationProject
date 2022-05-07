@@ -116,7 +116,7 @@ const HandleProfile = (props) => {
                     <div className="col">
                       <Button
                         onClick={() =>
-                          navigate(`/${user.userName}/chat/${userName}`)
+                          navigate(`/chat/${userName}`)
                         }
                       >
                         new message

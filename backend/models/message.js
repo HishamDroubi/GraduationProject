@@ -5,10 +5,12 @@ const Problem = require("./problem");
 let messageSchema = new Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   receiver: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   value: {
@@ -27,7 +29,8 @@ let messageSchema = new Schema({
 });
 
 messageSchema.pre("save", function (next) {
-  this.UpdatedAt = Date.now();
+  this.lastUpdateAt = Date.now();
+  this.createdAt = Date.now();
   next();
 });
 

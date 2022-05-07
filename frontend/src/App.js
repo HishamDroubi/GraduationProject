@@ -11,13 +11,14 @@ import LevelDetails from "./pages/LevelDetails";
 import Groups from "./pages/Groups";
 import GroupDetails from "./pages/GroupDetails";
 import Protect from "./components/Protect";
+import ChatPage from "./pages/ChatPage";
 const App = () => {
   return (
-    <>
+    <div className="App">
       <Router>
         <Header />
         <main className="py-3">
-          <div style={{padding: '15px'}}>
+          <div style={{ padding: "15px" }}>
             <Routes>
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
@@ -47,10 +48,10 @@ const App = () => {
                 }
               />
               <Route
-                path="/:sender/chat/:receiver"
+                path="/chat/:receiver"
                 element={
                   <Protect>
-                    <Groups />
+                    <ChatPage />
                   </Protect>
                 }
               />
@@ -67,7 +68,7 @@ const App = () => {
         </main>
       </Router>
       <ToastContainer />
-    </>
+    </div>
   );
 };
 
