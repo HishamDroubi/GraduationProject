@@ -26,8 +26,9 @@ let getMessages = async function (firstUser, secondUser) {
         $and: [{ sender: secondUser }, { receiver: firstUser }],
       },
     ],
-  }).sort({ createdAt: -1 });
-  //console.log(messages);
+  })
+    .sort({ createdAt: -1 })
+    .populate("sender");
   return messages;
 };
 
@@ -111,7 +112,6 @@ messageRouter.get(
     let counter = 0;
     users.forEach(async (user) => {
       let messages = await getMessages(userId, user["_id"]);
-      console.log(messages);
       if (messages.length > 0) contacts.push(user);
       counter++;
       if (counter == users.length) {

@@ -1,14 +1,17 @@
 let mongoose = require("mongoose");
 let Schema = mongoose.Schema;
 const Problem = require("./problem");
+const User = require("./user");
 
 let messageSchema = new Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: User,
     required: true,
   },
   receiver: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: User,
     required: true,
   },
   value: {
