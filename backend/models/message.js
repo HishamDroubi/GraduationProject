@@ -1,6 +1,7 @@
 let mongoose = require("mongoose");
 let Schema = mongoose.Schema;
 const Problem = require("./problem");
+const User = require("./user");
 
 let messageSchema = new Schema({
   sender: {
