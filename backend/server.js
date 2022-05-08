@@ -21,8 +21,6 @@ let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
 const serverConstants = require("./serverConstants.js");
-const { group } = require("console");
-const { request } = require("https");
 
 //medllewaress
 server.use(express.json());
@@ -43,7 +41,7 @@ server.all("*", (req, res, next) => {
 
 server.use("/group", groupRouter);
 //server.use("/uploads", express.static(path.join(__dirname, "/uploads")));
-server.use('/uploads', express.static('uploads'));
+server.use("/uploads", express.static("uploads"));
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);

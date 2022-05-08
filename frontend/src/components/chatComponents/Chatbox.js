@@ -1,56 +1,23 @@
-import { MDBCard, MDBCardBody, MDBListGroup } from "mdbreact";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchChatDetails,
-  reset,
-  sendMessage,
-} from "../../features/chat/chatDetailsSlice";
-import Loader from "../Loader";
-import { toast } from "react-toastify";
-import { useState } from "react";
+import { MDBCard, MDBCardBody, MDBListGroup } from "mdb-react-ui-kit";
+import { useSelector } from "react-redux";
+
 import { Button } from "react-bootstrap";
-import "react-perfect-scrollbar/dist/css/styles.css";
-import PerfectScrollbar from "react-perfect-scrollbar";
-const Chatbox = () => {
-  const { receiver } = useParams();
-  const dispatch = useDispatch();
-  const { isSuccess, isError, isLoading, chat, message } = useSelector(
-    (state) => state.chatDetails
-  );
+
+import ScrollableFeed from "react-scrollable-feed";
+const Chatbox = ({
+  chat,
+  messageHandler,
+  text,
+  onChangeText,
+  selectedChat,
+}) => {
   const { user } = useSelector((state) => state.auth);
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    const getChatDetails = async () => {
-      await dispatch(fetchChatDetails(receiver));
-      dispatch(reset());
-    };
-    getChatDetails();
-  }, [isError, dispatch, message, receiver]);
-  const [text, setText] = useState();
-  const messageHandler = async () => {
-    if (!text || text === "") {
-      toast.error("empty message");
-      return;
-    }
-    const dataForm = {
-      receiverName: receiver,
-      value: text,
-    };
-    await dispatch(sendMessage(dataForm));
-    setText("");
-  };
-  if (isLoading || !chat) {
-    return <Loader />;
-  }
+
   return (
     <>
       <div className="scrollable-chat">
         <MDBListGroup className="list-unstyled pl-3 pr-3">
-          <PerfectScrollbar className="scrollable-chat">
+          <ScrollableFeed className="scrollable-chat">
             {chat.map((message) => (
               <li
                 className="chat-message d-flex justify-content-between mb-1"
@@ -85,7 +52,7 @@ const Chatbox = () => {
                 </MDBCard>
               </li>
             ))}
-          </PerfectScrollbar>
+          </ScrollableFeed>
         </MDBListGroup>
       </div>
       <div className="form-group basic-textarea">
@@ -94,7 +61,7 @@ const Chatbox = () => {
           id="exampleFormControlTextarea2"
           rows="3"
           placeholder="Type your message here..."
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => onChangeText(e)}
           value={text}
         />
         <Button
@@ -102,6 +69,7 @@ const Chatbox = () => {
           onClick={messageHandler}
           className="float-right mt-4"
           style={{ float: "right" }}
+          disabled={!selectedChat}
         >
           Send
         </Button>

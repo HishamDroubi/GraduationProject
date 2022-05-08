@@ -9,7 +9,7 @@
 }
 
 .chat-room .friend-list .list-group-item.active {
-  background-color: #eeeeee;
+  background-color: red;
 }
 
 .chat-room .avatar {

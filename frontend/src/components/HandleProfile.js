@@ -114,11 +114,7 @@ const HandleProfile = (props) => {
                 <div className="row">
                   {user.userName !== userName && (
                     <div className="col">
-                      <Button
-                        onClick={() =>
-                          navigate(`/chat/${userName}`)
-                        }
-                      >
+                      <Button onClick={() => navigate(`/chat/${userName}`)}>
                         new message
                       </Button>
                     </div>
@@ -126,7 +122,9 @@ const HandleProfile = (props) => {
 
                   {user.userName === userName && (
                     <div className="col">
-                      <Button>your messages</Button>
+                      <Button onClick={() => navigate("/chat")}>
+                        your messages
+                      </Button>
                     </div>
                   )}
                 </div>

@@ -21,6 +21,7 @@ messageRouter.post(
     let senderId = req.currentUser._id;
     let { receiverName } = req.body;
     let receiver = await User.findOne({ userName: receiverName });
+
     let key = serverConstants.hash_key;
     // Encrypt
     let value = CryptoJS.AES.encrypt(val, key).toString();
@@ -35,7 +36,8 @@ messageRouter.post(
     var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
     saveRespone["value"] = originalText;
-    res.status(200).json(saveRespone);
+    let sender = req.currentUser;
+    res.status(200).json({ chat: saveRespone, sender, receiver });
   })
 );
 
