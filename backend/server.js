@@ -12,7 +12,7 @@ let logger = require("./logger.js");
 const CryptoJS = require("crypto-js");
 //create the server
 let server = express();
-
+const path = require("path");
 //Routers
 let userRouter = require("./routes/userRouter.js");
 let authRouter = require("./routes/authRouter.js");
@@ -20,8 +20,8 @@ let groupRouter = require("./routes/groupRouter.js");
 let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
-const Message = require("./models/message");
-
+const serverConstants = require("./serverConstants.js");
+const chatRouter = require("./routes/chatRouter");
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
@@ -40,27 +40,26 @@ server.all("*", (req, res, next) => {
 });
 
 server.use("/group", groupRouter);
+//server.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+server.use("/uploads", express.static("uploads"));
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
+server.use("/chat", chatRouter);
 server.use(errorHandler);
 
 //start server
-const port = 3004;
-server.listen(port, () => {
-  logger.info("server is lestining on port " + port);
-});
 
-//User and Password For MongoDB
-let username = "hisham";
-let password = "hisham1234";
+const http = server.listen(serverConstants.server_port, () => {
+  logger.info("server is lestining on port " + serverConstants.server_port);
+});
 
 //connect to mongoDB
 const dbUrI =
   "mongodb+srv://" +
-  username +
+  serverConstants.MongoDBusername +
   ":" +
-  password +
+  serverConstants.MongoDBpassword +
   "@cluster0.fhqit.mongodb.net/GraduationProject?retryWrites=true&w=majority";
 
 //for testing
@@ -69,4 +68,47 @@ const dbUrI =
 mongoose.connect(dbUrI).then(() => {
   console.log("successfully connected");
   logger.info("successfully connected");
+});
+
+const io = require("socket.io")(http, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    // credentials: true,
+  },
+});
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  socket.on("setup", (userData) => {
+    socket.join(userData.userName);
+    console.log(userData.userName);
+    socket.emit("connected");
+  });
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+  
+  socket.on("new message", (newMessageRecieved) => {
+    if (
+      newMessageRecieved.chat.users[0].userName ===
+      newMessageRecieved.chat.users[1].userName
+    ) {
+      return;
+    }
+    if (
+      newMessageRecieved.sender.userName ===
+      newMessageRecieved.chat.users[0].userName
+    ) {
+      socket
+        .in(newMessageRecieved.chat.users[1].userName)
+        .emit("message recieved", newMessageRecieved);
+    } else {
+      socket
+        .in(newMessageRecieved.chat.users[0].userName)
+        .emit("message recieved", newMessageRecieved);
+    }
+  });
 });

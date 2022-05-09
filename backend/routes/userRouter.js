@@ -9,6 +9,7 @@ let Request = require("../models/request");
 const { protect } = require("../middleware/authMiddleware");
 const Level = require("../models/level");
 const Problem = require("../models/problem");
+const Invitaion = require("../models/invitation");
 
 //define userRouter
 let userRouter = express.Router();
@@ -62,6 +63,36 @@ userRouter.delete(
       throw new Error("userId Is not valid");
     }
 
+    //delete the User's groups
+    let groupsAsCoachDeleteResponse = await Group.deleteMany({ coach: userId });
+
+    let groups = await Group.find().populate({
+      path: "requests",
+      model: "Request",
+      populate: {
+        path: "requester",
+        model: "User",
+      },
+    });
+
+    //delete the requests from this users in the remaining groups
+    groups.forEach((group) => {
+      let requests = group["requests"];
+
+      requests = requests.filter((request) => {
+        let requester = request["requester"];
+        return requester["_id"] != userId;
+      });
+      group["requests"] = requests;
+      group.save();
+    });
+
+    //delete the invitations of for this user
+    let invitationsAsInvitedUserDeleteResponse = await Invitaion.deleteMany({
+      invitedUser: userId,
+    });
+
+    //delete the user itself626dc052cf3574fd2d0ef595
     let response = await User.deleteOne({ _id: userId });
     res.send(JSON.stringify(response));
   })

@@ -1,8 +1,8 @@
-import React from 'react'
-import { Card, ListGroup } from 'react-bootstrap'
-import Participant from './Participant'
-import { NavLink } from 'react-router-dom';
-import Request from './Request'
+import React from "react";
+import { Card, ListGroup } from "react-bootstrap";
+import Participant from "./Participant";
+import { NavLink } from "react-router-dom";
+import Request from "./Request";
 const Requests = (props) => {
   console.log(props.requests);
   return (
@@ -13,14 +13,15 @@ const Requests = (props) => {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
-              
             </tr>
           </thead>
           <tbody>
             {props.requests.map((r) => (
-
-              <tr>
-                <Request requestAcceptance={props.requestAcceptance} request={r} />
+              <tr key={r._id}>
+                <Request
+                  requestAcceptance={props.requestAcceptance}
+                  request={r}
+                />
               </tr>
             ))}
           </tbody>
@@ -28,6 +29,6 @@ const Requests = (props) => {
       </div>
     </>
   );
-}
+};
 
 export default Requests;

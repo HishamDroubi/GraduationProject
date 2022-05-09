@@ -11,27 +11,72 @@ import LevelDetails from "./pages/LevelDetails";
 import Groups from "./pages/Groups";
 import GroupDetails from "./pages/GroupDetails";
 import Protect from "./components/Protect";
+import ChatPage from "./pages/ChatPage";
 const App = () => {
   return (
-    <>
+    <div className="App">
       <Router>
         <Header />
         <main className="py-3">
-          <div style={{padding: '15px'}}>
+          <div style={{ padding: "15px" }}>
             <Routes>
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile/:userName/*" element={<Profile />} />
-              <Route path="/level/:id" element={<LevelDetails/>}/>
-              <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
-              <Route path="/group/:id/*" element={<GroupDetails/>}/>
+              <Route
+                path="/profile/:userName/*"
+                element={
+                  <Protect>
+                    <Profile />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/level/:id"
+                element={
+                  <Protect>
+                    <LevelDetails />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/groups/page/:pageNumber"
+                element={
+                  <Protect>
+                    <Groups />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/chat/:receiver"
+                element={
+                  <Protect>
+                    <ChatPage />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <Protect>
+                    <ChatPage />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/group/:id/*"
+                element={
+                  <Protect>
+                    <GroupDetails />
+                  </Protect>
+                }
+              />
             </Routes>
           </div>
         </main>
       </Router>
       <ToastContainer />
-    </>
+    </div>
   );
 };
 

@@ -24,6 +24,7 @@ import { reset } from "../features/profile/profileSlice";
 import { useNavigate } from "react-router-dom";
 const HandleProfile = (props) => {
   const userName = props.userName;
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const boxStyle = {
@@ -111,12 +112,23 @@ const HandleProfile = (props) => {
 
               <div className="list-group-item">
                 <div className="row">
-                  <div className="col">
-                    <Button>new message</Button>
-                  </div>
-                  <div className="col">
-                    <Button>your message</Button>
-                  </div>
+                  {user.userName !== userName && (
+                    <div className="col">
+                      <Button onClick={() => navigate(`/chat/${userName}`)}>
+                        new message
+                      </Button>
+                    </div>
+                  )}
+
+                  {user.userName === userName && (
+                    <div className="col">
+                      <Button
+                        onClick={() => navigate(`/chat`)}
+                      >
+                        your messages
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
