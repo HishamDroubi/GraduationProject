@@ -34,9 +34,13 @@ const ChatPage = () => {
   } = useSelector((state) => state.chats);
   const { user } = useSelector((state) => state.auth);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   useEffect(() => {
     setSocketConnected(true);
     socketInstance.io.emit("setup", user);
+    socketInstance.io.on("typing", () => setIsTyping(true));
+    socketInstance.io.on("stop typing", () => setIsTyping(false));
   }, [user]);
   useEffect(() => {
     if (isError) {
@@ -53,10 +57,7 @@ const ChatPage = () => {
     creatChat();
   }, [dispatch, receiver, isError, message]);
   useEffect(() => {
-    console.log("start");
     socketInstance.io.on("message recieved", (newMessageRecieved) => {
-      console.log(newMessageRecieved.chat._id);
-      console.log(selectedChatCompare);
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageRecieved.chat._id
@@ -66,17 +67,33 @@ const ChatPage = () => {
         dispatch(getMessage(newMessageRecieved));
       }
     });
-    console.log("end");
   }, [dispatch]);
   const [text, setText] = useState("");
   const onChangeText = (e) => {
     setText(e.target.value);
+    if (socketConnected) {
+      if (!typing) {
+        setTyping(true);
+        socketInstance.io.emit("typing", chat._id);
+      }
+    }
+    let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+    setTimeout(() => {
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socketInstance.io.emit("stop typing", chat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
   const messageHandler = async () => {
     if (text === "") {
       toast.error("empty message");
       return;
     }
+    socketInstance.io.emit("stop typing", chat._id);
     const dataForm = {
       chatId: chat._id,
       value: text,
@@ -106,6 +123,7 @@ const ChatPage = () => {
                 text={text}
                 onChangeText={onChangeText}
                 selectedChat={receiver ? true : false}
+                isTyping={isTyping}
               />
             </MDBCol>
           )}

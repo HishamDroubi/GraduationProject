@@ -1,8 +1,8 @@
 import { MDBCard, MDBCardBody, MDBListGroup } from "mdb-react-ui-kit";
 import { useSelector } from "react-redux";
-
+import Lottie from "lottie-react";
 import { Button } from "react-bootstrap";
-
+import typing from "../../animations/typing.json";
 import ScrollableFeed from "react-scrollable-feed";
 const Chatbox = ({
   chat,
@@ -10,9 +10,16 @@ const Chatbox = ({
   text,
   onChangeText,
   selectedChat,
+  isTyping,
 }) => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
   const { user } = useSelector((state) => state.auth);
-
   return (
     <>
       <div className="scrollable-chat">
@@ -52,6 +59,13 @@ const Chatbox = ({
             ))}
           </ScrollableFeed>
         </MDBListGroup>
+      </div>
+      <div style={{ marginLeft: 0, width: "45px" }}>
+        <Lottie
+          options={defaultOptions}
+          animationData={typing}
+          style={{ visibility: isTyping ? "visible" : "hidden" }}
+        />
       </div>
       <div className="form-group basic-textarea">
         <textarea
