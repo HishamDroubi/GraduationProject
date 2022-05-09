@@ -102,13 +102,7 @@ const GroupDetails = () => {
           />
           <Route
             path="/sheet"
-            element={
-              <Sheet
-                attachments={group.attachments}
-                group={group}
-                user={user}
-              />
-            }
+            element={<Sheet attachments={group.attachments} group={group} user={user}/>}
           />
         </Routes>
       )}

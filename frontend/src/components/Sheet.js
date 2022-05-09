@@ -1,20 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import { Accordion, Button, Card, Col, Row } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Form } from "react-bootstrap";
 import CreateAttachmentForm from './CreateAttachmentForm'
-import {
-  faFilePdf,
-  faFileWord,
-  faFileLines,
-  faFileImage,
-  faFilePowerpoint,
-  faFileZipper,
-} from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
-import FormContainer from "./FormContainer";
 import { deleteFile, uploadFile } from "../features/group/groupDetailsSlice";
 import { toast } from "react-toastify";
 import AttachmentItem from "./AttachmentItem";

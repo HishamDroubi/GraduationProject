@@ -1,5 +1,6 @@
 let mongoose = require("mongoose");
 let Schema = mongoose.Schema;
+<<<<<<< HEAD
 const Problem = require("./problem");
 const User = require("./user");
 
@@ -34,5 +35,24 @@ messageSchema.pre("save", function (next) {
   next();
 });
 
+=======
+
+let messageSchema = new Schema(
+  {
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    value: {
+      type: String,
+      required: true,
+    },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
+  },
+  { timestamps: true }
+);
+>>>>>>> origin
 let Message = mongoose.model("Message", messageSchema, "messages");
 module.exports = Message;

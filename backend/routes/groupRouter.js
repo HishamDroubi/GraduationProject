@@ -51,7 +51,10 @@ groupRouter.get(
       })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
+<<<<<<< HEAD
     console.log(groups);
+=======
+>>>>>>> origin
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );

@@ -1,13 +1,11 @@
 let express = require("express");
-let bcrypt = require("bcrypt");
-let body_parser = require("body-parser");
-let mongoose = require("mongoose");
 let asyncHandler = require("express-async-handler");
 let CryptoJS = require("crypto-js");
-
+const Chat = require("../models/chat");
 const Message = require("../models/message");
 const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
+<<<<<<< HEAD
 const serverConstants = require("../serverConstants.js");
 
 //helper function to find the messages between two users
@@ -31,10 +29,14 @@ let getMessages = async function (firstUser, secondUser) {
     .populate("sender");
   return messages;
 };
+=======
+const { hash_key } = require("../serverConstants.js");
+>>>>>>> origin
 
 //define messageRouter
 let messageRouter = express.Router();
 
+<<<<<<< HEAD
 messageRouter.post(
   "/create",
   protect,
@@ -78,10 +80,14 @@ messageRouter.get(
   })
 );
 
+=======
+// get all messsages for the selected chat
+>>>>>>> origin
 messageRouter.get(
-  "/chat",
+  "/:userName",
   protect,
   asyncHandler(async (req, res) => {
+<<<<<<< HEAD
     let firstUser = req.currentUser._id;
     let secondUser = req.body.otherUser;
 
@@ -89,14 +95,66 @@ messageRouter.get(
 
     let key = serverConstants.hash_key;
 
+=======
+    const { userName } = req.params;
+    const otherUser = await User.findOne({ userName });
+    const existChat = await Chat.findOne({
+      $and: [
+        { users: { $elemMatch: { $eq: req.currentUser._id } } },
+        { users: { $elemMatch: { $eq: otherUser._id } } },
+      ],
+    });
+    if (!existChat) {
+      res.status(400);
+      throw new Error("chat not found");
+    }
+    let messages = await Message.find({ chat: existChat._id })
+      .populate("sender")
+      .populate("value");
+>>>>>>> origin
     messages.forEach((message) => {
       // Decrypt
-      let bytes = CryptoJS.AES.decrypt(message["value"], key);
+      let bytes = CryptoJS.AES.decrypt(message["value"], hash_key);
       let originalText = bytes.toString(CryptoJS.enc.Utf8);
       message["value"] = originalText;
     });
+    res.status(200).json(messages);
+  })
+);
 
-    res.json(messages);
+messageRouter.post(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    console.log(req.body);
+    let { value, chatId } = req.body;
+
+    if (!value || !chatId) {
+      res.status(400);
+      throw new Error("Invalid data passed");
+    }
+    try {
+      const val = value;
+      value = CryptoJS.AES.encrypt(value, hash_key).toString();
+      let newMessage = {
+        sender: req.currentUser._id,
+        value,
+        chat: chatId,
+      };
+
+      let message = await Message.create(newMessage);
+     // console.log("messsage", message);
+      message = await message.populate("sender");
+      message = await message.populate("chat");
+      message = await User.populate(message, {
+        path: "chat.users",
+      });
+      await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
+      message["value"] = val;
+      res.status(200).json(message);
+    } catch (e) {
+      console.log(e);
+    }
   })
 );
 
