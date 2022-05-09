@@ -21,7 +21,7 @@ let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
 const serverConstants = require("./serverConstants.js");
-
+const chatRouter = require("./routes/chatRouter");
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
@@ -45,12 +45,12 @@ server.use("/uploads", express.static("uploads"));
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
-
+server.use("/chat", chatRouter);
 server.use(errorHandler);
 
 //start server
 
-server.listen(serverConstants.server_port, () => {
+const http = server.listen(serverConstants.server_port, () => {
   logger.info("server is lestining on port " + serverConstants.server_port);
 });
 
@@ -68,4 +68,44 @@ const dbUrI =
 mongoose.connect(dbUrI).then(() => {
   console.log("successfully connected");
   logger.info("successfully connected");
+});
+
+const io = require("socket.io")(http, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    // credentials: true,
+  },
+});
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  socket.on("setup", (userData) => {
+    socket.join(userData.userName);
+    console.log(userData.userName);
+    socket.emit("connected");
+  });
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+  socket.on("new message", (newMessageRecieved) => {
+    if (
+      newMessageRecieved.chat.users[0].userName ===
+      newMessageRecieved.chat.users[1].userName
+    ) {
+      return;
+    }
+    if (
+      newMessageRecieved.sender.userName ===
+      newMessageRecieved.chat.users[0].userName
+    ) {
+      socket
+        .in(newMessageRecieved.chat.users[1].userName)
+        .emit("message recieved", newMessageRecieved);
+    } else {
+      socket
+        .in(newMessageRecieved.chat.users[0].userName)
+        .emit("message recieved", newMessageRecieved);
+    }
+  });
 });

@@ -122,7 +122,9 @@ const HandleProfile = (props) => {
 
                   {user.userName === userName && (
                     <div className="col">
-                      <Button onClick={() => navigate("/chat")}>
+                      <Button
+                        onClick={() => navigate(`/chat`)}
+                      >
                         your messages
                       </Button>
                     </div>

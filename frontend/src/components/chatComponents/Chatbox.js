@@ -24,8 +24,7 @@ const Chatbox = ({
                 key={message._id}
                 style={{
                   flexDirection:
-                    user.userName === message.sender.userName ||
-                    !message.sender.userName
+                    user.userName === message.sender.userName
                       ? "row-reverse"
                       : "",
                 }}
@@ -33,8 +32,7 @@ const Chatbox = ({
                 <MDBCard
                   style={{
                     backgroundColor:
-                      user.userName === message.sender.userName ||
-                      !message.sender.userName
+                      user.userName === message.sender.userName
                         ? "#6495ED"
                         : "white",
                   }}
