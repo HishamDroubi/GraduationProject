@@ -4,6 +4,7 @@ let fetch = require("node-fetch");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/authMiddleware");
+const serverConstants = require("../serverConstants.js");
 
 let User = require("../models/user");
 
@@ -38,7 +39,10 @@ authRouter.post(
     }
     //hashing password before store it in DB
 
-    let hashedPassword = await bcrypt.hashSync(password, 10);
+    let hashedPassword = await bcrypt.hashSync(
+      password,
+      serverConstants.bcryptRounds
+    );
 
     //Create User Object
     let newUser = new User({
@@ -107,7 +111,10 @@ authRouter.put("/changePassword", protect, async (req, res) => {
   let userId = req.currentUser["_id"];
 
   let fitchedUser = await User.findById(userId);
-  fitchedUser.password = await bcrypt.hashSync(newPass, 10);
+  fitchedUser.password = await bcrypt.hashSync(
+    newPass,
+    serverConstants.bcryptRounds
+  );
 
   let response = await fitchedUser.save();
   res.status(200).json(response);

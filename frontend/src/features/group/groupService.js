@@ -21,6 +21,7 @@ const getGroupDetails = async (groupId, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(data);
   return data;
 };
 
@@ -63,6 +64,34 @@ const deleteGroup = async (groupId, token) => {
   console.log(data);
   return data;
 };
+const uploadFile = async (FileAndID, token) => {
+  const { groupId } = FileAndID;
+  const { formData } = FileAndID;
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.post(
+    `/group/addAttachment/${groupId}`,
+    formData,
+    config
+  );
+  console.log(data);
+  return data;
+};
+const deleteFile = async (attachmentId, token) => {
+  const { data } = await axios.delete(
+    `/group/deleteAttachment/${attachmentId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return data;
+};
 const groupService = {
   createGroup,
   fetchGroups,
@@ -71,6 +100,8 @@ const groupService = {
   requestAcceptance,
   cancelRequest,
   deleteGroup,
+  uploadFile,
+  deleteFile,
 };
 
 export default groupService;

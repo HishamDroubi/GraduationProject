@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
+    console.log(file);
     const { originalname } = file;
     cb(null, uuid() + "-" + originalname);
   },
@@ -50,7 +51,7 @@ groupRouter.get(
       })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
-      console.log(groups)
+    console.log(groups);
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
@@ -77,7 +78,7 @@ groupRouter.get(
             model: "User",
           },
         });
-        
+
       if (!group) {
         res.status(401);
         throw new Error("Group not found");
@@ -195,6 +196,7 @@ groupRouter.post(
       })
       .populate("coach");
     if (!WantedGroup.coach._id.equals(req.currentUser._id)) {
+      v;
       res.status(401);
       throw new Error("Not authorized, not the coach of the group");
     } else {
@@ -288,22 +290,23 @@ groupRouter.post(
       res.status(401);
       throw new Error("User not found");
     }
-    const userIsMember = await WantedGroup.participants.find((memeber) =>
-      memeber._id.equals(userId)
-    );
-    if (userIsMember) {
-      res.status(401);
-      throw new Error("User already joined the group");
-    }
+    // const userIsMember = await WantedGroup.participants.find((memeber) =>
+    //   memeber._id.equals(userId)
+    // );
+    // console.log(userIsMember);
+    // if (userIsMember) {
+    //   res.status(401);
+    //   throw new Error("User already joined the group");
+    // }
     //check if the invitation exist
-    const invitationExist = await Invitation.find({
-      group: groupId,
-      invitedUser: userId,
-    });
-    if (invitationExist) {
-      res.status(401);
-      throw new Error("User already invited to this group");
-    }
+    // const invitationExist = await Invitation.find({
+    //   group: groupId,
+    //   invitedUser: userId,
+    // });
+    // if (invitationExist) {
+    //   res.status(401);
+    //   throw new Error("User already invited to this group");
+    // }
     let newInvitation = new Invitation({
       group: groupId,
       invitedUser: userId,
@@ -498,7 +501,7 @@ groupRouter.delete(
 );
 
 groupRouter.delete(
-  "/removeUser",
+  "/removeParticipants",
   protect,
   asyncHandler(async (req, res) => {
     let userId = req.body.userId;
@@ -529,12 +532,12 @@ groupRouter.delete(
 
 //add an attachment for a group
 groupRouter.post(
-  "/addAttachment",
+  "/addAttachment/:groupId",
+  protect,
   upload.single("attach"),
   asyncHandler(async (req, res) => {
-    let groupId = req.body.groupId;
+    let groupId = req.params.groupId;
     let file = req.file;
-
     let newAttachment = new Attachment({
       originalname: file["originalname"],
       newName: file["filename"],
@@ -562,9 +565,10 @@ groupRouter.post(
 
 //delete an attachment from a group
 groupRouter.delete(
-  "/deleteAttachment",
+  "/deleteAttachment/:attachmentId",
+  protect,
   asyncHandler(async (req, res) => {
-    let attachmentId = req.body.attachmentId;
+    let { attachmentId } = req.params;
 
     let fetchedAttachment = await Attachment.findById(attachmentId);
 
@@ -591,7 +595,7 @@ groupRouter.delete(
 
     let saveResponse = await fetchedGroup.save();
 
-    res.json(deleteResponse);
+    res.json(fetchedAttachment);
   })
 );
 

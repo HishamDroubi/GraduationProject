@@ -6,7 +6,31 @@ let asyncHandler = require("express-async-handler");
 let CryptoJS = require("crypto-js");
 
 const Message = require("../models/message");
+const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
+const serverConstants = require("../serverConstants.js");
+
+//helper function to find the messages between two users
+let getMessages = async function (firstUser, secondUser) {
+  let messages = await Message.find({
+    /*
+    the query should be like this 
+      if you find a message with sender as first and reciever as second or vice versathen it is between them
+      and then return this messages ordered by the message date
+    */
+    $or: [
+      {
+        $and: [{ sender: firstUser }, { receiver: secondUser }],
+      },
+      {
+        $and: [{ sender: secondUser }, { receiver: firstUser }],
+      },
+    ],
+  })
+    .sort({ createdAt: -1 })
+    .populate("sender");
+  return messages;
+};
 
 //define messageRouter
 let messageRouter = express.Router();
@@ -19,7 +43,7 @@ messageRouter.post(
     let senderId = req.currentUser._id;
     let receiverId = req.body.receiverId;
 
-    let key = "CP-PTUK";
+    let key = serverConstants.hash_key;
 
     // Encrypt
     let ciphertext = CryptoJS.AES.encrypt(value, key).toString();
@@ -43,7 +67,7 @@ messageRouter.get(
     let fetchedMessage = await Message.findById(messageId);
     let value = fetchedMessage["value"];
 
-    let key = "CP-PTUK";
+    let key = serverConstants.hash_key;
     // Decrypt
     var bytes = CryptoJS.AES.decrypt(value, key);
     var originalText = bytes.toString(CryptoJS.enc.Utf8);
@@ -61,18 +85,9 @@ messageRouter.get(
     let firstUser = req.currentUser._id;
     let secondUser = req.body.otherUser;
 
-    let key = "CP-PTUK";
+    let messages = await getMessages(firstUser, secondUser);
 
-    let messages = await Message.find({
-      $or: [
-        {
-          $and: [{ sender: firstUser }, { receiver: secondUser }],
-        },
-        {
-          $and: [{ sender: secondUser }, { receiver: firstUser }],
-        },
-      ],
-    }).sort({ createdAt: -1 });
+    let key = serverConstants.hash_key;
 
     messages.forEach((message) => {
       // Decrypt
@@ -82,6 +97,27 @@ messageRouter.get(
     });
 
     res.json(messages);
+  })
+);
+
+messageRouter.get(
+  "/contacts",
+  protect,
+  asyncHandler(async (req, res) => {
+    let userId = req.currentUser._id;
+    let users = await User.find();
+
+    //filter the users to find which user the current user has a messages with him
+    let contacts = [];
+    let counter = 0;
+    users.forEach(async (user) => {
+      let messages = await getMessages(userId, user["_id"]);
+      if (messages.length > 0) contacts.push(user);
+      counter++;
+      if (counter == users.length) {
+        res.json(contacts);
+      }
+    });
   })
 );
 

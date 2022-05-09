@@ -15,9 +15,7 @@ import { Button, Card, ListGroup, Row } from "react-bootstrap";
 import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
 const Groups = () => {
-  const [basicModal, setBasicModal] = useState(false);
   const navigate = useNavigate();
-  const toggleShow = () => setBasicModal((prevState) => !prevState);
   const { pageNumber = 1 } = useParams();
   const { groups, isLoading, isSuccess, isError, message, pages, page } =
     useSelector((state) => state.group);
@@ -44,17 +42,7 @@ const Groups = () => {
   return (
     <>
       <>
-        <Button
-          onClick={toggleShow}
-          style={{ backgroundColor: backgroundColor, color: color }}
-        >
-          Create Groupe
-        </Button>
-        <CreateGroupForm
-          basicModal={basicModal}
-          toggleShow={toggleShow}
-          setBasicModal={setBasicModal}
-        />
+        <CreateGroupForm />
       </>
       {groups.map((group) => (
         <GroupCard group={group} key={group._id} />

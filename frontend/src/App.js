@@ -22,10 +22,38 @@ const App = () => {
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile/:userName/*" element={<Profile />} />
-              <Route path="/level/:id" element={<LevelDetails/>}/>
-              <Route path="/groups/page/:pageNumber" element={<Groups/>}/>
-              <Route path="/group/:id/*" element={<GroupDetails/>}/>
+              <Route
+                path="/profile/:userName/*"
+                element={
+                  <Protect>
+                    <Profile />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/level/:id"
+                element={
+                  <Protect>
+                    <LevelDetails />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/groups/page/:pageNumber"
+                element={
+                  <Protect>
+                    <Groups />
+                  </Protect>
+                }
+              />
+              <Route
+                path="/group/:id/*"
+                element={
+                  <Protect>
+                    <GroupDetails />
+                  </Protect>
+                }
+              />
             </Routes>
           </div>
         </main>

@@ -12,16 +12,17 @@ import { useParams } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button, Nav, Col, Row, Card } from "react-bootstrap";
-import Participants from '../components/Participants'
-import Requests from '../components/Requests'
+import Participants from "../components/Participants";
+import Requests from "../components/Requests";
 import { LinkContainer } from "react-router-bootstrap";
 import Sheet from "../components/Sheet";
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { group, isError, isSuccess, message, isLoading } =
-    useSelector((state) => state.groupDetails);
+  const { group, isError, isSuccess, message, isLoading } = useSelector(
+    (state) => state.groupDetails
+  );
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
     if (isError) {
@@ -58,38 +59,59 @@ const GroupDetails = () => {
     return <Loader />;
   }
 
-
   return (
-    <div style={{ marginLeft: '0px' }}>
-      {group && <Nav fill variant="tabs" defaultActiveKey="/home">
-        
-        {group && group.coach.userName === user.userName && <Nav.Item>
-          <LinkContainer to="request">
-            <Nav.Link>requests</Nav.Link>
-          </LinkContainer>
-        </Nav.Item>
-}
-     {group && group.coach.userName === user.userName && <Nav.Item>
-          <LinkContainer to="participants">
-            <Nav.Link>participants  </Nav.Link>
-          </LinkContainer>
-        </Nav.Item>
-}
-        <Nav.Item>
-          <LinkContainer to="sheet">
-            <Nav.Link>sheet</Nav.Link>
-          </LinkContainer>
-        </Nav.Item>
-      </Nav>}
+    <div style={{ marginLeft: "0px" }}>
+      {group && (
+        <Nav fill variant="tabs" activeKey="sheet">
+          {group && group.coach.userName === user.userName && (
+            <Nav.Item>
+              <LinkContainer to="request">
+                <Nav.Link eventKey="request">requests</Nav.Link>
+              </LinkContainer>
+            </Nav.Item>
+          )}
+          {group && group.coach.userName === user.userName && (
+            <Nav.Item>
+              <LinkContainer to="participants">
+                <Nav.Link eventKey="participants">participants</Nav.Link>
+              </LinkContainer>
+            </Nav.Item>
+          )}
+          <Nav.Item>
+            <LinkContainer to="sheet">
+              <Nav.Link eventKey="sheet">sheet</Nav.Link>
+            </LinkContainer>
+          </Nav.Item>
+        </Nav>
+      )}
 
-
-      {group &&
+      {group && (
         <Routes>
-          <Route path="/request" element={<Requests requestAcceptance={requestAcceptance} requests={group.requests} />} />
-          <Route path="/participants" element={<Participants participants={group.participants} />} />
-          <Route path="/sheet" element={<Sheet />} />
+          <Route
+            path="/request"
+            element={
+              <Requests
+                requestAcceptance={requestAcceptance}
+                requests={group.requests}
+              />
+            }
+          />
+          <Route
+            path="/participants"
+            element={<Participants participants={group.participants} />}
+          />
+          <Route
+            path="/sheet"
+            element={
+              <Sheet
+                attachments={group.attachments}
+                group={group}
+                user={user}
+              />
+            }
+          />
         </Routes>
-      }
+      )}
     </div>
   );
 };
