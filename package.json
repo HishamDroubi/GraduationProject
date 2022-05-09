@@ -37,6 +37,7 @@
     "nodemon": "^2.0.15",
     "react-bootstrap-icons": "^1.8.2",
     "react-icons": "^4.3.1",
+    "react-spoiler": "^0.4.3",
     "uuid": "^8.3.2",
     "winston": "^3.7.2"
   },
