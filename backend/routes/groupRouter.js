@@ -51,6 +51,9 @@ groupRouter.get(
       })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
+
+    console.log(groups);
+
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );

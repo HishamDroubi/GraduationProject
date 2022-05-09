@@ -21,7 +21,17 @@ let levelRouter = require("./routes/levelRouter.js");
 let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
 const serverConstants = require("./serverConstants.js");
+<<<<<<< HEAD
 const chatRouter = require("./routes/chatRouter");
+=======
+<<<<<<< HEAD
+const { group } = require("console");
+const { request } = require("https");
+
+=======
+const chatRouter = require("./routes/chatRouter");
+>>>>>>> origin
+>>>>>>> mahmoud
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
@@ -41,16 +51,38 @@ server.all("*", (req, res, next) => {
 
 server.use("/group", groupRouter);
 //server.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+server.use('/uploads', express.static('uploads'));
+server.use("/level", levelRouter);
+server.use("/problem", problemRouter);
+server.use("/message", messageRouter);
+
+=======
+>>>>>>> mahmoud
 server.use("/uploads", express.static("uploads"));
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
 server.use("/chat", chatRouter);
+<<<<<<< HEAD
+=======
+>>>>>>> origin
+>>>>>>> mahmoud
 server.use(errorHandler);
 
 //start server
 
+<<<<<<< HEAD
 const http = server.listen(serverConstants.server_port, () => {
+=======
+<<<<<<< HEAD
+server.listen(serverConstants.server_port, () => {
+=======
+const http = server.listen(serverConstants.server_port, () => {
+>>>>>>> origin
+>>>>>>> mahmoud
   logger.info("server is lestining on port " + serverConstants.server_port);
 });
 

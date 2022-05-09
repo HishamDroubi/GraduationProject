@@ -17,7 +17,12 @@ import {
   MDBModalBody,
   MDBModalFooter,
 } from "mdb-react-ui-kit";
+import { backgroundColor, color } from "../theme";
 const CreateGroupForm = (props) => {
+
+  const [basicModal, setBasicModal] = useState(false);
+  const toggleShow = () => setBasicModal((prevState) => !prevState);
+  
   const [formData, setFormData] = useState({
     name: "",
   });
@@ -55,57 +60,74 @@ const CreateGroupForm = (props) => {
     return <Loader />;
   }
   return (
-    <Form
-      onSubmit={onSubmit}
-      style={{
-        marginBottom: "20px",
-      }}
-    >
-    <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
-        <MDBModalDialog>
-          <MDBModalContent>
+    <>
+      <Button
+        onClick={toggleShow}
+        style={{ backgroundColor: backgroundColor, color: color }}
+      >
+        Create Groupe
+      </Button>
+      <Form
+        onSubmit={onSubmit}
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        <MDBModal
+          show={basicModal}
+          setShow={setBasicModal}
+          tabIndex="-1"
+        >
+          <MDBModalDialog>
+            <MDBModalContent>
+              <MDBModalHeader>
+                <MDBModalTitle>Create groupe</MDBModalTitle>
+                <Button
+                  type="button"
+                  className="btn-close"
+                  color="none"
+                  onClick={toggleShow}
+                ></Button>
+              </MDBModalHeader>
 
-            <MDBModalHeader>
-              <MDBModalTitle>Create groupe</MDBModalTitle>
-              <Button type="button" className='btn-close' color='none' onClick={props.toggleShow}></Button>
-            </MDBModalHeader>
+              <MDBModalBody>
+                <Form.Group className="mb-3" controlId="GroupName">
+                  <Form.Label style={{ marginLeft: 8 }}>Name</Form.Label>
+                  <Form.Control
+                    style={{ width: 300, marginLeft: 8 }}
+                    type="text"
+                    placeholder="Group Name"
+                    name="name"
+                    onChange={onChange}
+                    value={formData.name}
+                  />
+                </Form.Group>
+              </MDBModalBody>
 
-            <MDBModalBody>
-
-              <Form.Group className="mb-3" controlId="GroupName">
-                <Form.Label style={{ marginLeft: 8 }}>Name</Form.Label>
-                <Form.Control
-                  style={{ width: 300, marginLeft: 8 }}
-                  type="text"
-                  placeholder="Group Name"
-                  name="name"
-                  onChange={onChange}
-                  value={formData.name}
-                />
-              </Form.Group>
-
-            </MDBModalBody>
-
-            <MDBModalFooter>
-              <Button type="button" color='secondary' onClick={props.toggleShow}>
-                Close
-              </Button>
-              <Button
-                variant="primary"
-                type="submit"
-                style={{
-                  width: 150,
-                  marginLeft: 3
-                }}
-              >
-                Create Group
-              </Button>
-            </MDBModalFooter>
-
-          </MDBModalContent>
-        </MDBModalDialog>
-      </MDBModal>
-    </Form>
+              <MDBModalFooter>
+                <Button
+                  type="button"
+                  color="secondary"
+                  onClick={toggleShow}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  style={{
+                    width: 150,
+                    marginLeft: 3,
+                  }}
+                >
+                  Create Group
+                </Button>
+              </MDBModalFooter>
+            </MDBModalContent>
+          </MDBModalDialog>
+        </MDBModal>
+      </Form>
+    </>
   );
 };
 

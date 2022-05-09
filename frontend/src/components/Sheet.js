@@ -1,22 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Form } from "react-bootstrap";
-import {
-  faFilePdf,
-  faFileWord,
-  faFileLines,
-  faFileImage,
-  faFilePowerpoint,
-  faFileZipper,
-} from "@fortawesome/free-solid-svg-icons";
+import CreateAttachmentForm from './CreateAttachmentForm'
 import { useDispatch } from "react-redux";
-import FormContainer from "./FormContainer";
 import { deleteFile, uploadFile } from "../features/group/groupDetailsSlice";
 import { toast } from "react-toastify";
+import AttachmentItem from "./AttachmentItem";
 const Sheet = ({ group, user }) => {
+
   const [file, setFile] = useState(null);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -37,65 +29,34 @@ const Sheet = ({ group, user }) => {
   };
   return (
     <>
-      <div>
-        {group.coach.email === user.email && (
-          <FormContainer>
-            <Form onSubmit={submitHandler} className="mt-3">
-              <Form.Group controlId="formFile" className="mb-3">
-                <Form.Control
-                  type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-              </Form.Group>
-              <Button
-                variant="primary"
-                type="submit"
-                style={{
-                  width: "100%",
-                }}
-              >
-                Submit
-              </Button>
-            </Form>
-          </FormContainer>
-        )}
-      </div>
-      <div>
-        {group.attachments.map((attachment) => (
-          <div key={attachment._id}>
-            {attachment.type === "application/pdf" ? (
-              <FontAwesomeIcon icon={faFilePdf} size="lg" />
-            ) : attachment.type ===
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? (
-              <FontAwesomeIcon icon={faFileWord} size="lg" />
-            ) : attachment.type === "text/plain" ? (
-              <FontAwesomeIcon icon={faFileLines} size="lg" />
-            ) : attachment.type ===
-              "application/vnd.openxmlformats-officedocument.presentationml.presentation" ? (
-              <FontAwesomeIcon icon={faFilePowerpoint} size="lg" />
-            ) : attachment.type === "application/octet-stream" ? (
-              <FontAwesomeIcon icon={faFileZipper} size="lg" />
-            ) : (
-              <FontAwesomeIcon icon={faFileImage} size="lg" />
-            )}
-            <a
-              href={`http://localhost:3004/uploads/${attachment.newName}`}
-              download
-              target="_blank"
-              rel="noreferrer"
-            >
-              {attachment.originalname}
-            </a>
-            <Button
-              variant="danger"
-              value={attachment._id}
-              onClick={onDeleteAttachment}
-            >
-              Delete
-            </Button>
-          </div>
-        ))}
-      </div>
+     {group.coach.email === user.email && (
+   <CreateAttachmentForm/>
+   )}
+      <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Accordion Item #1</Accordion.Header>
+          <Accordion.Body>
+            {group.attachments.map((attachment) => (
+              <AttachmentItem
+                attachment={attachment}
+                onDeleteAttachment={onDeleteAttachment}
+              />
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>Accordion Item #2</Accordion.Header>
+          <Accordion.Body>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
     </>
   );
 };
