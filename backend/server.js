@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
   });
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
-  
+
   socket.on("new message", (newMessageRecieved) => {
     if (
       newMessageRecieved.chat.users[0].userName ===
@@ -110,5 +110,8 @@ io.on("connection", (socket) => {
         .in(newMessageRecieved.chat.users[0].userName)
         .emit("message recieved", newMessageRecieved);
     }
+  });
+  socket.off("setup", () => {
+    socket.leave(userData._id);
   });
 });
