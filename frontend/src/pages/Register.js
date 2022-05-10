@@ -14,9 +14,10 @@ const Register = () => {
     handle: "",
     phone: "",
     userName: "",
+    rePassword: "",
   });
 
-  const { email, password, handle, phone, userName } = formData;
+  const { email, password, handle, phone, userName, rePassword } = formData;
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -42,6 +43,10 @@ const Register = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
+    if (password !== rePassword) {
+      toast.error("Password and Confirm password must be match");
+      return;
+    }
     const userData = {
       email,
       password,
@@ -58,13 +63,14 @@ const Register = () => {
     <FormContainer>
       <Form onSubmit={onSubmit}>
         <Form.Group className="mb-3" controlId="userName">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Name"
+            placeholder="Username"
             name="userName"
             onChange={onChange}
             value={userName}
+            required
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="Email">
@@ -75,6 +81,7 @@ const Register = () => {
             name="email"
             onChange={onChange}
             value={email}
+            required
           />
         </Form.Group>
 
@@ -86,6 +93,7 @@ const Register = () => {
             name="handle"
             onChange={onChange}
             value={handle}
+            required
           />
         </Form.Group>
 
@@ -97,6 +105,19 @@ const Register = () => {
             name="password"
             onChange={onChange}
             value={password}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="rePassword">
+          <Form.Label>Confirm password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Confirm password"
+            name="rePassword"
+            onChange={onChange}
+            value={rePassword}
+            required
           />
         </Form.Group>
 

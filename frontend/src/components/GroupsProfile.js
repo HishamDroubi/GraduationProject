@@ -25,7 +25,7 @@ const GroupsProfile = (props) => {
     };
     fetchUserGroups();
   }, [dispatch, userName, message, isError, pageNumber]);
-  if (isLoading || !userGroups || !pages) {
+  if (isLoading ) {
     return <Loader />;
   } else if (pages && isSuccess) {
     if (pageNumber > pages) {
