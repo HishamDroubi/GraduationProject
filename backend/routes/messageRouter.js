@@ -6,11 +6,9 @@ const Message = require("../models/message");
 const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
 const { hash_key } = require("../serverConstants.js");
-
-//define messageRouter
+const serverConstants = require("../serverConstants.js");
 let messageRouter = express.Router();
 
-// get all messsages for the selected chat
 messageRouter.get(
   "/:userName",
   protect,
@@ -61,7 +59,6 @@ messageRouter.post(
       };
 
       let message = await Message.create(newMessage);
-     // console.log("messsage", message);
       message = await message.populate("sender");
       message = await message.populate("chat");
       message = await User.populate(message, {

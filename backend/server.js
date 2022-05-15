@@ -25,8 +25,6 @@ const chatRouter = require("./routes/chatRouter");
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
-server.use("/user", userRouter);
-server.use("/auth", authRouter);
 
 server.all("*", (req, res, next) => {
   let objToLog = {
@@ -40,8 +38,9 @@ server.all("*", (req, res, next) => {
 });
 
 server.use("/group", groupRouter);
-//server.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 server.use("/uploads", express.static("uploads"));
+server.use("/user", userRouter);
+server.use("/auth", authRouter);
 server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
@@ -110,5 +109,9 @@ io.on("connection", (socket) => {
         .in(newMessageRecieved.chat.users[0].userName)
         .emit("message recieved", newMessageRecieved);
     }
+  });
+  socket.off("setup", () => {
+    console.log("user left");
+    socket.leave(userData._id);
   });
 });
