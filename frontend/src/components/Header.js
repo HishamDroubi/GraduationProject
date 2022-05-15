@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Container, NavLink } from "react-bootstrap";
+import { Navbar, Nav, Container, NavLink, Toast } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
@@ -12,10 +12,16 @@ import { backgroundColor, color } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { resetGroup } from "../features/group/groupSlice";
 import { resetProfile } from "../features/profile/profileSlice";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { MDBListGroup, MDBListGroupItem, MDBBadge } from "mdb-react-ui-kit";
+import "../stylesheet/notification.css";
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [notificationList, setNotificationList] = useState(false);
+  const { notifications } = useSelector((state) => state.chats);
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
@@ -34,12 +40,14 @@ const Header = () => {
   }, [user]);
   return (
     <header>
-      <Navbar  expand="lg" style={{ paddingBottom: "0", backgroundColor: backgroundColor }}>
+      <Navbar
+        expand="lg"
+        style={{ paddingBottom: "0", backgroundColor: backgroundColor }}
+      >
         <Container>
           <Nav className="ms-auto">
             <LinkContainer to="/">
               <Navbar.Brand>
-                {" "}
                 <p style={{ color: color }}>CP-PTUK</p>
               </Navbar.Brand>
             </LinkContainer>
@@ -51,8 +59,8 @@ const Header = () => {
             </LinkContainer>
 
             <LinkContainer to="/groups/page/1">
-              <Nav.Link style={{ color: '#FFFFFF80' }}>
-                <strong style={{ color: '#FFFFFF80' }}>Level  </strong>
+              <Nav.Link style={{ color: "#FFFFFF80" }}>
+                <strong style={{ color: "#FFFFFF80" }}>Level </strong>
               </Nav.Link>
             </LinkContainer>
           </Nav>
@@ -63,6 +71,53 @@ const Header = () => {
             className="justify-content-end"
           >
             <Nav className="ms-auto">
+              {user && (
+                <>
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    size="lg"
+                    id="bell"
+                    type="button"
+                    onClick={() => setNotificationList(!notificationList)}
+                  />
+                  {notifications.length > 0 && (
+                    <MDBBadge
+                      color="danger"
+                      notification
+                      pill
+                      style={{
+                        position: "relative",
+                        height: "20px",
+                        right: "12px",
+                      }}
+                    >
+                      {notifications.length}
+                    </MDBBadge>
+                  )}
+                </>
+              )}
+              {notificationList && (
+                <MDBListGroup
+                  style={{
+                    position: "absolute",
+                    top: "60px",
+                    right: "220px",
+                    zIndex: 1,
+                  }}
+                >
+                  {notifications.map((notification) => (
+                    <MDBListGroupItem
+                      key={notification._id}
+                      type="button"
+                      onClick={() =>
+                        navigate(`/chat/${notification.sender.userName}`)
+                      }
+                    >
+                      {notification.sender.userName} sent a message
+                    </MDBListGroupItem>
+                  ))}
+                </MDBListGroup>
+              )}
               {user && (
                 <LinkContainer to={"/profile/" + user.userName}>
                   <Nav.Link>
@@ -78,8 +133,10 @@ const Header = () => {
                         height: "25px",
                         borderRadius: "50%",
                       }}
-                    /> <strong style={{ color: '#FFFFFF80' }}>{user.userName}</strong>
-                    
+                    />
+                    <strong style={{ color: "#FFFFFF80" }}>
+                      {user.userName}
+                    </strong>
                   </Nav.Link>
                 </LinkContainer>
               )}

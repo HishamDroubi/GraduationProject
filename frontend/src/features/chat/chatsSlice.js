@@ -10,6 +10,8 @@ const initialState = {
   isSuccess: false,
   chat: null,
   chatDetails: null,
+  notifications: [],
+  searchedContacts: null,
 };
 export const fetchChats = createAsyncThunk("chats", async (_, thunkAPI) => {
   try {
@@ -77,7 +79,59 @@ export const createChat = createAsyncThunk(
     }
   }
 );
+export const searchContacts = createAsyncThunk(
+  "chats/findContacts",
+  async (keyword, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await chatService.searchContacts(keyword, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
+export const addNotification = createAsyncThunk(
+  "chats/addNotification",
+  async (messageId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await chatService.addNotification(messageId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const fetchNotifications = createAsyncThunk(
+  "chats/fetchNotification",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await chatService.fetchNotifications(token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const chatsSlice = createSlice({
   name: "chats",
   initialState,
@@ -88,7 +142,17 @@ export const chatsSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
-    resetChats: (state) => initialState,
+    resetChats: (state) => {
+      state.isError = false;
+      state.isLoading = false;
+      state.message = "";
+      state.allChats = null;
+      state.isSuccess = false;
+      state.chat = null;
+      state.chatDetails = null;
+      state.searchedContacts = null;
+      selectedChatCompare = null;
+    },
     getMessage: (state, action) => {
       state.chatDetails.push(action.payload);
     },
@@ -96,12 +160,12 @@ export const chatsSlice = createSlice({
       socketInstance.io.emit("join chat", state.chat._id);
       selectedChatCompare = current(state.chat);
     },
+    // addNotification: (state, action) => {
+
+    // },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchChats.pending, (state) => {
-        state.isLoading = true;
-      })
       .addCase(fetchChats.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -125,6 +189,12 @@ export const chatsSlice = createSlice({
       })
       .addCase(createChat.fulfilled, (state, action) => {
         state.chat = action.payload;
+        const index = state.allChats.findIndex(
+          (chat) => chat._id === action.payload._id
+        );
+        if (index === -1) {
+          state.allChats = [...state.allChats, action.payload];
+        }
         state.isSuccess = true;
         state.isLoading = false;
       })
@@ -136,7 +206,34 @@ export const chatsSlice = createSlice({
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.isSuccess = true;
         state.chatDetails.push(action.payload);
+        const index = state.allChats.findIndex(
+          (chat) => chat._id === state.chat._id
+        );
+        state.allChats[index].latestMessage = action.payload;
+        const newChat = state.allChats[index];
+        const filterChats = state.allChats.filter(
+          (chat) => chat._id !== state.chat._id
+        );
+        state.allChats = [...filterChats, newChat];
         socketInstance.io.emit("new message", action.payload);
+      })
+      .addCase(searchContacts.fulfilled, (state, action) => {
+        state.searchedContacts = action.payload;
+      })
+      .addCase(addNotification.fulfilled, (state, action) => {
+        if (!state.notifications.includes(action.payload.message)) {
+          state.notifications = [
+            action.payload.message,
+            ...state.notifications,
+          ];
+        }
+      })
+      .addCase(fetchNotifications.fulfilled, (state, action) => {
+        const notificationsMessage = [];
+        for (let i = 0; i < action.payload.length; i++) {
+          notificationsMessage.push(action.payload[i].message);
+        }
+        state.notifications = notificationsMessage;
       });
   },
 });

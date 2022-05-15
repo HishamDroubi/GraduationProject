@@ -22,10 +22,10 @@
 } */
 
 .chat-room .scrollable-friends-list {
-  height: 310px;
+  height: 300px;
 }
 
 .chat-room .scrollable-chat {
-  height: 310px;
+  height: 300px;
   padding-bottom: 5px;
 }

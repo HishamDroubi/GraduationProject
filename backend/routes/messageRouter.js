@@ -6,7 +6,6 @@ const Message = require("../models/message");
 const User = require("../models/user");
 const { protect } = require("../middleware/authMiddleware");
 const { hash_key } = require("../serverConstants.js");
-const serverConstants = require("../serverConstants.js");
 let messageRouter = express.Router();
 
 messageRouter.get(
@@ -25,9 +24,9 @@ messageRouter.get(
       res.status(400);
       throw new Error("chat not found");
     }
-    let messages = await Message.find({ chat: existChat._id })
-      .populate("sender")
-      .populate("value");
+    let messages = await Message.find({ chat: existChat._id }).populate(
+      "sender"
+    );
     messages.forEach((message) => {
       // Decrypt
       let bytes = CryptoJS.AES.decrypt(message["value"], hash_key);
@@ -42,7 +41,6 @@ messageRouter.post(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    console.log(req.body);
     let { value, chatId } = req.body;
 
     if (!value || !chatId) {

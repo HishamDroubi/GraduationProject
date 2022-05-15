@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { deleteFile, uploadFile } from "../features/group/groupDetailsSlice";
 import { toast } from "react-toastify";
 import AttachmentItem from "./AttachmentItem";
+
 const Sheet = ({ group, user }) => {
 
   const [file, setFile] = useState(null);

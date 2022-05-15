@@ -15,9 +15,7 @@ chatRouter.post(
   asyncHandler(async (req, res) => {
     try {
       const { userName } = req.body;
-      console.log("userName", userName);
       const otherUser = await User.findOne({ userName });
-      console.log(otherUser);
       let existChat = await Chat.findOne({
         $and: [
           { users: { $elemMatch: { $eq: req.currentUser._id } } },
@@ -65,7 +63,7 @@ chatRouter.get(
       })
         .populate("users")
         .populate("latestMessage")
-        .sort({ updatedAt: -1 })
+        .sort({ updatedAt: 1 })
         .then(async (results) => {
           results = await User.populate(results, {
             path: "latestMessage.sender",
@@ -89,6 +87,21 @@ chatRouter.get(
       res.status(401);
       throw new Error(error.message);
     }
+  })
+);
+
+chatRouter.get(
+  "/contact/:keyword",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { keyword } = req.params;
+    const users = await User.find({
+      userName: {
+        $regex: keyword,
+        $options: "i",
+      },
+    });
+    res.status(200).json(users);
   })
 );
 module.exports = chatRouter;

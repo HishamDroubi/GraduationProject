@@ -22,6 +22,7 @@ let problemRouter = require("./routes/problemRouter.js");
 let messageRouter = require("./routes/messageRouter.js");
 const serverConstants = require("./serverConstants.js");
 const chatRouter = require("./routes/chatRouter");
+const notificationRouter = require("./routes/notificationRouter");
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
@@ -45,6 +46,7 @@ server.use("/level", levelRouter);
 server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
 server.use("/chat", chatRouter);
+server.use("/notification", notificationRouter);
 server.use(errorHandler);
 
 //start server
@@ -80,7 +82,6 @@ io.on("connection", (socket) => {
   console.log("Connected to socket.io");
   socket.on("setup", (userData) => {
     socket.join(userData.userName);
-    console.log(userData.userName);
     socket.emit("connected");
   });
   socket.on("join chat", (room) => {

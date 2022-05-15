@@ -12,7 +12,45 @@ import Groups from "./pages/Groups";
 import GroupDetails from "./pages/GroupDetails";
 import Protect from "./components/Protect";
 import ChatPage from "./pages/ChatPage";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { socketInstance } from "./socket";
+import {
+  fetchChats,
+  getMessage,
+  addNotification,
+  fetchNotifications,
+} from "./features/chat/chatsSlice";
+import { selectedChatCompare } from "./features/chat/chatsSlice";
 const App = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  console.log("selected chat compare", selectedChatCompare);
+  useEffect(() => {
+    if (user) {
+      socketInstance.io.emit("setup", user);
+    }
+  }, [user]);
+  useEffect(() => {
+    if (user) {
+      socketInstance.io.on("message recieved", (newMessageRecieved) => {
+        if (
+          !selectedChatCompare ||
+          selectedChatCompare._id !== newMessageRecieved.chat._id
+        ) {
+          dispatch(addNotification(newMessageRecieved._id));
+        } else {
+          dispatch(getMessage(newMessageRecieved));
+        }
+        dispatch(fetchChats());
+      });
+    }
+  }, [dispatch, user]);
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchNotifications());
+    }
+  }, [user, dispatch]);
   return (
     <div className="App">
       <Router>
