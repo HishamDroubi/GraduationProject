@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
 import CreateLevelForm from "../components/CreateLevelForm";
+import LevelCard from "../components/LevelCard";
 const Level = () => {
   const { user } = useSelector((state) => state.auth);
   const [basicModal, setBasicModal] = useState(false);
@@ -34,9 +35,9 @@ const Level = () => {
       <ListGroup>
         {levels &&
           levels.map((level) => (
-            <LinkContainer to={`/level/${level._id}`} key={level._id}>
-              <ListGroup.Item>{level.topic}</ListGroup.Item>
-            </LinkContainer>
+            
+            <LevelCard level={level}/>
+          
           ))}
       </ListGroup>
       {user && user.role === "admin" && (

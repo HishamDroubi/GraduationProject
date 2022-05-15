@@ -12,6 +12,8 @@ import { backgroundColor, color } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { resetGroup } from "../features/group/groupSlice";
 import { resetProfile } from "../features/profile/profileSlice";
+import Notifications from "./Notifications";
+import Notification from "./Notification";
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -34,7 +36,10 @@ const Header = () => {
   }, [user]);
   return (
     <header>
-      <Navbar  expand="lg" style={{ paddingBottom: "0", backgroundColor: backgroundColor }}>
+      <Navbar
+        expand="lg"
+        style={{ paddingBottom: "0", backgroundColor: backgroundColor }}
+      >
         <Container>
           <Nav className="ms-auto">
             <LinkContainer to="/">
@@ -51,8 +56,8 @@ const Header = () => {
             </LinkContainer>
 
             <LinkContainer to="/groups/page/1">
-              <Nav.Link style={{ color: '#FFFFFF80' }}>
-                <strong style={{ color: '#FFFFFF80' }}>Level  </strong>
+              <Nav.Link style={{ color: "#FFFFFF80" }}>
+                <strong style={{ color: "#FFFFFF80" }}>Level </strong>
               </Nav.Link>
             </LinkContainer>
           </Nav>
@@ -78,8 +83,10 @@ const Header = () => {
                         height: "25px",
                         borderRadius: "50%",
                       }}
-                    /> <strong style={{ color: '#FFFFFF80' }}>{user.userName}</strong>
-                    
+                    />{" "}
+                    <strong style={{ color: "#FFFFFF80" }}>
+                      {user.userName}
+                    </strong>
                   </Nav.Link>
                 </LinkContainer>
               )}
@@ -107,6 +114,10 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
               )}
+
+              {/* <LinkContainer to="/groups/page/1">
+                <Notifications/>
+              </LinkContainer> */}
             </Nav>
           </Navbar.Collapse>
         </Container>
