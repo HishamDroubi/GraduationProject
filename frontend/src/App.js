@@ -25,7 +25,6 @@ import { selectedChatCompare } from "./features/chat/chatsSlice";
 const App = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  console.log("selected chat compare", selectedChatCompare);
   useEffect(() => {
     if (user) {
       socketInstance.io.emit("setup", user);

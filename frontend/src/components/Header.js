@@ -164,6 +164,10 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
               )}
+
+              {/* <LinkContainer to="/groups/page/1">
+                <Notifications/>
+              </LinkContainer> */}
             </Nav>
           </Navbar.Collapse>
         </Container>
