@@ -44,7 +44,8 @@ notificationRouter.get(
             path: "sender",
             model: "User",
           },
-        });
+        })
+        .sort({ updatedAt: -1 });
       userNotifications.forEach((notification) => {
         // Decrypt
         let bytes = CryptoJS.AES.decrypt(
@@ -61,4 +62,18 @@ notificationRouter.get(
   })
 );
 
+notificationRouter.delete(
+  "/:notificationMessageId",
+  protect,
+  asyncHandler(async (req, res) => {
+    try {
+      const { notificationMessageId } = req.params;
+      const message = await Message.findById(notificationMessageId);
+      await Notification.deleteOne({ message: notificationMessageId });
+      res.status(200).json(message);
+    } catch (err) {
+      console.log(err.message);
+    }
+  })
+);
 module.exports = notificationRouter;

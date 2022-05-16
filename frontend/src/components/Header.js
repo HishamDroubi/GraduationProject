@@ -1,10 +1,8 @@
 import React from "react";
-import { Navbar, Nav, Container, NavLink, Toast } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
-import { MdOutlineGroups } from "react-icons/md";
-import { GoSignOut, GoSignIn } from "react-icons/go";
 import { useEffect } from "react";
 import profileService from "../features/profile/profileService";
 import { useState } from "react";
@@ -12,10 +10,11 @@ import { backgroundColor, color } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { resetGroup } from "../features/group/groupSlice";
 import { resetProfile } from "../features/profile/profileSlice";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MDBListGroup, MDBListGroupItem, MDBBadge } from "mdb-react-ui-kit";
 import "../stylesheet/notification.css";
+import { deleteNotification } from "../features/chat/chatsSlice";
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -38,6 +37,9 @@ const Header = () => {
     };
     user && getInfo();
   }, [user]);
+  const deleteHandler = async (notificationMessage) => {
+    await dispatch(deleteNotification(notificationMessage._id));
+  };
   return (
     <header>
       <Navbar
@@ -106,14 +108,30 @@ const Header = () => {
                   }}
                 >
                   {notifications.map((notification) => (
-                    <MDBListGroupItem
-                      key={notification._id}
-                      type="button"
-                      onClick={() =>
-                        navigate(`/chat/${notification.sender.userName}`)
-                      }
-                    >
-                      {notification.sender.userName} sent a message
+                    <MDBListGroupItem key={notification._id}>
+                      <div
+                        type="button"
+                        style={{
+                          display: "inline",
+                        }}
+                        onClick={() =>
+                          navigate(`/chat/${notification.sender.userName}`)
+                        }
+                      >
+                        {notification.sender.userName} sent a message
+                      </div>
+
+                      <FontAwesomeIcon
+                        icon={faCircleXmark}
+                        style={{
+                          position: "relative",
+                          right: "-5px",
+                          top: "1px",
+                        }}
+                        size="lg"
+                        type="button"
+                        onClick={() => deleteHandler(notification)}
+                      />
                     </MDBListGroupItem>
                   ))}
                 </MDBListGroup>

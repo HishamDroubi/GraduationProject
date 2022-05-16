@@ -34,11 +34,7 @@ const Level = () => {
     <>
       <ListGroup>
         {levels &&
-          levels.map((level) => (
-            
-            <LevelCard level={level}/>
-          
-          ))}
+          levels.map((level) => <LevelCard level={level} key={level._id} />)}
       </ListGroup>
       {user && user.role === "admin" && (
         <>

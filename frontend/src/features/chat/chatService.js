@@ -73,13 +73,25 @@ const addNotification = async (messageId, token) => {
   console.log(data);
   return data;
 };
-
 const fetchNotifications = async (token) => {
   const { data } = await axios.get("/notification", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(data);
+  return data;
+};
+
+const deleteNotification = async (notificationMessageId, token) => {
+  const { data } = await axios.delete(
+    `/notification/${notificationMessageId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   console.log(data);
   return data;
 };
@@ -91,6 +103,7 @@ const chatService = {
   searchContacts,
   addNotification,
   fetchNotifications,
+  deleteNotification,
 };
 
 export default chatService;

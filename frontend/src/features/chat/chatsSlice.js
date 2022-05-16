@@ -132,6 +132,24 @@ export const fetchNotifications = createAsyncThunk(
     }
   }
 );
+
+export const deleteNotification = createAsyncThunk(
+  "chats/deleteNotification",
+  async (notificationMessage, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await chatService.deleteNotification(notificationMessage, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const chatsSlice = createSlice({
   name: "chats",
   initialState,
@@ -160,9 +178,6 @@ export const chatsSlice = createSlice({
       socketInstance.io.emit("join chat", state.chat._id);
       selectedChatCompare = current(state.chat);
     },
-    // addNotification: (state, action) => {
-
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -234,6 +249,12 @@ export const chatsSlice = createSlice({
           notificationsMessage.push(action.payload[i].message);
         }
         state.notifications = notificationsMessage;
+      })
+      .addCase(deleteNotification.fulfilled, (state, action) => {
+        const index = state.notifications.findIndex(
+          (notification) => notification._id === action.payload._id
+        );
+        state.notifications.splice(index, 1);
       });
   },
 });
