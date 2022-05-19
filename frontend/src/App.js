@@ -22,6 +22,7 @@ import {
   fetchNotifications,
 } from "./features/chat/chatsSlice";
 import { selectedChatCompare } from "./features/chat/chatsSlice";
+import ResetPassword from "./pages/ResetPassword";
 const App = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -108,6 +109,8 @@ const App = () => {
                   </Protect>
                 }
               />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
             </Routes>
           </div>
         </main>

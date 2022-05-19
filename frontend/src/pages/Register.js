@@ -44,7 +44,7 @@ const Register = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (password !== rePassword) {
-      toast.error("Password and Confirm password must be match");
+      toast.error("Password and Confirm password must match");
       return;
     }
     const userData = {

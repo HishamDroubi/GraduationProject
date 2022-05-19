@@ -5,7 +5,8 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/authMiddleware");
 const serverConstants = require("../serverConstants.js");
-
+const nodeoutlook = require("nodejs-nodemailer-outlook");
+const { JWT_SECRET } = require("../serverConstants");
 let User = require("../models/user");
 
 //define authRouter
@@ -54,8 +55,6 @@ authRouter.post(
       level: "622345c1373a2b782b593f62",
       role: "normal",
     });
-
-    console.log(codeforcesUser);
     // Save in DB
     let response = await newUser.save();
 
@@ -120,9 +119,57 @@ authRouter.put("/changePassword", protect, async (req, res) => {
   res.status(200).json(response);
 });
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, "abc123", {
-    expiresIn: "30d",
+authRouter.post("/reset-password", async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+  const userExist = await User.findOne({ email });
+  if (!userExist) {
+    res.status(401).json("Email not Found");
+  } else {
+    nodeoutlook.sendEmail({
+      auth: {
+        user: "cpptuk@hotmail.com",
+        pass: "Zx1596321*",
+      },
+      from: "cpptuk@hotmail.com",
+      to: email,
+      subject: "Reset Password CP-PTUK",
+      html: `<a href=http://localhost:3000/reset-password/${generateToken(
+        userExist._id,
+        "900s"
+      )}>To reset the password click this link</a>`,
+    });
+    res.status(200).json("Check your email to reset the password");
+  }
+});
+
+authRouter.get("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const user = await User.findById(decoded.id);
+  res.status(200).json(user);
+});
+
+authRouter.post("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    res.status(401).json("Something went wrong please try later");
+  } else {
+    user.password = await bcrypt.hashSync(
+      password,
+      serverConstants.bcryptRounds
+    );
+    await user.save();
+    res.status(200).json("Password updated");
+  }
+});
+
+const generateToken = (id, time = "30d") => {
+  return jwt.sign({ id }, JWT_SECRET, {
+    expiresIn: time,
   });
 };
 module.exports = authRouter;
