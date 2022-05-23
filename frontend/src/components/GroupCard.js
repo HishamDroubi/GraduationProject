@@ -103,7 +103,7 @@ const GroupCard = ({ group }) => {
                 </Button>
               )}
             {group.participants.find((p) => p.userName === user.userName) && (
-              <LinkContainer to={`/group/${group._id}`}>
+              <LinkContainer to={`/group/${group._id}/sheet`}>
                 <Button
                   style={{
                     marginLeft: 60,

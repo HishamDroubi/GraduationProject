@@ -1,10 +1,19 @@
 import React from "react";
-import { Card, ListGroup } from "react-bootstrap";
-import Participant from "./Participant";
+import { Button, Card, ListGroup } from "react-bootstrap";
+import Participant from "../Participant";
 import { NavLink } from "react-router-dom";
+import {
+  MDBInput,
+  MDBListGroup,
+  MDBListGroupItem,
+  MDBBtn,
+} from "mdb-react-ui-kit";
 import Request from "./Request";
-const Requests = (props) => {
-  console.log(props.requests);
+import { InviteUsers } from "../../features/group/groupDetailsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import axios from "axios";
+const Requests = ({ groupId, requestAcceptance, requests }) => {
   return (
     <>
       <div className="table-responsive mt-3 mb-3 submissions-table">
@@ -16,12 +25,9 @@ const Requests = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.requests.map((r) => (
+            {requests.map((r) => (
               <tr key={r._id}>
-                <Request
-                  requestAcceptance={props.requestAcceptance}
-                  request={r}
-                />
+                <Request requestAcceptance={requestAcceptance} request={r} />
               </tr>
             ))}
           </tbody>

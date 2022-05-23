@@ -60,7 +60,7 @@ const Header = () => {
               </Nav.Link>
             </LinkContainer>
 
-            <LinkContainer to="/groups/page/1">
+            <LinkContainer to="/">
               <Nav.Link style={{ color: "#FFFFFF80" }}>
                 <strong style={{ color: "#FFFFFF80" }}>Level </strong>
               </Nav.Link>

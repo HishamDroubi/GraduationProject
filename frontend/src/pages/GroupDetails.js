@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import {
+  fetchGroupInvitations,
   getGroupDetails,
   requestDecision,
   reset,
@@ -8,17 +9,22 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button, Nav, Col, Row, Card } from "react-bootstrap";
 import Participants from "../components/Participants";
-import Requests from "../components/Requests";
+import Requests from "../components/groupDetailsComponents/Requests";
 import { LinkContainer } from "react-router-bootstrap";
-import Sheet from "../components/Sheet";
+import Sheet from "../components/groupDetailsComponents/Sheet";
+import Invitations from "../components/groupDetailsComponents/Invitations";
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const activeLink = location.pathname.substring(
+    location.pathname.lastIndexOf("/") + 1
+  );
   const { id } = useParams();
   const { group, isError, isSuccess, message, isLoading } = useSelector(
     (state) => state.groupDetails
@@ -33,17 +39,17 @@ const GroupDetails = () => {
     }
     const fetchGroup = async () => {
       await dispatch(getGroupDetails(id));
+      await dispatch(fetchGroupInvitations(id));
       dispatch(reset());
     };
     fetchGroup();
   }, [dispatch, isError, message, id, navigate]);
 
-  const requestAcceptance = async (e) => {
-    const val = e.target.value.split("/");
+  const requestAcceptance = async (requestId, acceptance) => {
     await dispatch(
       requestDecision({
-        requestId: val[0],
-        acceptance: val[1] === "true" ? true : false,
+        requestId,
+        acceptance,
       })
     );
     dispatch(reset());
@@ -61,51 +67,59 @@ const GroupDetails = () => {
 
   return (
     <div style={{ marginLeft: "0px" }}>
-      {group && (
-        <Nav fill variant="tabs" activeKey="sheet">
-          {group && group.coach.userName === user.userName && (
-            <Nav.Item>
-              <LinkContainer to="request">
-                <Nav.Link eventKey="request">requests</Nav.Link>
-              </LinkContainer>
-            </Nav.Item>
-          )}
-          {group && group.coach.userName === user.userName && (
-            <Nav.Item>
-              <LinkContainer to="participants">
-                <Nav.Link eventKey="participants">participants</Nav.Link>
-              </LinkContainer>
-            </Nav.Item>
-          )}
+      <Nav fill variant="tabs" activeKey={activeLink}>
+        <Nav.Item>
+          <LinkContainer to="sheet">
+            <Nav.Link eventKey="sheet">Sheet</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+        {group.coach.userName === user.userName && (
           <Nav.Item>
-            <LinkContainer to="sheet">
-              <Nav.Link eventKey="sheet">sheet</Nav.Link>
+            <LinkContainer to="request">
+              <Nav.Link eventKey="request">Requests</Nav.Link>
             </LinkContainer>
           </Nav.Item>
-        </Nav>
-      )}
+        )}
+        {group.coach.userName === user.userName && (
+          <Nav.Item>
+            <LinkContainer to="invitation">
+              <Nav.Link eventKey="invitation">Invitations</Nav.Link>
+            </LinkContainer>
+          </Nav.Item>
+        )}
+        <Nav.Item>
+          <LinkContainer to="participants">
+            <Nav.Link eventKey="participants">Participants</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
+      </Nav>
 
-      {group && (
-        <Routes>
-          <Route
-            path="/request"
-            element={
-              <Requests
-                requestAcceptance={requestAcceptance}
-                requests={group.requests}
-              />
-            }
-          />
-          <Route
-            path="/participants"
-            element={<Participants participants={group.participants} />}
-          />
-          <Route
-            path="/sheet"
-            element={<Sheet attachments={group.attachments} group={group} user={user}/>}
-          />
-        </Routes>
-      )}
+      <Routes>
+        <Route
+          path="request"
+          element={
+            <Requests
+              requestAcceptance={requestAcceptance}
+              requests={group.requests}
+              groupId={group._id}
+            />
+          }
+        />
+        <Route
+          path="invitation"
+          element={<Invitations groupId={group._id} />}
+        />
+        <Route
+          path="participants"
+          element={<Participants participants={group.participants} />}
+        />
+        <Route
+          path="sheet"
+          element={
+            <Sheet attachments={group.attachments} group={group} user={user} />
+          }
+        />
+      </Routes>
     </div>
   );
 };
