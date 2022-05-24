@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import groupService from "./groupService";
-
+import { socketInstance } from "../../socket";
 const initialState = {
   isError: false,
   isLoading: false,
@@ -227,11 +227,13 @@ export const groupDetailsSlice = createSlice({
       })
       .addCase(inviteUser.fulfilled, (state, action) => {
         state.invitations.push(action.payload);
+        socketInstance.io.emit("new invitation", action.payload);
       })
       .addCase(cancelInvitation.fulfilled, (state, action) => {
         state.invitations = state.invitations.filter(
           (invitation) => invitation._id !== action.payload._id
         );
+        socketInstance.io.emit("cancel invitation", action.payload);
       });
   },
 });

@@ -141,6 +141,8 @@ const cancelInvitation = async (invitationId, token) => {
   console.log(data);
   return data;
 };
+
+
 const groupService = {
   createGroup,
   fetchGroups,

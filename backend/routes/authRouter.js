@@ -76,7 +76,15 @@ authRouter.post(
       res.status(400);
       throw new Error("Please add all fields");
     }
-    let fitchedUser = await User.findOne({ email: email });
+    let fitchedUser = await User.findOne({ email: email })
+      .populate({
+        path: "invitations",
+        model: "Invitation",
+        populate: {
+          path: "group",
+          model: "Group",
+        },
+      });
     if (fitchedUser == undefined) {
       res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");
@@ -91,6 +99,7 @@ authRouter.post(
         role: fitchedUser.role,
         email: fitchedUser.email,
         handle: fitchedUser.handle,
+        invitations: fitchedUser.invitations ? fitchedUser.invitations : [],
       });
     } else {
       res.status(400);

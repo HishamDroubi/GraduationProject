@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Card, ListGroup } from "react-bootstrap";
-import Participant from "../Participant";
+import Participant from "./Participant";
 import { NavLink } from "react-router-dom";
 import {
   MDBInput,

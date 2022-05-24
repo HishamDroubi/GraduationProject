@@ -25,6 +25,23 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
 
+export const invitationAcceptance = createAsyncThunk(
+  "user/:id/invitation/:id",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.invitationAcceptance(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const register = createAsyncThunk(
   "auth/register",
   async (user, thunkAPI) => {
@@ -50,6 +67,23 @@ export const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
+    },
+    fetchNewInvetation: (state, action) => {
+      if (
+        !state.user.invitations.find(
+          (invitation) => invitation._id === action.payload._id
+        )
+      ) {
+        state.user.invitations.push(action.payload);
+        localStorage.setItem("user", JSON.stringify(state.user));
+      }
+    },
+    deleteTheInvitation: (state, action) => {
+      console.log(action.payload);
+      state.user.invitations = state.user.invitations.filter(
+        (invitation) => invitation._id !== action.payload._id
+      );
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
   },
   extraReducers: (builder) => {
@@ -84,8 +118,15 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+      })
+      .addCase(invitationAcceptance.fulfilled, (state, action) => {
+        state.user.invitations = state.user.invitations.filter(
+          (invitation) => invitation._id !== action.payload._id
+        );
+        localStorage.setItem("user", JSON.stringify(state.user));
       });
   },
 });
-export const { reset } = authSlice.actions;
+export const { reset, fetchNewInvetation, deleteTheInvitation } =
+  authSlice.actions;
 export default authSlice.reducer;

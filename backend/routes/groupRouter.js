@@ -332,7 +332,6 @@ groupRouter.post(
   asyncHandler(async (req, res) => {
     let invitationId = req.body.invitationId;
     let acceptance = req.body.acceptance;
-
     if (!mongoose.isValidObjectId(invitationId)) {
       res.status(403);
       throw new Error("invitationId Is not valid");
@@ -345,16 +344,21 @@ groupRouter.post(
 
     let fetchedInvitation = await Invitation.findById(invitationId);
     let userId = fetchedInvitation["invitedUser"];
-    let fetchedUser = await User.findById(userId);
+    let fetchedUser = await User.findById(userId).populate("invitations");
     let invitations = fetchedUser["invitations"];
 
-    invitations = invitations.filter((invitation) => {
-      return invitationId != invitation["invitedUser"];
+    //deleting the Invitation from UserObject
+    let updatedInvitations = invitations.filter((invitation) => {
+      return invitationId !== invitation["_id"].toString();
     });
-
-    fetchedUser["invitations"] = invitations;
-
-    let ResultString = "Rejected successfully";
+    await User.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          invitations: updatedInvitations,
+        },
+      }
+    );
 
     //if the user accept add it to the partcipents of the group
     if (acceptance) {
@@ -363,27 +367,22 @@ groupRouter.post(
       participants.push(userId);
       fetchedGroup["participants"] = participants;
       await fetchedGroup.save();
-      ResultString = "Accepted Successfully";
     }
-
-    //deleting the Invitation from UserObject
-    let responseFromSave = await fetchedUser.save();
-
     //deleting the Invitation from DB
-    let responseFromDelete = await Invitation.deleteOne({ _id: invitationId });
-
-    res.send(JSON.stringify("ResultString"));
+    await Invitation.deleteOne({ _id: invitationId });
+    res.status(200).json(fetchedInvitation);
   })
 );
-
 //delete invite
 groupRouter.delete(
   "/deleteInvitation/:invitationId",
   protect,
   asyncHandler(async (req, res) => {
-    let {invitationId} = req.params;
+    let { invitationId } = req.params;
 
-    let fetchedInvite = await Invitation.findById(invitationId);
+    let fetchedInvite = await Invitation.findById(invitationId)
+      .populate("group")
+      .populate("invitedUser");
 
     //first you have to delete the invite from the User invitations array
     let invitedUserId = fetchedInvite["invitedUser"];

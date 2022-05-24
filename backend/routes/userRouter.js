@@ -97,7 +97,6 @@ userRouter.delete(
     res.send(JSON.stringify(response));
   })
 );
-
 //change handle
 userRouter.put(
   "/changeHandle",

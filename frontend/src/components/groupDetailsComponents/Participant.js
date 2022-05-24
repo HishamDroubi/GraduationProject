@@ -6,7 +6,11 @@ const Participant = (props) => {
   return (
     <>
       <td>{props.index + 1}</td>
-      <td>{props.participant.userName}</td>
+      <td>
+        <Link to={`/profile/${props.participant.userName}`}>
+          {props.participant.userName}
+        </Link>
+      </td>
     </>
   );
 };
