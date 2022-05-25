@@ -98,7 +98,7 @@ const GroupDetails = () => {
           />
           <Route
             path="/participants"
-            element={<Participants participants={group.participants} />}
+            element={<Participants coach={group.coach} participants={group.participants} />}
           />
           <Route
             path="/sheet"

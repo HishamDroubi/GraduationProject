@@ -26,6 +26,25 @@ export const getGroupDetails = createAsyncThunk(
   }
 );
 
+export const deleteParticipants = createAsyncThunk(
+  "group/:id/removeParticipant/:id",
+  async (data, thunkAPI) => {
+
+    try {console.log(thunkAPI);
+       const token = thunkAPI.getState().auth.user.token; 
+       return await groupService.deleteParticipant(data, token);
+     
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const requestDecision = createAsyncThunk(
   "group/:id/request/:id/acceptance",
   async (data, thunkAPI) => {

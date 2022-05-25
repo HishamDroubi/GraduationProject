@@ -47,6 +47,16 @@ const requestAcceptance = async (data, token) => {
   return response.data;
 };
 
+const deleteParticipant = async (data, token) => {
+  console.log(token);
+  const response = await axios.delete(`/group/${data.groupId}/removeParticipants/${data.participantId}`,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 const cancelRequest = async (requestId, token) => {
   const { data } = await axios.delete(`/group/deleteRequest/${requestId}`, {
     headers: {
@@ -102,6 +112,7 @@ const groupService = {
   deleteGroup,
   uploadFile,
   deleteFile,
+  deleteParticipant,
 };
 
 export default groupService;

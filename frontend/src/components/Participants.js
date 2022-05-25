@@ -23,7 +23,7 @@ const Participants = (props) => {
           <tbody>
             {props.participants.map((p, index) => (
               <tr key={p._id}>
-                <Participant index={index} key={p._id} participant={p} />
+                <Participant coach={props.coach} index={index} key={p._id} participant={p} />
               </tr>
             ))}
           </tbody>

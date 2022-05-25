@@ -503,25 +503,25 @@ groupRouter.delete(
 );
 
 groupRouter.delete(
-  "/removeParticipants",
+  "/:groupId/removeParticipants/:participantId",
   protect,
   asyncHandler(async (req, res) => {
-    let userId = req.body.userId;
-    let groupId = req.body.groupId;
+    let {participantId, groupId} = req.params;
 
+    console.log(participantId, groupId);
     let result = "result";
 
     let fetchedGroup = await Group.findById(groupId);
 
     //if the removed User is the coach then the froup should be deleted
-    if (userId == fetchedGroup["coach"]) {
+    if (participantId == fetchedGroup["coach"]) {
       let deleteResult = await Group.deleteOne({ _id: groupId });
       result = deleteResult;
     } else {
       let participants = fetchedGroup["participants"];
 
       let filteredParticipants = participants.filter((partcipent) => {
-        return partcipent["_id"] != userId;
+        return partcipent["_id"] != participantId;
       });
 
       fetchedGroup["participants"] = filteredParticipants;
