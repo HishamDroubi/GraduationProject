@@ -23,6 +23,7 @@ import { invitationAcceptance } from "../features/auth/authSlice";
 import { reset } from "../features/group/groupSlice";
 const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
+  console.log(user);
   const dispatch = useDispatch();
   const requestToJoin = async () => {
     await dispatch(requestGroup(group._id));

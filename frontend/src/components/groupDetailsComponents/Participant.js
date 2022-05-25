@@ -3,7 +3,7 @@ import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { deleteParticipants } from "../features/group/groupDetailsSlice";
+import { deleteParticipants } from "../../features/group/groupDetailsSlice";
 
 const Participant = (props) => {
   const { user } = useSelector((state) => state.auth);
@@ -24,16 +24,13 @@ const Participant = (props) => {
   return (
     <>
       <td>{props.index + 1}</td>
-<<<<<<< HEAD:frontend/src/components/Participant.js
-      <td>{props.participant.userName}</td>
-      {user.userName === props.coach.userName &&  <td><Button onClick={() => deleteParticipant()} variant="danger">Delete</Button></td>}
-=======
       <td>
         <Link to={`/profile/${props.participant.userName}`}>
           {props.participant.userName}
         </Link>
       </td>
->>>>>>> f69a434609fafc0e9ca7b81c02f6a725c150aa6a:frontend/src/components/groupDetailsComponents/Participant.js
+      {user.userName === props.coach.userName &&  <td><Button onClick={() => deleteParticipant()} variant="danger">Delete</Button></td>}
+
     </>
   );
 };
