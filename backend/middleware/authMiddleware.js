@@ -4,7 +4,6 @@ const User = require("../models/user");
 const { JWT_SECRET } = require("../serverConstants");
 const protect = asyncHAndler(async (req, res, next) => {
   let token;
-  console.log(req.headers.authorization)
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -16,7 +15,6 @@ const protect = asyncHAndler(async (req, res, next) => {
       req.currentUser = await User.findById(decoded.id).select("-password");
       next();
     } catch (err) {
-      console.log(err);
       res.status(401);
       throw new Error("Not authorized");
     }

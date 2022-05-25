@@ -111,7 +111,12 @@ const GroupDetails = () => {
         />
         <Route
           path="participants"
-          element={<Participants participants={group.participants} />}
+          element={
+            <Participants
+              participants={group.participants}
+              coach={group.coach}
+            />
+          }
         />
         <Route
           path="sheet"

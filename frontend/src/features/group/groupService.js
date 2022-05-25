@@ -48,7 +48,6 @@ const requestAcceptance = async (data, token) => {
 };
 
 const deleteParticipant = async (data, token) => {
-  console.log(token);
   const response = await axios.delete(`/group/${data.groupId}/removeParticipants/${data.participantId}`,{
     headers: {
       Authorization: `Bearer ${token}`,

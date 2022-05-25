@@ -561,14 +561,14 @@ groupRouter.delete(
   "/:groupId/removeParticipants/:participantId",
   protect,
   asyncHandler(async (req, res) => {
-    let {participantId, groupId} = req.params;
+    let { participantId, groupId } = req.params;
 
     console.log(participantId, groupId);
     let result = "result";
 
     let fetchedGroup = await Group.findById(groupId);
 
-    //if the removed User is the coach then the froup should be deleted
+    //if the removed User is the coach then the group should be deleted
     if (participantId == fetchedGroup["coach"]) {
       let deleteResult = await Group.deleteOne({ _id: groupId });
       result = deleteResult;
@@ -582,8 +582,9 @@ groupRouter.delete(
       fetchedGroup["participants"] = filteredParticipants;
       let saveResult = await fetchedGroup.save();
       result = saveResult;
+      result = await result.populate("participants");
     }
-    res.send(result);
+    res.status(200).json(result);
   })
 );
 

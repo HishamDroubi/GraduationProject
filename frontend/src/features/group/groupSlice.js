@@ -93,8 +93,9 @@ export const groupSlice = createSlice({
       const index = state.groups.findIndex(
         (group) => group._id === action.payload.groupId
       );
-      console.log(index);
-      state.groups[index].participants.push(action.payload.user);
+      if (index > -1) {
+        state.groups[index].participants.push(action.payload.user);
+      }
     },
   },
   extraReducers: (builder) => {

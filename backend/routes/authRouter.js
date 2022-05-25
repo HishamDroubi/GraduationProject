@@ -54,6 +54,7 @@ authRouter.post(
       password: hashedPassword,
       level: "622345c1373a2b782b593f62",
       role: "normal",
+      invitations: [],
     });
     // Save in DB
     let response = await newUser.save();
@@ -64,6 +65,7 @@ authRouter.post(
       role: response.role,
       email: response.email,
       handle: response.handle,
+      invitations: response.invitations,
     });
   })
 );
@@ -76,15 +78,14 @@ authRouter.post(
       res.status(400);
       throw new Error("Please add all fields");
     }
-    let fitchedUser = await User.findOne({ email: email })
-      .populate({
-        path: "invitations",
-        model: "Invitation",
-        populate: {
-          path: "group",
-          model: "Group",
-        },
-      });
+    let fitchedUser = await User.findOne({ email: email }).populate({
+      path: "invitations",
+      model: "Invitation",
+      populate: {
+        path: "group",
+        model: "Group",
+      },
+    });
     if (fitchedUser == undefined) {
       res.status(400);
       throw new Error("The Email Or The Password Is Incorrect");

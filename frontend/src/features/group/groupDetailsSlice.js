@@ -31,11 +31,9 @@ export const getGroupDetails = createAsyncThunk(
 export const deleteParticipants = createAsyncThunk(
   "group/:id/removeParticipant/:id",
   async (data, thunkAPI) => {
-
-    try {console.log(thunkAPI);
-       const token = thunkAPI.getState().auth.user.token; 
-       return await groupService.deleteParticipant(data, token);
-     
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.deleteParticipant(data, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -253,6 +251,9 @@ export const groupDetailsSlice = createSlice({
           (invitation) => invitation._id !== action.payload._id
         );
         socketInstance.io.emit("cancel invitation", action.payload);
+      })
+      .addCase(deleteParticipants.fulfilled, (state, action) => {
+        state.group.participants = action.payload.participants;
       });
   },
 });

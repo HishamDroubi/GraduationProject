@@ -13,14 +13,12 @@ const Participant = (props) => {
   );
 
   const data = {
-    "groupId": group._id, 
-    "participantId": props.participant._id
-};
-  const deleteParticipant = async() => {
-    const response = await dispatch(deleteParticipants(data));
-    console.log(response)
-    
-  }
+    groupId: group._id,
+    participantId: props.participant._id,
+  };
+  const deleteParticipant = async () => {
+    await dispatch(deleteParticipants(data));
+  };
   return (
     <>
       <td>{props.index + 1}</td>
@@ -29,8 +27,19 @@ const Participant = (props) => {
           {props.participant.userName}
         </Link>
       </td>
-      {user.userName === props.coach.userName &&  <td><Button onClick={() => deleteParticipant()} variant="danger">Delete</Button></td>}
-
+      {user.userName === props.coach.userName && (
+        <td>
+          <Button
+            onClick={() => deleteParticipant()}
+            variant="danger"
+            style={{
+              visibility: props.index === 0 && "hidden",
+            }}
+          >
+            Delete
+          </Button>
+        </td>
+      )}
     </>
   );
 };
