@@ -52,8 +52,6 @@ groupRouter.get(
       .limit(pageSize)
       .skip((page - 1) * pageSize);
 
-    console.log(groups);
-
     res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
@@ -301,14 +299,14 @@ groupRouter.post(
     //   throw new Error("User already joined the group");
     // }
     //check if the invitation exist
-    // const invitationExist = await Invitation.find({
-    //   group: groupId,
-    //   invitedUser: userId,
-    // });
-    // if (invitationExist) {
-    //   res.status(401);
-    //   throw new Error("User already invited to this group");
-    // }
+    const invitationExist = await Invitation.findOne({
+      group: groupId,
+      invitedUser: userId,
+    });
+    if (invitationExist) {
+      res.status(401);
+      throw new Error("User already invited to this group");
+    }
     let newInvitation = new Invitation({
       group: groupId,
       invitedUser: userId,
@@ -321,8 +319,10 @@ groupRouter.post(
     invitations.push(invitationResult);
 
     fetchedUser["invitations"] = invitations;
-    let response = await fetchedUser.save();
-    res.status(200).json(response);
+    await fetchedUser.save();
+    invitationResult = await invitationResult.populate("group");
+    invitationResult = await invitationResult.populate("invitedUser");
+    res.status(200).json(invitationResult);
   })
 );
 
@@ -332,7 +332,6 @@ groupRouter.post(
   asyncHandler(async (req, res) => {
     let invitationId = req.body.invitationId;
     let acceptance = req.body.acceptance;
-
     if (!mongoose.isValidObjectId(invitationId)) {
       res.status(403);
       throw new Error("invitationId Is not valid");
@@ -344,19 +343,22 @@ groupRouter.post(
     }
 
     let fetchedInvitation = await Invitation.findById(invitationId);
-    console.log(fetchedInvitation);
     let userId = fetchedInvitation["invitedUser"];
-    console.log(userId);
-    let fetchedUser = await User.findById(userId);
+    let fetchedUser = await User.findById(userId).populate("invitations");
     let invitations = fetchedUser["invitations"];
 
-    invitations = invitations.filter((invitation) => {
-      return invitationId != invitation["invitedUser"];
+    //deleting the Invitation from UserObject
+    let updatedInvitations = invitations.filter((invitation) => {
+      return invitationId !== invitation["_id"].toString();
     });
-
-    fetchedUser["invitations"] = invitations;
-
-    let ResultString = "Rejected successfully";
+    await User.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          invitations: updatedInvitations,
+        },
+      }
+    );
 
     //if the user accept add it to the partcipents of the group
     if (acceptance) {
@@ -365,27 +367,22 @@ groupRouter.post(
       participants.push(userId);
       fetchedGroup["participants"] = participants;
       await fetchedGroup.save();
-      ResultString = "Accepted Successfully";
     }
-
-    //deleting the Invitation from UserObject
-    let responseFromSave = await fetchedUser.save();
-
     //deleting the Invitation from DB
-    let responseFromDelete = await Invitation.deleteOne({ _id: invitationId });
-
-    res.send(JSON.stringify("ResultString"));
+    await Invitation.deleteOne({ _id: invitationId });
+    res.status(200).json(fetchedInvitation);
   })
 );
-
 //delete invite
 groupRouter.delete(
-  "/deleteInvitation",
+  "/deleteInvitation/:invitationId",
   protect,
   asyncHandler(async (req, res) => {
-    let invitationId = req.body.invitationId;
+    let { invitationId } = req.params;
 
-    let fetchedInvite = await Invitation.findById(invitationId);
+    let fetchedInvite = await Invitation.findById(invitationId)
+      .populate("group")
+      .populate("invitedUser");
 
     //first you have to delete the invite from the User invitations array
     let invitedUserId = fetchedInvite["invitedUser"];
@@ -403,12 +400,70 @@ groupRouter.delete(
     let saveResponse = await fetchedUser.save();
 
     //now you can delete the invitation object itself
-    let deleteResponse = await Invitation.deleteOne({ _id: invitationId });
-
-    res.send(JSON.stringify(deleteResponse));
+    await Invitation.deleteOne({ _id: invitationId });
+    res.status(200).json(fetchedInvite);
   })
 );
 
+// get all valid users to send them invitations
+groupRouter.get(
+  "/invitation/:groupId/:keyword",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { keyword, groupId } = req.params;
+    let users = await User.find({
+      userName: {
+        $regex: keyword,
+        $options: "i",
+      },
+    });
+    const group = await Group.findById(groupId)
+      .populate({
+        path: "requests",
+        model: "Request",
+        populate: {
+          path: "requester",
+          model: "User",
+        },
+      })
+      .populate("participants");
+    //Now filter all users whose already joined the group or sent request to join the group or who already got invited
+    const invitations = await Invitation.find({ group: groupId }).populate(
+      "invitedUser"
+    );
+    users = users.filter(
+      (user) =>
+        !group.participants.some(
+          (participant) => participant._id.toString() === user._id.toString()
+        ) &&
+        !group.requests.some(
+          (request) => request.requester._id.toString() === user._id.toString()
+        ) &&
+        !invitations.some(
+          (invition) =>
+            invition.invitedUser._id.toString() === user._id.toString()
+        )
+    );
+    res.status(200).json(users);
+  })
+);
+
+// get all invitations to this group
+groupRouter.get(
+  "/invitation/:groupId",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { groupId } = req.params;
+    if (!mongoose.isValidObjectId(groupId)) {
+      res.status(403);
+      throw new Error("groupId Is not valid");
+    }
+    const groupInvitations = await Invitation.find({ group: groupId })
+      .populate("group")
+      .populate("invitedUser");
+    res.status(200).json(groupInvitations);
+  })
+);
 //get All Groups as a coach
 groupRouter.get(
   "/getAsCoach",

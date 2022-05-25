@@ -24,8 +24,16 @@ const Participant = (props) => {
   return (
     <>
       <td>{props.index + 1}</td>
+<<<<<<< HEAD:frontend/src/components/Participant.js
       <td>{props.participant.userName}</td>
       {user.userName === props.coach.userName &&  <td><Button onClick={() => deleteParticipant()} variant="danger">Delete</Button></td>}
+=======
+      <td>
+        <Link to={`/profile/${props.participant.userName}`}>
+          {props.participant.userName}
+        </Link>
+      </td>
+>>>>>>> f69a434609fafc0e9ca7b81c02f6a725c150aa6a:frontend/src/components/groupDetailsComponents/Participant.js
     </>
   );
 };

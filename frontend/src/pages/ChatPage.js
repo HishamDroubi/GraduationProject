@@ -63,7 +63,6 @@ const ChatPage = () => {
     };
     creatChat();
     return () => {
-      console.log("here");
       dispatch(resetChats());
     };
   }, [dispatch, receiver, isError, message]);

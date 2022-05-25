@@ -4,9 +4,9 @@ import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createGroup } from "../features/group/createGroupSlice";
-import { reset } from "../features/group/createGroupSlice";
-import Loader from "./Loader";
+import { createGroup } from "../../features/group/createGroupSlice";
+import { reset } from "../../features/group/createGroupSlice";
+import Loader from "../Loader";
 import {
   MDBBtn,
   MDBModal,
@@ -17,8 +17,8 @@ import {
   MDBModalBody,
   MDBModalFooter,
 } from "mdb-react-ui-kit";
-import { backgroundColor, color } from "../theme";
-import { uploadFile } from "../features/group/groupDetailsSlice";
+import { backgroundColor, color } from "../../theme";
+import { uploadFile } from "../../features/group/groupDetailsSlice";
 const CreateAttachmentForm = (props) => {
   const [basicModal, setBasicModal] = useState(false);
   const toggleShow = () => setBasicModal((prevState) => !prevState);

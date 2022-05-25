@@ -220,7 +220,9 @@ export const chatsSlice = createSlice({
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.isSuccess = true;
-        state.chatDetails.push(action.payload);
+        if (state.chatDetails.includes(action.payload) === false) {
+          state.chatDetails.push(action.payload);
+        }
         const index = state.allChats.findIndex(
           (chat) => chat._id === state.chat._id
         );

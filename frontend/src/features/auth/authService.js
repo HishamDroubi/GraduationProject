@@ -17,9 +17,25 @@ const register = async (userData) => {
   }
   return response.data;
 };
+
+const invitationAcceptance = async (invitationIdAndAcceptence, token) => {
+  const { data } = await axios.post(
+    "/group/respondToInvite",
+    {
+      ...invitationIdAndAcceptence,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return data;
+};
 const authService = {
   login,
   logout,
-  register
+  register,
+  invitationAcceptance,
 };
 export default authService;

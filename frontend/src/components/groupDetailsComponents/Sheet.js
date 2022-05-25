@@ -2,14 +2,13 @@ import React from "react";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import CreateAttachmentForm from './CreateAttachmentForm'
+import CreateAttachmentForm from "./CreateAttachmentForm";
 import { useDispatch } from "react-redux";
-import { deleteFile, uploadFile } from "../features/group/groupDetailsSlice";
+import { deleteFile, uploadFile } from "../../features/group/groupDetailsSlice";
 import { toast } from "react-toastify";
 import AttachmentItem from "./AttachmentItem";
 
 const Sheet = ({ group, user }) => {
-
   const [file, setFile] = useState(null);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -30,15 +29,14 @@ const Sheet = ({ group, user }) => {
   };
   return (
     <>
-     {group.coach.email === user.email && (
-   <CreateAttachmentForm/>
-   )}
+      {group.coach.email === user.email && <CreateAttachmentForm />}
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>Accordion Item #1</Accordion.Header>
           <Accordion.Body>
             {group.attachments.map((attachment) => (
               <AttachmentItem
+                key={attachment._id}
                 attachment={attachment}
                 onDeleteAttachment={onDeleteAttachment}
               />
