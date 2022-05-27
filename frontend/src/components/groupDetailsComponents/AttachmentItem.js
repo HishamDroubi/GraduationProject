@@ -12,7 +12,6 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 
 const AttachmentItem = (props) => {
   const { attachment, onDeleteAttachment } = props;
-  console.log(attachment);
   return (
     <Card key={attachment._id}>
       <Row>
@@ -46,7 +45,7 @@ const AttachmentItem = (props) => {
 
         <Col>
           <Button value={attachment._id} onClick={onDeleteAttachment}>
-            <i className="bi bi-trash"></i>
+            <i className="bi bi-trash">Delete</i>
           </Button>
         </Col>
       </Row>

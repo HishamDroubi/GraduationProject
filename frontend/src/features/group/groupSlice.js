@@ -77,6 +77,7 @@ export const deleteGroup = createAsyncThunk(
     }
   }
 );
+
 export const groupSlice = createSlice({
   name: "group",
   initialState,
@@ -88,6 +89,14 @@ export const groupSlice = createSlice({
       state.message = "";
     },
     resetGroup: (state) => initialState,
+    userAcceptInvitation: (state, action) => {
+      const index = state.groups.findIndex(
+        (group) => group._id === action.payload.groupId
+      );
+      if (index > -1) {
+        state.groups[index].participants.push(action.payload.user);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -147,5 +156,5 @@ export const groupSlice = createSlice({
       });
   },
 });
-export const { reset, resetGroup } = groupSlice.actions;
+export const { reset, resetGroup, userAcceptInvitation } = groupSlice.actions;
 export default groupSlice.reducer;

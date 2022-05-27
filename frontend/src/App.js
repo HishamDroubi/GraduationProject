@@ -22,6 +22,11 @@ import {
   fetchNotifications,
 } from "./features/chat/chatsSlice";
 import { selectedChatCompare } from "./features/chat/chatsSlice";
+import ResetPassword from "./pages/ResetPassword";
+import {
+  fetchNewInvetation,
+  deleteTheInvitation,
+} from "./features/auth/authSlice";
 const App = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -32,22 +37,32 @@ const App = () => {
   }, [user]);
   useEffect(() => {
     if (user) {
-      socketInstance.io.on("message recieved", (newMessageRecieved) => {
+      socketInstance.io.on("message recieved", async (newMessageRecieved) => {
         if (
           !selectedChatCompare ||
           selectedChatCompare._id !== newMessageRecieved.chat._id
         ) {
-          dispatch(addNotification(newMessageRecieved._id));
+          await dispatch(addNotification(newMessageRecieved._id));
         } else {
           dispatch(getMessage(newMessageRecieved));
         }
-        dispatch(fetchChats());
+        await dispatch(fetchChats());
       });
     }
   }, [dispatch, user]);
   useEffect(() => {
     if (user) {
       dispatch(fetchNotifications());
+    }
+  }, [user, dispatch]);
+  useEffect(() => {
+    if (user) {
+      socketInstance.io.on("invitation recieved", (newInvitation) => {
+        dispatch(fetchNewInvetation(newInvitation));
+      });
+      socketInstance.io.on("invitation canceled", (canceldInvitation) => {
+        dispatch(deleteTheInvitation(canceldInvitation));
+      });
     }
   }, [user, dispatch]);
   return (
@@ -107,6 +122,11 @@ const App = () => {
                     <GroupDetails />
                   </Protect>
                 }
+              />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
               />
             </Routes>
           </div>

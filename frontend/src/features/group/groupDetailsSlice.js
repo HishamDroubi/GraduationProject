@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import groupService from "./groupService";
-
+import { socketInstance } from "../../socket";
 const initialState = {
   isError: false,
   isLoading: false,
   message: "",
   group: {},
   isSuccess: false,
+  searchedUsers: null,
+  invitations: null,
 };
 export const getGroupDetails = createAsyncThunk(
   "group/:id",
@@ -26,6 +28,23 @@ export const getGroupDetails = createAsyncThunk(
   }
 );
 
+export const deleteParticipants = createAsyncThunk(
+  "group/:id/removeParticipant/:id",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.deleteParticipant(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const requestDecision = createAsyncThunk(
   "group/:id/request/:id/acceptance",
   async (data, thunkAPI) => {
@@ -66,6 +85,74 @@ export const deleteFile = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await groupService.deleteFile(attachmentId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const InviteUsersSearch = createAsyncThunk(
+  "group/:id/invite",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.InviteUsersSearch(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const inviteUser = createAsyncThunk(
+  "group/:id/invite/user/:id",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.inviteUser(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const fetchGroupInvitations = createAsyncThunk(
+  "group/:id/invitations",
+  async (groupId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.fetchGroupInvitations(groupId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const cancelInvitation = createAsyncThunk(
+  "group/:id/invitation/:id",
+  async (invitationId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.cancelInvitation(invitationId, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -148,6 +235,25 @@ export const groupDetailsSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(InviteUsersSearch.fulfilled, (state, action) => {
+        state.searchedUsers = action.payload;
+      })
+      .addCase(fetchGroupInvitations.fulfilled, (state, action) => {
+        state.invitations = action.payload;
+      })
+      .addCase(inviteUser.fulfilled, (state, action) => {
+        state.invitations.push(action.payload);
+        socketInstance.io.emit("new invitation", action.payload);
+      })
+      .addCase(cancelInvitation.fulfilled, (state, action) => {
+        state.invitations = state.invitations.filter(
+          (invitation) => invitation._id !== action.payload._id
+        );
+        socketInstance.io.emit("cancel invitation", action.payload);
+      })
+      .addCase(deleteParticipants.fulfilled, (state, action) => {
+        state.group.participants = action.payload.participants;
       });
   },
 });

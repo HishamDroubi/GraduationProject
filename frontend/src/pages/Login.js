@@ -72,6 +72,11 @@ const Login = () => {
             value={password}
           />
         </Form.Group>
+        <p type="button" onClick={() => navigate("/reset-password")} style={{
+          textDecoration:"underLine"
+        }}>
+          Forget Password ?
+        </p>
         <Button
           variant="primary"
           type="submit"

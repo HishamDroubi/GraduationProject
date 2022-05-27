@@ -111,8 +111,18 @@ io.on("connection", (socket) => {
         .emit("message recieved", newMessageRecieved);
     }
   });
+  socket.on("new invitation", (newInvitation) => {
+    socket
+      .in(newInvitation.invitedUser.userName)
+      .emit("invitation recieved", newInvitation);
+  });
+  socket.on("cancel invitation", (canceledInvitation) => {
+    socket
+      .in(canceledInvitation.invitedUser.userName)
+      .emit("invitation canceled", canceledInvitation);
+  });
   socket.off("setup", () => {
     console.log("user left");
-    socket.leave(userData._id);
+    socket.leave(userData.userName);
   });
 });

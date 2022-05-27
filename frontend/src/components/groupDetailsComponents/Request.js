@@ -10,16 +10,14 @@ const Request = (props) => {
       <td>
         <Button
           className="btn btn-outline-success"
-          onClick={props.requestAcceptance}
-          value={props.request._id + "/true"}
+          onClick={() => props.requestAcceptance(props.request._id, true)}
         >
           Accepte
         </Button>
 
         <Button
           className="btn btn-outline-danger"
-          onClick={props.requestAcceptance}
-          value={props.request._id + "/false"}
+          onClick={() => props.requestAcceptance(props.request._id, false)}
         >
           Decline
         </Button>

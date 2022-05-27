@@ -1,8 +1,8 @@
 .userrank{
     position: relative;
-    padding: '1em 1em 0 1em';
+    /*padding: '1em 1em 0 1em';*/
     font-family: helvetica neue,Helvetica,Arial,sans-serif;
     text-decoration: none!important;
-    font-weight: 700;
+    font-weight: 600;
     display: inline-block;
 }

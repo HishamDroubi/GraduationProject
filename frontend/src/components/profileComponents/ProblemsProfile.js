@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProblemSolved, reset } from "../features/profile/profileSlice";
-import Loader from "./Loader";
-import Message from "./Message";
-import { Card } from "react-bootstrap";
-import ProblemSubmission from "./ProblemSubmission";
+import { getProblemSolved, reset } from "../../features/profile/profileSlice";
+import Loader from "../Loader"
+import ProblemSubmission from "../ProblemSubmission";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import Paginate from "./Paginate";
+import Paginate from "../Paginate";
 const ProblemsProfile = (props) => {
   const { pageNumber = 1 } = useParams();
   const userName = props.userName;

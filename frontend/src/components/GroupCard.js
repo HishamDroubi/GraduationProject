@@ -3,13 +3,11 @@ import {
   MDBCard,
   MDBCardHeader,
   MDBCardBody,
-  MDBTypography,
   MDBCardTitle,
   MDBCardText,
-  MDBBtn,
 } from "mdb-react-ui-kit";
-import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
-import { IconName, MdDeleteForever } from "react-icons/md";
+import { Button, Col , Row } from "react-bootstrap";
+import {  MdDeleteForever } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { backgroundColor, color } from "../theme";
@@ -17,7 +15,9 @@ import {
   cancelRequest,
   deleteGroup,
   requestGroup,
+  userAcceptInvitation,
 } from "../features/group/groupSlice";
+import { invitationAcceptance } from "../features/auth/authSlice";
 import { reset } from "../features/group/groupSlice";
 const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
@@ -37,6 +37,14 @@ const GroupCard = ({ group }) => {
     if (window.confirm("are you sure want to delete the group ?")) {
       await dispatch(deleteGroup(group._id));
       dispatch(reset());
+    }
+  };
+  const onInvitationAcceptance = async (invitationObject, acceptance) => {
+    const invitationId = invitationObject._id;
+    await dispatch(invitationAcceptance({ invitationId, acceptance }));
+    if (acceptance) {
+      const groupId = invitationObject.group._id;
+      dispatch(userAcceptInvitation({ user, groupId }));
     }
   };
   return (
@@ -87,9 +95,52 @@ const GroupCard = ({ group }) => {
             </MDBCardText>
           </Col>
           <Col>
+            {user.invitations.find(
+              (invitation) => invitation.group._id === group._id
+            ) && (
+              <>
+                <Button
+                  onClick={() =>
+                    onInvitationAcceptance(
+                      user.invitations.find(
+                        (invitation) => invitation.group._id === group._id
+                      ),
+                      true
+                    )
+                  }
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Accept Invitation
+                </Button>
+                <Button
+                  onClick={() =>
+                    onInvitationAcceptance(
+                      user.invitations.find(
+                        (invitation) => invitation.group._id === group._id
+                      ),
+                      false
+                    )
+                  }
+                  style={{
+                    marginLeft: 60,
+                    backgroundColor: backgroundColor,
+                    color: color,
+                  }}
+                >
+                  Reject Invitation
+                </Button>
+              </>
+            )}
             {!group.participants.find((p) => p.userName === user.userName) &&
               !group.requests.find(
                 (request) => request.requester.userName === user.userName
+              ) &&
+              !user.invitations.find(
+                (invitation) => invitation.group._id === group._id
               ) && (
                 <Button
                   onClick={requestToJoin}
@@ -103,7 +154,7 @@ const GroupCard = ({ group }) => {
                 </Button>
               )}
             {group.participants.find((p) => p.userName === user.userName) && (
-              <LinkContainer to={`/group/${group._id}`}>
+              <LinkContainer to={`/group/${group._id}/sheet`}>
                 <Button
                   style={{
                     marginLeft: 60,

@@ -47,6 +47,15 @@ const requestAcceptance = async (data, token) => {
   return response.data;
 };
 
+const deleteParticipant = async (data, token) => {
+  const response = await axios.delete(`/group/${data.groupId}/removeParticipants/${data.participantId}`,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 const cancelRequest = async (requestId, token) => {
   const { data } = await axios.delete(`/group/deleteRequest/${requestId}`, {
     headers: {
@@ -92,6 +101,57 @@ const deleteFile = async (attachmentId, token) => {
   );
   return data;
 };
+///data = keyword , groupId
+const InviteUsersSearch = async (dataSearch, token) => {
+  const { data } = await axios.get(
+    `/group/invitation/${dataSearch.groupId}/${dataSearch.keyword}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(data);
+  return data;
+};
+
+const fetchGroupInvitations = async (groupId, token) => {
+  const { data } = await axios.get(`/group/invitation/${groupId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(data);
+  return data;
+};
+
+const inviteUser = async (userIdAndGroupId, token) => {
+  const { data } = await axios.post(
+    "/group/invite",
+    { ...userIdAndGroupId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return data;
+};
+
+const cancelInvitation = async (invitationId, token) => {
+  const { data } = await axios.delete(
+    `/group/deleteInvitation/${invitationId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(data);
+  return data;
+};
+
+
 const groupService = {
   createGroup,
   fetchGroups,
@@ -102,6 +162,11 @@ const groupService = {
   deleteGroup,
   uploadFile,
   deleteFile,
+  deleteParticipant,
+  InviteUsersSearch,
+  fetchGroupInvitations,
+  inviteUser,
+  cancelInvitation,
 };
 
 export default groupService;
