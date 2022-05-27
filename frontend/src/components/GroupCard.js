@@ -3,13 +3,11 @@ import {
   MDBCard,
   MDBCardHeader,
   MDBCardBody,
-  MDBTypography,
   MDBCardTitle,
   MDBCardText,
-  MDBBtn,
 } from "mdb-react-ui-kit";
-import { Button, Card, Col, ListGroupItem, Row } from "react-bootstrap";
-import { IconName, MdDeleteForever } from "react-icons/md";
+import { Button, Col , Row } from "react-bootstrap";
+import {  MdDeleteForever } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { backgroundColor, color } from "../theme";
@@ -23,7 +21,6 @@ import { invitationAcceptance } from "../features/auth/authSlice";
 import { reset } from "../features/group/groupSlice";
 const GroupCard = ({ group }) => {
   const { user } = useSelector((state) => state.auth);
-  console.log(user);
   const dispatch = useDispatch();
   const requestToJoin = async () => {
     await dispatch(requestGroup(group._id));

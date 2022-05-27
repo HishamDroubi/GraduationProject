@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { getUserGroups } from "../features/profile/profileSlice";
+import { getUserGroups,reset } from "../../features/profile/profileSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { reset } from "../features/profile/profileSlice";
-import Loader from "./Loader";
-import Paginate from "./Paginate";
-import GroupCard from "./GroupCard";
+import Loader from "../Loader";
+import Paginate from "../Paginate";
+import GroupCard from "../GroupCard";
 const GroupsProfile = (props) => {
   const userName = props.userName;
   let { pageNumber = 1 } = useParams();

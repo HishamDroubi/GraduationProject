@@ -1,26 +1,10 @@
 import React, { useEffect } from "react";
-import Rank from "../components/Rank";
-import {
-  getProblemSolved,
-  getUserProfile,
-} from "../features/profile/profileSlice";
+import Rank from "../Rank";
+import { getUserProfile, reset } from "../../features/profile/profileSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "./Loader";
-import Message from "./Message";
-import {
-  Container,
-  Navbar,
-  Nav,
-  Row,
-  Col,
-  Button,
-  Card,
-  ListGroup,
-  ListGroupItem,
-  Image,
-} from "react-bootstrap";
+import Loader from "../Loader";
+import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { reset } from "../features/profile/profileSlice";
 import { useNavigate } from "react-router-dom";
 const HandleProfile = (props) => {
   const userName = props.userName;
@@ -59,6 +43,9 @@ const HandleProfile = (props) => {
                 src={userProfile.codeforces.titlePhoto}
                 alt="Profile"
                 className="img-thumbnail img-fluid"
+                style={{
+                  border: "0px",
+                }}
               />
             </div>
           </div>
@@ -71,42 +58,47 @@ const HandleProfile = (props) => {
                   <div className="col">{userProfile.userName}</div>
                 </div>
               </div>
-
               <div className="list-group-item">
+                <div className="row">
+                  <div className="col-4">Codeforces handle:</div>
+                  <div className="col">{userProfile.codeforces.handle}</div>
+                </div>
+              </div>
+              {/* <div className="list-group-item">
                 <div className="row">
                   <div className="col-4">Level:</div>
                   <div className="col">{userProfile.level.number}</div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="list-group-item">
                 <div className="row">
-                  <div className="col-4">codeforces rate:</div>
+                  <div className="col-4">Codeforces rate:</div>
                   <div className="col">
-                    {userProfile.codeforces.rating} (
-                    {userProfile.codeforces.rank})
+                    <Rank
+                      rank={userProfile.codeforces.rank}
+                      rate={userProfile.codeforces.rating}
+                    />
                   </div>
                 </div>
               </div>
-
               <div className="list-group-item">
                 <div className="row">
-                  <div className="col-4"># solved propblem:</div>
-                  <div className="col">{problemSolved.length}</div>
+                  <div className="col-4">Max codeforces rate:</div>
+                  <div className="col">
+                    <Rank
+                      rank={userProfile.codeforces.maxRank}
+                      rate={userProfile.codeforces.maxRating}
+                    />
+                  </div>
                 </div>
               </div>
-
               <div className="list-group-item">
                 <div className="row">
-                  <div className="col-4">codeforces handle:</div>
-                  <div className="col">{userProfile.codeforces.handle}</div>
-                </div>
-              </div>
-
-              <div className="list-group-item">
-                <div className="row">
-                  <div className="col-4"># of friends</div>
-                  <div className="col">5</div>
+                  <div className="col-4">Number of friends:</div>
+                  <div className="col">
+                    {userProfile.codeforces.friendOfCount}
+                  </div>
                 </div>
               </div>
 
@@ -122,9 +114,7 @@ const HandleProfile = (props) => {
 
                   {user.userName === userName && (
                     <div className="col">
-                      <Button
-                        onClick={() => navigate(`/chat`)}
-                      >
+                      <Button onClick={() => navigate(`/chat`)}>
                         your messages
                       </Button>
                     </div>

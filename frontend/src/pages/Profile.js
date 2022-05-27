@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import HandleProfile from "../components/HandleProfile";
-import ProblemsProfile from "../components/ProblemsProfile";
+import HandleProfile from "../components/profileComponents/HandleProfile";
+import ProblemsProfile from "../components/profileComponents/ProblemsProfile";
 import { Nav, Col, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import GroupsProfile from "../components/GroupsProfile";
+import GroupsProfile from "../components/profileComponents/GroupsProfile";
 const Profile = (props) => {
   const { userName } = useParams();
   return (

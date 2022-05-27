@@ -10,7 +10,7 @@ import { backgroundColor, color } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { resetGroup } from "../features/group/groupSlice";
 import { resetProfile } from "../features/profile/profileSlice";
-import { faBell, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faMessage, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MDBListGroup, MDBListGroupItem, MDBBadge } from "mdb-react-ui-kit";
 import "../stylesheet/notification.css";
@@ -43,7 +43,7 @@ const Header = () => {
   return (
     <header>
       <Navbar
-        expand="lg"
+        expand="sm"
         style={{ paddingBottom: "0", backgroundColor: backgroundColor }}
       >
         <Container>
@@ -76,7 +76,7 @@ const Header = () => {
               {user && (
                 <>
                   <FontAwesomeIcon
-                    icon={faBell}
+                    icon={faMessage}
                     size="lg"
                     id="bell"
                     type="button"

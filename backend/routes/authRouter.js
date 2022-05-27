@@ -131,7 +131,6 @@ authRouter.put("/changePassword", protect, async (req, res) => {
 
 authRouter.post("/reset-password", async (req, res) => {
   const { email } = req.body;
-  console.log(email);
   const userExist = await User.findOne({ email });
   if (!userExist) {
     res.status(401).json("Email not Found");
