@@ -10,6 +10,7 @@ const { protect } = require("../middleware/authMiddleware");
 const Level = require("../models/level");
 const Problem = require("../models/problem");
 const Invitaion = require("../models/invitation");
+const Message = require("../models/message");
 
 //define userRouter
 let userRouter = express.Router();
@@ -92,7 +93,12 @@ userRouter.delete(
       invitedUser: userId,
     });
 
-    //delete the user itself626dc052cf3574fd2d0ef595
+    //delete the messages for created by this user
+    let messagesDeleteResponse = await Message.deleteMany({
+      sender: userId,
+    });
+
+    //delete the user himself
     let response = await User.deleteOne({ _id: userId });
     res.send(JSON.stringify(response));
   })
@@ -179,6 +185,24 @@ userRouter.get(
         .status(200)
         .json({ problemSolved, page, pages: Math.ceil(count / pageSize) });
     }
+  })
+);
+
+userRouter.put(
+  "/changeRole",
+  protect,
+  asyncHandler(async (req, res) => {
+    let userId = req.body.userId;
+
+    let wantedUser = await User.findById(userId);
+
+    //if he is admin make him normal and vice versa
+    let role = wantedUser["role"];
+    if (role === "normal") wantedUser["role"] = "admin";
+    else wantedUser["role"] = "normal";
+    wantedUser.save();
+
+    res.status(201).json("role changed successfully");
   })
 );
 module.exports = userRouter;
