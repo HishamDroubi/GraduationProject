@@ -22,6 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../stylesheet/message.css";
 import { useState } from "react";
 import { socketInstance } from "../socket";
+import AppBarBootom from "../components/BottomAppBar";
 const ChatPage = () => {
   const dispatch = useDispatch();
   const { receiver } = useParams();
@@ -145,6 +146,7 @@ const ChatPage = () => {
           )}
         </MDBRow>
       </MDBCardBody>
+     
     </MDBCard>
   );
 };

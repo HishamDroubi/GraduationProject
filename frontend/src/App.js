@@ -27,6 +27,7 @@ import {
   fetchNewInvetation,
   deleteTheInvitation,
 } from "./features/auth/authSlice";
+import BottomAppBar from "./components/BottomAppBar";
 const App = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -103,7 +104,7 @@ const App = () => {
                 path="/chat/:receiver"
                 element={
                   <Protect>
-                    <ChatPage />
+                    <ChatPage  />
                   </Protect>
                 }
               />

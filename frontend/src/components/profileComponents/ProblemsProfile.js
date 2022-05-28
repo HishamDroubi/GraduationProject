@@ -34,6 +34,7 @@ const ProblemsProfile = (props) => {
   }
   return (
     <>
+    
       <div className="table-responsive mt-3 mb-3 submissions-table">
         <table className="table table-striped text-center border small">
           <thead bg="primary" variant="dark" expand="lg">

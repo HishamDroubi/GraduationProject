@@ -67,7 +67,9 @@ export const uploadFile = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await groupService.uploadFile(data, token);
+      const rr =  await groupService.uploadFile(data, token);
+      console.log(rr);
+      return rr;
     } catch (error) {
       const message =
         (error.response &&

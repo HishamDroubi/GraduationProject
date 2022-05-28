@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { deleteFile, uploadFile } from "../../features/group/groupDetailsSlice";
 import { toast } from "react-toastify";
 import AttachmentItem from "./AttachmentItem";
+import { useEffect } from "react";
 
 const Sheet = ({ group, user }) => {
   const [file, setFile] = useState(null);
@@ -27,6 +28,12 @@ const Sheet = ({ group, user }) => {
     const attachmentId = e.target.value;
     await dispatch(deleteFile(attachmentId));
   };
+
+  useEffect(() => {
+    const getDATA = () => {
+      
+    }
+  },)
   return (
     <>
       {group.coach.email === user.email && <CreateAttachmentForm />}
@@ -35,11 +42,13 @@ const Sheet = ({ group, user }) => {
           <Accordion.Header>Accordion Item #1</Accordion.Header>
           <Accordion.Body>
             {group.attachments.map((attachment) => (
+              <div>{attachment._id}
               <AttachmentItem
                 key={attachment._id}
                 attachment={attachment}
                 onDeleteAttachment={onDeleteAttachment}
               />
+              </div>
             ))}
           </Accordion.Body>
         </Accordion.Item>

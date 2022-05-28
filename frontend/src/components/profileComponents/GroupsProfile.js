@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Loader";
 import Paginate from "../Paginate";
 import GroupCard from "../GroupCard";
+import { Container } from "react-bootstrap";
 const GroupsProfile = (props) => {
   const userName = props.userName;
   let { pageNumber = 1 } = useParams();
@@ -32,7 +33,7 @@ const GroupsProfile = (props) => {
     }
   }
   return (
-    <>
+    <Container style={{paddingTop: '20px'}}>
       {userGroups.map((group) => (
         <GroupCard group={group} key={group._id} />
       ))}
@@ -42,7 +43,7 @@ const GroupsProfile = (props) => {
         isProfileGroup={true}
         userName={userName}
       />
-    </>
+    </Container>
   );
 };
 

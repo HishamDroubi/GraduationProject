@@ -23,6 +23,7 @@ let messageRouter = require("./routes/messageRouter.js");
 const serverConstants = require("./serverConstants.js");
 const chatRouter = require("./routes/chatRouter");
 const notificationRouter = require("./routes/notificationRouter");
+const blogRouter = require('./routes/blogRouter');
 //medllewaress
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
@@ -47,6 +48,7 @@ server.use("/problem", problemRouter);
 server.use("/message", messageRouter);
 server.use("/chat", chatRouter);
 server.use("/notification", notificationRouter);
+server.use('/blog', blogRouter);
 server.use(errorHandler);
 
 //start server
