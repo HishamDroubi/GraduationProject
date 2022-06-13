@@ -41,13 +41,18 @@ const Header = () => {
     await dispatch(deleteNotification(notificationMessage._id));
   };
   return (
-    <header>
+    <header >
       <Navbar
         expand="sm"
-        style={{ paddingBottom: "0", backgroundColor: backgroundColor }}
+        style={{
+          position: "fixed",
+          top: "0",
+          width: "100%",
+          paddingBottom: "0",
+          backgroundColor: backgroundColor,
+        }}
       >
         <Container>
-          
           <Nav className="ms-auto">
             <LinkContainer to="/">
               <Navbar.Brand>

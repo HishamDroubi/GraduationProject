@@ -9,6 +9,8 @@ const initialState = {
   isSuccess: false,
   searchedUsers: null,
   invitations: null,
+  blogs: [{attachments: [], texts: []}]
+, 
 };
 export const getGroupDetails = createAsyncThunk(
   "group/:id",
@@ -166,6 +168,44 @@ export const cancelInvitation = createAsyncThunk(
     }
   }
 );
+
+export const createBlog = createAsyncThunk(
+  "group/:id/createBlog",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await groupService.createBlog(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getAllBlog = createAsyncThunk(
+  "group/:id/getAllBlog",
+  async (data,thunkAPI) => {
+    try { console.log("hahaha");
+      const token = thunkAPI.getState().auth.user.token;
+     
+      return await groupService.getAllBlog(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const groupDetailsSlice = createSlice({
   name: "groupDetails",
   initialState,
@@ -211,7 +251,7 @@ export const groupDetailsSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(uploadFile.pending, (state, action) => {
-        state.isLoading = true;
+       // state.isLoading = true;
       })
       .addCase(uploadFile.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -256,6 +296,13 @@ export const groupDetailsSlice = createSlice({
       })
       .addCase(deleteParticipants.fulfilled, (state, action) => {
         state.group.participants = action.payload.participants;
+      })
+      .addCase(getAllBlog.rejected, (state, action) => {
+        state.message = action.payload; console.log(action.payload)
+      })
+      .addCase(getAllBlog.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.blogs = action.payload;
       });
   },
 });

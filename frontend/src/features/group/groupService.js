@@ -13,6 +13,7 @@ const fetchGroups = async (pageNumber, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(data);
   return data;
 };
 const getGroupDetails = async (groupId, token) => {
@@ -48,11 +49,14 @@ const requestAcceptance = async (data, token) => {
 };
 
 const deleteParticipant = async (data, token) => {
-  const response = await axios.delete(`/group/${data.groupId}/removeParticipants/${data.participantId}`,{
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.delete(
+    `/group/${data.groupId}/removeParticipants/${data.participantId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
 };
 
@@ -151,8 +155,30 @@ const cancelInvitation = async (invitationId, token) => {
   return data;
 };
 
+const createBlog = async (data, token) => {
+  const response = await axios.post(`/blog/create`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('im in ss--', response.data);
+  return response.data;
+};
+
+const getAllBlog = async (data, token) => {
+  console.log(data);
+  const response = await axios.get(`/blog/group/${data.groupId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('------------------------------------', response.data);
+  return response.data;
+};
 
 const groupService = {
+  getAllBlog,
+  createBlog,
   createGroup,
   fetchGroups,
   getGroupDetails,

@@ -43,24 +43,24 @@ const Header = () => {
   };
   return (
     <header>
-      <nav class="navbar">
-        <div class="container-fluid">
+      <nav className="navbar">
+        <div className="container-fluid">
           <div>
             <div>
-              <a href="/" class="btn">
+              <a href="/" className="btn">
                 <h4>CP-PTUK</h4>
               </a>
-              <a href="/groups/page/1" class="btn">
+              <a href="/groups/page/1" className="btn">
                 Group
               </a>
 
-              <a href="/" class="btn">
+              <a href="/" className="btn">
                 Level
               </a>
             </div>
           </div>
 
-          <div class="nav navbar-nav1">
+          <div className="nav navbar-nav1">
             {user && (
               <>
                 <FontAwesomeIcon

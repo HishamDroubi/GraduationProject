@@ -18,6 +18,7 @@ import {
   MDBModalFooter,
 } from "mdb-react-ui-kit";
 import { backgroundColor, color } from "../theme";
+import CardEsaa from "./CardEsaa";
 const CreateGroupForm = (props) => {
 
   const [basicModal, setBasicModal] = useState(false);
@@ -61,9 +62,10 @@ const CreateGroupForm = (props) => {
   }
   return (
     <>
+    
       <Button
         onClick={toggleShow}
-        style={{ backgroundColor: backgroundColor, color: color }}
+        style={{position: 'fixed', backgroundColor: backgroundColor, color: color}}
       >
         Create Groupe
       </Button>
