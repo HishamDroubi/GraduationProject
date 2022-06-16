@@ -49,11 +49,16 @@ const Login = () => {
     return <Loader />;
   }
   return (
-    <FormContainer>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+    // Form container Edit - props.md -
+    <FormContainer md='6'>
+      <Form onSubmit={onSubmit} className="p-2 rounded shadow">
+        <Form.Group
+          className="m-5 mb-4 text-secondary fw-bold"
+          controlId="formBasicEmail"
+        >
           <Form.Label>Email address</Form.Label>
           <Form.Control
+            className="shadow-sm"
             type="email"
             placeholder="Enter email"
             name="email"
@@ -62,9 +67,13 @@ const Login = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group
+          className="mx-5 text-secondary fw-bold"
+          controlId="formBasicPassword"
+        >
           <Form.Label>Password</Form.Label>
           <Form.Control
+            className="shadow-sm"
             type="password"
             placeholder="Password"
             name="password"
@@ -72,19 +81,22 @@ const Login = () => {
             value={password}
           />
         </Form.Group>
-        <p type="button" onClick={() => navigate("/reset-password")} style={{
-          textDecoration:"underLine"
-        }}>
+        <p
+          className="mx-5 p-2 text-primary"
+          type="button"
+          onClick={() => navigate("/reset-password")}
+          style={{
+            textDecoration: "underLine",
+          }}
+        >
           Forget Password ?
         </p>
         <Button
           variant="primary"
           type="submit"
-          style={{
-            width: "100%",
-          }}
+          className="d-grid col-6 mx-auto my-4 border-0"
         >
-          Submit
+          Login
         </Button>
       </Form>
     </FormContainer>

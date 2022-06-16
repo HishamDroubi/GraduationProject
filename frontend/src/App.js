@@ -1,10 +1,10 @@
 import Header from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import { Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Level from "./pages/Level";
 import LevelDetails from "./pages/LevelDetails";
@@ -15,6 +15,7 @@ import ChatPage from "./pages/ChatPage";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { socketInstance } from "./socket";
+
 import {
   fetchChats,
   getMessage,
@@ -28,6 +29,7 @@ import {
   deleteTheInvitation,
 } from "./features/auth/authSlice";
 import BottomAppBar from "./components/BottomAppBar";
+import Blog from "./Blog";
 const App = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -76,6 +78,7 @@ const App = () => {
               <Route path="/" element={<Level />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/blog" element={<Blog title="Title"/>} />
               <Route
                 path="/profile/:userName/*"
                 element={
@@ -104,7 +107,7 @@ const App = () => {
                 path="/chat/:receiver"
                 element={
                   <Protect>
-                    <ChatPage  />
+                    <ChatPage />
                   </Protect>
                 }
               />

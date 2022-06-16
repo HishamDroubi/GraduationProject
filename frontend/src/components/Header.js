@@ -10,7 +10,7 @@ import { backgroundColor, color } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { resetGroup } from "../features/group/groupSlice";
 import { resetProfile } from "../features/profile/profileSlice";
-import { faMessage, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MDBListGroup, MDBListGroupItem, MDBBadge } from "mdb-react-ui-kit";
 import "../stylesheet/notification.css";
@@ -43,28 +43,27 @@ const Header = () => {
   };
   return (
     <header>
-      <nav class="navbar">
+      <nav class="navbar bg-dark shadow">
         <div class="container-fluid">
           <div>
-            <div>
-              <a href="/" class="btn">
-                <h4>CP-PTUK</h4>
-              </a>
-              <a href="/groups/page/1" class="btn">
-                Group
-              </a>
+            <a href="/" class="btn fs-4 me-5 text-secondary border-0">
+              CP-PTUK
+            </a>
+            <a href="/groups/page/1" class="btn">
+              Group
+            </a>
 
-              <a href="/" class="btn">
-                Level
-              </a>
-            </div>
+            <a href="/" class="btn">
+              Level
+            </a>
           </div>
+          
 
-          <div class="nav navbar-nav1">
+          <div class="nav navbar-nav1 gap-2 bg-primary shadow px-4 rounded">
             {user && (
               <>
                 <FontAwesomeIcon
-                  icon={faMessage}
+                  icon={faBell}
                   size="lg"
                   id="bell"
                   type="button"
@@ -125,7 +124,7 @@ const Header = () => {
               </MDBListGroup>
             )}
             {user && (
-              <LinkContainer to={"/profile/" + user.userName}>
+              <LinkContainer className="mx-3 ps-0 pe-3" to={"/profile/" + user.userName}>
                 <Nav.Link>
                   <img
                     src={
@@ -134,13 +133,13 @@ const Header = () => {
                         : "https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA="
                     }
                     alt=""
+                    className="img img-thumbnail rounded-circle mx-2"
                     style={{
                       width: "25px",
-                      height: "25px",
                       borderRadius: "50%",
                     }}
                   />
-                  <strong style={{ color: "#FFFFFF80" }}>
+                  <strong className="text-white">
                     {user.userName}
                   </strong>
                 </Nav.Link>
@@ -148,23 +147,20 @@ const Header = () => {
             )}
 
             {user && (
-              <a href="/" onClick={onLogout} class="btn">
+              <a className="btn" href="/" onClick={onLogout}>
                 Logout
               </a>
             )}
-
-            {!user && (
-              <a href="/login" class="btn">
+          </div>
+          {!user && (<div class="nav navbar-nav1 gap-2">
+              <a href="/login" class="btn bg-primary px-4 shadow">
                 Login
               </a>
-            )}
 
-            {!user && (
-              <a href="/register" class="btn">
+              <a href="/register" class="btn bg-primary px-4 shadow">
                 Register
               </a>
-            )}
-          </div>
+          </div>)}
         </div>
       </nav>
     </header>

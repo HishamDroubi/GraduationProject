@@ -60,24 +60,25 @@ const Register = () => {
     return <Loader />;
   }
   return (
-    <FormContainer>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="userName">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
+    // FormContainer Edit - props.md -
+    <FormContainer md='12' className="container">
+      <Form onSubmit={onSubmit} className="row shadow rounded bg-white p-5" style={{width: '100%'}}>
+        <Form.Group className="col-lg-6 col-sm-12 mb-3" controlId="userName">
+        <Form.Label className="text-muted fw-bold">Username</Form.Label>
+        <Form.Control
             type="text"
             placeholder="Username"
             name="userName"
             onChange={onChange}
             value={userName}
             required
-          />
+        />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="Email">
-          <Form.Label>Email address</Form.Label>
+        <Form.Group className="col-lg-6 col-sm-12 mb-3" controlId="Email">
+          <Form.Label className="text-muted fw-bold">Email address</Form.Label>
           <Form.Control
             type="email"
-            placeholder="Email"
+            placeholder="example@gmail.com"
             name="email"
             onChange={onChange}
             value={email}
@@ -85,8 +86,8 @@ const Register = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="handle">
-          <Form.Label>Codeforces handle</Form.Label>
+        <Form.Group className="col-lg-6 col-sm-12 mb-3" controlId="handle">
+          <Form.Label className="text-muted fw-bold">Codeforces handle</Form.Label>
           <Form.Control
             type="text"
             placeholder="Codeforces Handle"
@@ -97,8 +98,10 @@ const Register = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="Password">
-          <Form.Label>Password</Form.Label>
+        <a className="col-lg-6 col-sm-12 align-self-end pb-3 text-primary" href="https://codeforces.com/">Go to codeforces.com</a>
+
+        <Form.Group className="col-lg-6 col-sm-12 mb-3" controlId="Password">
+          <Form.Label className="text-muted fw-bold">Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Password"
@@ -109,8 +112,8 @@ const Register = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="rePassword">
-          <Form.Label>Confirm password</Form.Label>
+        <Form.Group className="col-lg-6 col-sm-12 mb-3" controlId="rePassword">
+          <Form.Label className="text-muted fw-bold">Confirm password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Confirm password"
@@ -121,25 +124,16 @@ const Register = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="phone">
-          <Form.Label>Phone</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Phone Number"
-            name="phone"
-            onChange={onChange}
-            value={phone}
-          />
-        </Form.Group>
-        <Button
-          variant="primary"
-          type="submit"
-          style={{
-            width: "100%",
-          }}
-        >
-          Submit
-        </Button>
+        
+        <div className="col-12 mt-4">
+            <Button
+            variant="primary"
+            type="submit"
+            className="px-5"
+            >
+            Register
+            </Button>
+        </div>
       </Form>
     </FormContainer>
   );

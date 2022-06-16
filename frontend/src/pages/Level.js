@@ -32,9 +32,20 @@ const Level = () => {
   }
   return (
     <>
-      <ListGroup>
-        {levels &&
-          levels.map((level) => <LevelCard level={level} key={level._id} />)}
+      <div className="border-bottom position-relative my-3">
+        <h3 className="position-absolute top-100 start-50 translate-middle bg-white px-4 text-muted mb-3">
+          Levels
+        </h3>
+      </div>
+      <ListGroup className="container mt-5">
+        <div className="row">
+          {levels &&
+            levels.map((level) => (
+              <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <LevelCard level={level} key={level._id} />
+              </div>
+            ))}
+        </div>
       </ListGroup>
       {user && user.role === "admin" && (
         <>
