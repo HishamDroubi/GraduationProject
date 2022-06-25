@@ -17,22 +17,46 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AttachmentItem from "./AttachmentItem";
 
 export default function BlogItem({ blog }) {
-  const [expanded, setExpanded] = React.useState(false);
+
+  const blogContent = [];
+  blog.texts.map((text) => {
+    blogContent.push({
+      type: 'T',
+      content: text.content,
+      order: text.order
+
+    })
+    
+  })
+
+  blog.attachments.map((attachment) => {
+    blogContent.push({
+      type: 'A',
+      content: attachment.attachment,
+      order: attachment.order
+
+    })
+  })
+
+  blogContent.sort(function(b1, b2){return b1.order - b2.order})
+  console.log(blogContent)
+  const [expanded, setExpanded] = React.useState(true);
   const [direction, setDirection] = React.useState("rotate(0deg)");
+  console.log(blog)
   const handleExpandClick = () => {
     if(expanded === true)
     setDirection("rotate(0deg)")
     else setDirection("rotate(180deg)")
     console.log(expanded, direction);
-    setExpanded(!expanded);
+    setExpanded(true);
   };
 
   return (
-    <Card  sx={{ maxWidth: 'auto', marginBottom: '20px' }}>
+    <Card  sx={{ maxWidth: '70%', marginBottom: '20px', marginLeft: '100px' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            {blog.group.coach.userName.toUpperCase()[0]}
           </Avatar>
         }
         action={
@@ -40,32 +64,19 @@ export default function BlogItem({ blog }) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={"Shrimp and Chorizo Paella"}
+        title={blog.heading}
         subheader="September 14, 2016"
       />
      
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+         
         </Typography>
       </CardContent>
-      <CardActions
-      style={{ width: 'auto'}}
-      disableSpacing>
-        
-        <IconButton
-       style={{ position: 'absolute', right: '30px', marginBottom: '30px'}}
-          onClick={handleExpandClick}
-          aria-label="settings"
-        >
-          <ExpandMoreIcon style={{transform: !expanded ? "rotate(0deg)" : "rotate(180deg)",}} />
-        </IconButton>
-      </CardActions>
+     
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-         dasdasdas
+       {blogContent.map((bc) => (<p>{bc.type === 'A' ? <AttachmentItem attachment={bc.content}/> : <div>{bc.content}</div> }</p>))}
         </CardContent>
       </Collapse>
     </Card>

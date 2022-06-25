@@ -6,11 +6,12 @@ const create = async (levelData) => {
   return response.data;
 };
 const getLevel = async (levelId, token) => {
+  //console.log("sccccccca")
   const response = await axios.get(API_URL, {
     params: {
       levelId,
     },
-  });
+  });//console.log("sa")
   if (levelId) {
     const solvedProblems = await axios.get(API_URL + "solvedProblems", {
       params: {
@@ -22,7 +23,7 @@ const getLevel = async (levelId, token) => {
     });
     response.data.solvedProblems = solvedProblems.data;
   }
-  console.log(response.data);
+  //console.log(response.data);
   return response.data;
 };
 const addProblem = async (problemData, token, levelId) => {

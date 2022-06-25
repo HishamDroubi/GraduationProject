@@ -16,15 +16,21 @@ import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
 import CardEsaa from "../components/CardEsaa";
 const Groups = () => {
-
   const navigate = useNavigate();
   const { pageNumber = 1 } = useParams();
-  const { allGroups, groups, isLoading, isSuccess, isError, message, pages, page } =
-    useSelector((state) => state.group);
-    
+  const {
+    allGroups,
+    groups,
+    isLoading,
+    isSuccess,
+    isError,
+    message,
+    pages,
+    page,
+  } = useSelector((state) => state.group);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
     if (isError) {
       toast.error(message);
@@ -33,7 +39,7 @@ const Groups = () => {
       await dispatch(fetchGroups(pageNumber));
     };
     getGroups();
-    console.log(groups)
+    console.log(groups);
     return () => {
       dispatch(reset());
     };
@@ -46,27 +52,34 @@ const Groups = () => {
     }
   }
 
- 
   return (
     <>
-    
       <Row>
         <Col>
-        <CreateGroupForm   />
-        <div>
-          <CardEsaa groups={allGroups} />
+          <CreateGroupForm />
+          <div>
+            <CardEsaa groups={allGroups} />
           </div>
         </Col>
-        
+
         <Col md="8">
-          {groups.map((group) => (
-            <GroupCard group={group} key={group._id} />
-          ))} 
+          {groups.map((group) => {
+            if (
+              group.participants.filter(
+                (p, index) => p.userName === user.userName
+              ).length === 0
+            )
+              return (
+                <>
+                  <GroupCard group={group} key={group._id} />
+                  <p>{group.participants[0].userName}</p>
+                </>
+              );
+          })}
+
           <Paginate pages={pages} page={page} />
         </Col>
       </Row>
-
-     
     </>
   );
 };

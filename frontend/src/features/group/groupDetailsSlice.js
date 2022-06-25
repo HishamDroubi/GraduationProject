@@ -9,7 +9,7 @@ const initialState = {
   isSuccess: false,
   searchedUsers: null,
   invitations: null,
-  blogs: [{attachments: [], texts: []}]
+  blogs: null
 , 
 };
 export const getGroupDetails = createAsyncThunk(

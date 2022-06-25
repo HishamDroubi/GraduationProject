@@ -20,6 +20,8 @@ import {
 import { backgroundColor, color } from "../../theme";
 import { createBlog, uploadFile } from "../../features/group/groupDetailsSlice";
 const CreateAttachmentForm = (props) => {
+
+  let order = 1;
   const [attachments, setAttachments] = useState([]);
   const [texts, setTexts] = useState([]);
   const [basicModal, setBasicModal] = useState(false);
@@ -40,7 +42,7 @@ const CreateAttachmentForm = (props) => {
     const formData = new FormData();
     formData.append("attach", file);
     const { payload } = await dispatch(uploadFile({ formData, groupId: id }));
-    attachments.push({attachment: payload._id, order: 1});
+    attachments.push({attachment: payload._id, order: attachments.length + texts.length});
     setAttachments(attachments);
     console.log(attachments);
     setFile(null);
@@ -63,7 +65,7 @@ const CreateAttachmentForm = (props) => {
       return;
     }
 
-    texts.push({content: text, order: 1});
+    texts.push({content: text, order: attachments.length + texts.length});
     setTexts(texts);
     console.log(texts);
     setText("");

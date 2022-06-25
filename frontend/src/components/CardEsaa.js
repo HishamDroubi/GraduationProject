@@ -10,6 +10,7 @@ import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import Divider from '@mui/material/Divider';
 import CreateGroupForm from './CreateGroupForm';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 export default function CardEssa({groups}) {
 
@@ -39,7 +40,9 @@ export default function CardEssa({groups}) {
             <GroupIcon />
           </Avatar>
         </ListItemAvatar>
+        <Link to={`/group/${g._id}/sheet/`}>
         <ListItemText primary={g.name} secondary="Jan 9, 2014" ></ListItemText>
+        </Link>
       </ListItem>
 
       <Divider variant="inset" component="li" /></>))}

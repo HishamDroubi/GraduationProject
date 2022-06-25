@@ -29,12 +29,13 @@ const Sheet = ({ group, user }) => {
       await dispatch(getAllBlog(data));
     }
     getBlogs();
+    console.log(blogs)
   }, [dispatch, id])
   return (
     <>
       {group.coach.email === user.email && <CreateAttachmentForm />}
       
-            {blogs.map((b) => (
+            {blogs && blogs.map((b) => (
               <BlogItem blog={b}/>
             ))}
          
