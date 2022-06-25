@@ -10,6 +10,7 @@ import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import Divider from "@mui/material/Divider";
 import CreateGroupForm from "./CreateGroupForm";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function CardEssa({ groups }) {
   const { user } = useSelector((state) => state.auth);
@@ -32,7 +33,6 @@ export default function CardEssa({ groups }) {
     >
       {/* <Divider  component="li" /> */}
       <div style={{ overflowY: "scroll", height: "70%" }}>
-        {" "}
         {groups.map((g) => (
           <React.Fragment key={g._id}>
             <ListItem>
@@ -41,12 +41,11 @@ export default function CardEssa({ groups }) {
                   <GroupIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText
-                primary={g.name}
-                secondary="Jan 9, 2014"
-              ></ListItemText>
-            </ListItem>
 
+              <ListItem component={Link} to={`/group/${g._id}`}>
+                <ListItemText primary={g.name} secondary="Jan 9, 2014" />
+              </ListItem>
+            </ListItem>
             <Divider variant="inset" component="li" />
           </React.Fragment>
         ))}

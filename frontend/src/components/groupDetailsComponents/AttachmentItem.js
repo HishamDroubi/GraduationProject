@@ -43,11 +43,7 @@ const AttachmentItem = (props) => {
           </a>
         </Col>
 
-        <Col>
-          <Button value={attachment._id} onClick={onDeleteAttachment}>
-            <i className="bi bi-trash">Delete</i>
-          </Button>
-        </Col>
+        
       </Row>
     </Card>
   );

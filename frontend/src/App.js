@@ -72,13 +72,20 @@ const App = () => {
     <div className="App">
       <Router>
         <Header />
-        <main className="py-3" >
+        <main className="py-3">
           <div style={{ padding: "15px" }}>
             <Routes>
-              <Route path="/" element={<Level />} />
+              <Route
+                path="/"
+                element={
+                  <Protect>
+                    <Level />
+                  </Protect>
+                }
+              />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/blog" element={<Blog title="Title"/>} />
+              <Route path="/blog" element={<Blog title="Title" />} />
               <Route
                 path="/profile/:userName/*"
                 element={

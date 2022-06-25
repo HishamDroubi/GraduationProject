@@ -2,15 +2,15 @@ import axios from "axios";
 const API_URL = "/level/";
 const create = async (levelData) => {
   const response = await axios.post(API_URL + "create", levelData);
-  console.log(response.data)
+  console.log(response.data);
   return response.data;
 };
 const getLevel = async (levelId, token) => {
-  const response = await axios.get(API_URL, {
+  let response = await axios.get(API_URL, {
     params: {
       levelId,
     },
-  });
+  }); 
   if (levelId) {
     const solvedProblems = await axios.get(API_URL + "solvedProblems", {
       params: {
@@ -21,8 +21,24 @@ const getLevel = async (levelId, token) => {
       },
     });
     response.data.solvedProblems = solvedProblems.data;
+  } else {
+    let levelsWithSolvedProblems = [];
+    for (let i = 0; i < response.data.length; i++) {
+      const solvedProblemsData = await axios.get(API_URL + "solvedProblems", {
+        params: {
+          levelId: response.data[i]._id,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      levelsWithSolvedProblems.push({
+        ...response.data[i],
+        solvedProblems: solvedProblemsData.data,
+      });
+    }
+    response.data = levelsWithSolvedProblems;
   }
-  console.log(response.data);
   return response.data;
 };
 const addProblem = async (problemData, token, levelId) => {

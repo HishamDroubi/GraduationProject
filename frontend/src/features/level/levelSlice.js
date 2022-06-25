@@ -10,7 +10,8 @@ export const getLevel = createAsyncThunk(
   "level/get",
   async (levelId, thunkAPI) => {
     try {
-      return await levelService.getLevel(levelId);
+      const token = thunkAPI.getState().auth.user.token;
+      return await levelService.getLevel(levelId, token);
     } catch (error) {
       const message =
         (error.response &&

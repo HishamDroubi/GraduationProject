@@ -38,6 +38,7 @@ blogRouter.get("/:id", asyncHandler(async(req, res) => {
         },
       })
     
+    
     res.status(200).json(response);
 })
 );
@@ -52,7 +53,16 @@ blogRouter.get("/group/:groupId", asyncHandler(async(req, res) => {
           path: "attachment",
           model: "Attachment",
         },
+        
       })
+      .populate({
+        path: "group",
+        populate: {
+          path: "coach",
+          model: "User"
+        }
+      })
+   
     console.log(response);
     res.status(200).json(response);
 })

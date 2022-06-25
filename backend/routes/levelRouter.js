@@ -93,7 +93,7 @@ levelRouter.get(
       throw new Error("levelId Is not valid");
     }
     if (!levelId) {
-      level = await Level.find({});
+      level = await Level.find({}).populate("problems");
     } else {
       level = await Level.findById(levelId).populate("problems");
 
@@ -115,6 +115,8 @@ levelRouter.get(
   asyncHandler(async (req, res) => {
     let { handle } = req.currentUser;
     let levelId = req.query.levelId;
+   // console.log(handle);
+    //console.log(levelId);
     if (!mongoose.isValidObjectId(levelId)) {
       res.status(403);
       throw new Error("levelId Is not valid");
@@ -156,6 +158,7 @@ levelRouter.get(
 
       return search;
     });
+   // console.log(solvedProblems);
     res.status(200).json(solvedProblems);
   })
 );

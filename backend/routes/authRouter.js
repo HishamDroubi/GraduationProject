@@ -85,6 +85,10 @@ authRouter.post(
         path: "group",
         model: "Group",
       },
+      populate: {
+        path: "invitedUser",
+        model: "User",
+      }
     });
     if (fitchedUser == undefined) {
       res.status(400);

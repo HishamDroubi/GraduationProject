@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import { getLevel, reset } from "../features/level/levelSlice";
+import all from "../features/level/levelDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -8,7 +9,9 @@ import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
 import CreateLevelForm from "../components/CreateLevelForm";
 import LevelCard from "../components/LevelCard";
+import { fetchLevel } from "../features/level/levelDetailsSlice";
 const Level = () => {
+  const [levelsDetails, setLevelsDetails] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const [basicModal, setBasicModal] = useState(false);
   const toggleShow = () => setBasicModal(!basicModal);
@@ -17,17 +20,24 @@ const Level = () => {
   const { levels, isLoading, isError, message } = useSelector(
     (state) => state.level
   );
+
+  const { level } = useSelector((state) => state.levelDetails);
+
   useEffect(() => {
     if (isError) {
       toast.error(message);
     }
-    const fetchLevels = async () => {
+    const featchLevelDetails = async () => {
+      //const LDS = [];
       await dispatch(getLevel());
-      dispatch(reset());
+      await dispatch(reset());
+      // console.log(levels);
+      //console.log(LDS);
+      //  setLevelsDetails(LDS);
     };
-    fetchLevels();
+    featchLevelDetails();
   }, [dispatch, isError, message]);
-  if (isLoading) {
+  if (isLoading || !levels) {
     return <Loader />;
   }
   return (

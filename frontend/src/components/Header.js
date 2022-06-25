@@ -42,8 +42,8 @@ const Header = () => {
     await dispatch(deleteNotification(notificationMessage._id));
   };
   return (
-    <header>
-      <nav className="navbar bg-dark shadow">
+   
+      <nav className="navbar bg-dark shadow"  style={{zIndex:"1",position:"sticky",top:"0px"}}>
         <div className="container-fluid">
           <div>
             <a href="/" className="btn fs-4 me-5 text-secondary border-0">
@@ -165,7 +165,7 @@ const Header = () => {
           )}
         </div>
       </nav>
-    </header>
+ 
   );
 };
 

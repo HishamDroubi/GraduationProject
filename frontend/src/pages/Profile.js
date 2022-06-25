@@ -12,6 +12,7 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Invitations from "../components/profileComponents/Invitations";
 const Profile = (props) => {
   const [value, setValue] = React.useState(0);
   const { userName } = useParams();
@@ -38,10 +39,14 @@ const Profile = (props) => {
           <BottomNavigationAction label="group" />
         </LinkContainer>
 
+        <LinkContainer to="invaitions">
+          <BottomNavigationAction label="INVAITATIONS" />
+        </LinkContainer>
       </BottomNavigation>
 
       <Routes>
         <Route path="/" element={<HandleProfile userName={userName} />} />
+        <Route path="/invaitions" element={<Invitations/>} />
         <Route
           path="/problems/page/:pageNumber"
           element={<ProblemsProfile userName={userName} />}

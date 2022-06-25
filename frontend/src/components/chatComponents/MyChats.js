@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MDBListGroup, MDBListGroupItem, MDBInput } from "mdb-react-ui-kit";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ScrollableFeed from "react-scrollable-feed";
+import profileService from "../../features/profile/profileService";
+import { deleteNotification } from "../../features/chat/chatsSlice";
+import ChatContentItem from "./ChatContentItem";
 const MyChats = ({
   chats,
   findUsers,
@@ -13,6 +16,21 @@ const MyChats = ({
   const navigate = useNavigate();
   const { receiver } = useParams();
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [userCodeforces, setUserCodeforces] = useState({});
+  useEffect(() => {
+    
+    const getInfo = async () => {
+      const data = await profileService.getCodeforcesUserProfile(user.userName);
+      console.log(data);
+      setUserCodeforces(data);
+    };
+    user && getInfo();
+    
+  }, [user]);
+  const deleteHandler = async (notificationMessage) => {
+    await dispatch(deleteNotification(notificationMessage._id));
+  };console.log(userCodeforces)
   return (
     <>
       <h6 className="font-weight-bold mb-3 text-lg-left">Contacts</h6>
@@ -33,7 +51,8 @@ const MyChats = ({
                 zIndex: 999999999,
               }}
             >
-              {contact.userName}
+            
+                    {contact.userName}
             </MDBListGroupItem>
           ))}
         </MDBListGroup>
@@ -61,33 +80,7 @@ const MyChats = ({
                 }}
                 action
               >
-                <div style={{ fontSize: "0.95rem" }}>
-                  <strong>
-                    {chat.users[0].userName === user.userName
-                      ? chat.users[1].userName
-                      : chat.users[0].userName}
-                  </strong>
-                  <p
-                    style={{
-                      color:
-                        targetChat && targetChat._id === chat._id
-                          ? "#262626"
-                          : "#737373",
-                    }}
-                  >
-                    {chat.latestMessage &&
-                    chat.latestMessage.sender.userName !== user.userName
-                      ? chat.latestMessage.sender.userName + ": "
-                      : chat.latestMessage
-                      ? "You: "
-                      : "Send Message!"}
-                    {chat.latestMessage && chat.latestMessage.value.length > 40
-                      ? chat.latestMessage.value.substring(0, 41) + "..."
-                      : chat.latestMessage
-                      ? chat.latestMessage.value
-                      : ""}
-                  </p>
-                </div>
+                <ChatContentItem targetChat={targetChat} chat={chat}/>
               </MDBListGroupItem>
             ))}
           </MDBListGroup>
