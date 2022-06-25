@@ -41,7 +41,7 @@ const Level = () => {
         <div className="row">
           {levels &&
             levels.map((level) => (
-              <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
+              <div className="col-lg-4 col-md-6 col-sm-12 mb-3" key={level._id}>
                 <LevelCard level={level} key={level._id} />
               </div>
             ))}

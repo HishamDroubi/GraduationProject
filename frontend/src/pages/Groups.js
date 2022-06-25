@@ -11,15 +11,20 @@ import CreateGroupForm from "../components/CreateGroupForm";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Paginate from "../components/Paginate";
 import { useState } from "react";
-import { Button, Card, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
+import CardEsaa from "../components/CardEsaa";
 const Groups = () => {
+
   const navigate = useNavigate();
   const { pageNumber = 1 } = useParams();
-  const { groups, isLoading, isSuccess, isError, message, pages, page } =
+  const { allGroups, groups, isLoading, isSuccess, isError, message, pages, page } =
     useSelector((state) => state.group);
+    
   const dispatch = useDispatch();
+
+  
   useEffect(() => {
     if (isError) {
       toast.error(message);
@@ -28,6 +33,7 @@ const Groups = () => {
       await dispatch(fetchGroups(pageNumber));
     };
     getGroups();
+    console.log(groups)
     return () => {
       dispatch(reset());
     };
@@ -39,15 +45,28 @@ const Groups = () => {
       navigate(`/groups/page/${pages}`);
     }
   }
+
+ 
   return (
     <>
-      <>
-        <CreateGroupForm />
-      </>
-      {groups.map((group) => (
-        <GroupCard group={group} key={group._id} />
-      ))}
-      <Paginate pages={pages} page={page} />
+    
+      <Row>
+        <Col>
+        <CreateGroupForm   />
+        <div>
+          <CardEsaa groups={allGroups} />
+          </div>
+        </Col>
+        
+        <Col md="8">
+          {groups.map((group) => (
+            <GroupCard group={group} key={group._id} />
+          ))} 
+          <Paginate pages={pages} page={page} />
+        </Col>
+      </Row>
+
+     
     </>
   );
 };

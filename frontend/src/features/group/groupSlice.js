@@ -8,6 +8,7 @@ const initialState = {
   isSuccess: false,
   page: 1,
   pages: null,
+  allGroups: []
 };
 export const fetchGroups = createAsyncThunk(
   "groups",
@@ -109,6 +110,7 @@ export const groupSlice = createSlice({
         state.groups = action.payload.groups;
         state.page = action.payload.page;
         state.pages = action.payload.pages;
+        state.allGroups = action.payload.allGroups
       })
       .addCase(fetchGroups.rejected, (state, action) => {
         state.isLoading = false;

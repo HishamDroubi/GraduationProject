@@ -32,11 +32,23 @@ let groupRouter = express.Router();
 //get All Groups
 groupRouter.get(
   "/getAll",
-  protect,
+ 
   asyncHandler(async (req, res) => {
     const pageSize = 4;
     const page = Number(req.query.pageNumber) || 1;
     const count = await Group.countDocuments({});
+    const allGroups = await Group.find({})
+    .populate("coach")
+      .populate("participants")
+      .populate("attachments")
+      .populate({
+        path: "requests",
+        model: "Request",
+        populate: {
+          path: "requester",
+          model: "User",
+        },
+      })
     const groups = await Group.find({})
       .populate("coach")
       .populate("participants")
@@ -52,7 +64,7 @@ groupRouter.get(
       .limit(pageSize)
       .skip((page - 1) * pageSize);
 
-    res.status(200).json({ groups, page, pages: Math.ceil(count / pageSize) });
+    res.status(200).json({allGroups, groups, page, pages: Math.ceil(count / pageSize) });
   })
 );
 

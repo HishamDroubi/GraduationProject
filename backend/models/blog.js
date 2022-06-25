@@ -27,6 +27,9 @@ let blogSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Group",
   },
+  heading: {
+    type: String,
+  }
 });
 
 let Blog = mongoose.model("Blog", blogSchema, "blogs");

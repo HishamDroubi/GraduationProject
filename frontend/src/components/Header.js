@@ -43,23 +43,22 @@ const Header = () => {
   };
   return (
     <header>
-      <nav class="navbar bg-dark shadow">
-        <div class="container-fluid">
+      <nav className="navbar bg-dark shadow">
+        <div className="container-fluid">
           <div>
-            <a href="/" class="btn fs-4 me-5 text-secondary border-0">
+            <a href="/" className="btn fs-4 me-5 text-secondary border-0">
               CP-PTUK
             </a>
-            <a href="/groups/page/1" class="btn">
+            <a href="/groups/page/1" className="btn">
               Group
             </a>
 
-            <a href="/" class="btn">
+            <a href="/" className="btn">
               Level
             </a>
           </div>
-          
 
-          <div class="nav navbar-nav1 gap-2 bg-primary shadow px-4 rounded">
+          <div className="nav navbar-nav1 gap-2 bg-primary shadow px-4 rounded">
             {user && (
               <>
                 <FontAwesomeIcon
@@ -124,7 +123,10 @@ const Header = () => {
               </MDBListGroup>
             )}
             {user && (
-              <LinkContainer className="mx-3 ps-0 pe-3" to={"/profile/" + user.userName}>
+              <LinkContainer
+                className="mx-3 ps-0 pe-3"
+                to={"/profile/" + user.userName}
+              >
                 <Nav.Link>
                   <img
                     src={
@@ -139,9 +141,7 @@ const Header = () => {
                       borderRadius: "50%",
                     }}
                   />
-                  <strong className="text-white">
-                    {user.userName}
-                  </strong>
+                  <strong className="text-white">{user.userName}</strong>
                 </Nav.Link>
               </LinkContainer>
             )}
@@ -152,15 +152,17 @@ const Header = () => {
               </a>
             )}
           </div>
-          {!user && (<div class="nav navbar-nav1 gap-2">
-              <a href="/login" class="btn bg-primary px-4 shadow">
+          {!user && (
+            <div className="nav navbar-nav1 gap-2">
+              <a href="/login" className="btn bg-primary px-4 shadow">
                 Login
               </a>
 
-              <a href="/register" class="btn bg-primary px-4 shadow">
+              <a href="/register" className="btn bg-primary px-4 shadow">
                 Register
               </a>
-          </div>)}
+            </div>
+          )}
         </div>
       </nav>
     </header>

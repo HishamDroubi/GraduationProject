@@ -72,7 +72,7 @@ const App = () => {
     <div className="App">
       <Router>
         <Header />
-        <main className="py-3">
+        <main className="py-3" >
           <div style={{ padding: "15px" }}>
             <Routes>
               <Route path="/" element={<Level />} />
