@@ -95,7 +95,6 @@ authRouter.post(
       throw new Error("The Email Or The Password Is Incorrect");
     }
     let fitchedPassword = fitchedUser["password"];
-
     let login = await bcrypt.compareSync(password, fitchedPassword);
     if (login) {
       res.status(200).json({

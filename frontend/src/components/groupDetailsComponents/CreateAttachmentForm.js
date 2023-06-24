@@ -57,6 +57,10 @@ const CreateAttachmentForm = (props) => {
       heading: heading
     };
     await dispatch(createBlog(data));
+    setText('')
+    setFile(null)
+    toggleShow()
+
   };
   const submitTextHandler = async (e) => {
     e.preventDefault();
@@ -69,6 +73,7 @@ const CreateAttachmentForm = (props) => {
     setTexts(texts);
     console.log(texts);
     setText("");
+    
   };
 
   return (

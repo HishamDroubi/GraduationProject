@@ -52,7 +52,9 @@ export default function BlogItem({ blog }) {
   };
 
   return (
-    <Card  sx={{ maxWidth: '70%', marginBottom: '20px', marginLeft: '100px' }}>
+      <Card className="border w-3/4 bg-gray-800 mb-10 rounded shadow-2xl" style={{
+        marginLeft: '100px'
+      }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -67,7 +69,7 @@ export default function BlogItem({ blog }) {
         title={blog.heading}
         subheader="September 14, 2016"
       />
-     
+     <hr/>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
          

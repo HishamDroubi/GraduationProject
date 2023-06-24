@@ -70,7 +70,7 @@ const GroupDetails = () => {
       <Nav fill variant="tabs" activeKey={activeLink}>
         <Nav.Item>
           <LinkContainer to="sheet">
-            <Nav.Link eventKey="sheet">Sheet</Nav.Link>
+            <Nav.Link eventKey="sheet" className="font-serif">Sheet</Nav.Link>
           </LinkContainer>
         </Nav.Item>
         {group.coach.userName === user.userName && (

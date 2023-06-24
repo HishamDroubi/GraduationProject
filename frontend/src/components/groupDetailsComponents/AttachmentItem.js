@@ -12,40 +12,41 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 
 const AttachmentItem = (props) => {
   const { attachment, onDeleteAttachment } = props;
+  let isImage = attachment.type !== "application/pdf" && attachment.type !==
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" && attachment.type !== "text/plain" && attachment.type !==
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation" && attachment.type !== "application/octet-stream" ;
   return (
-    <Card key={attachment._id}>
+    
       <Row>
-        <Col md="1">
+        
           {attachment.type === "application/pdf" ? (
-            <FontAwesomeIcon icon={faFilePdf} size="lg" />
+           <Col md="1"> <FontAwesomeIcon icon={faFilePdf} size="lg" /></Col>
           ) : attachment.type ===
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? (
-            <FontAwesomeIcon icon={faFileWord} size="lg" />
+              <Col md="1"><FontAwesomeIcon icon={faFileWord} size="lg" /></Col>
           ) : attachment.type === "text/plain" ? (
-            <FontAwesomeIcon icon={faFileLines} size="lg" />
+            <Col md="1"> <FontAwesomeIcon icon={faFileLines} size="lg" /></Col>
           ) : attachment.type ===
             "application/vnd.openxmlformats-officedocument.presentationml.presentation" ? (
-            <FontAwesomeIcon icon={faFilePowerpoint} size="lg" />
+              <Col md="1"> <FontAwesomeIcon icon={faFilePowerpoint} size="lg" /></Col>
           ) : attachment.type === "application/octet-stream" ? (
-            <FontAwesomeIcon icon={faFileZipper} size="lg" />
-          ) : (
-            <FontAwesomeIcon icon={faFileImage} size="lg" />
-          )}
-        </Col>
-        <Col md="6">
-          <a
+            <Col md="1"> <FontAwesomeIcon icon={faFileZipper} size="lg" /></Col>
+          ):(<></>)}
+        
+        <Col>
+         {!isImage ? ( <a
             href={`http://localhost:3004/uploads/${attachment.newName}`}
             download
             target="_blank"
             rel="noreferrer"
           >
             {attachment.originalname}
-          </a>
+          </a>) : (<img className="w-3/4 h-100" src={`http://localhost:3004/uploads/${attachment.newName}`}/>)}
         </Col>
 
         
       </Row>
-    </Card>
+    
   );
 };
 
