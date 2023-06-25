@@ -14,7 +14,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteForever from "@mui/icons-material/DeleteForever";
-
+import { MdAddChart, MdAddComment } from "react-icons/md";
 import AttachmentItem from "../AttachmentItem";
 import { asyncScheduler } from "rxjs";
 import { deleteBlog } from "../../../features/group/groupDetailsSlice";
@@ -95,7 +95,7 @@ console.log(localStorage.getItem('user'))
           {blogContent.map((bc) => (<p>{bc.type === 'A' ? <AttachmentItem attachment={bc.content} /> : <div>{bc.content}</div>}</p>))}
         </CardContent>
 
-        <div className="absolute right-0 bottom-0"><IconButton onClick={handleExpandClick}><ExpandMoreIcon /></IconButton></div>
+        <div className="absolute right-0 bottom-0"><IconButton onClick={handleExpandClick}><MdAddComment /></IconButton></div>
       </Card>
 
       <Collapse className="border w-3/4 mt-3 rounded" in={expanded} timeout="auto" unmountOnExit>

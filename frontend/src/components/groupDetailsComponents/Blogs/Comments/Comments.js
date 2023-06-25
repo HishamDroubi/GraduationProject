@@ -8,6 +8,7 @@ import axios from 'axios'
 import { getByEmail } from '../../../../features/auth/authSlice'
 import { IconButton } from '@mui/material'
 import { ReplyAll } from 'react-bootstrap-icons';
+import { faCommenting } from '@fortawesome/free-solid-svg-icons'
 const Comments = ({ blog }) => {
 
   const [comments, setComments] = useState(blog.comments);
@@ -24,7 +25,6 @@ const Comments = ({ blog }) => {
     }
     console.log(data);
     const ret = await dispatch(addComment(data));
-    console.log(ret);
     console.log(comments)
     setComments(prev => [...prev, ret.payload]);
     console.log(comments) 

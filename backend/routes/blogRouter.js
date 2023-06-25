@@ -52,10 +52,10 @@ blogRouter.get("/:id", asyncHandler(async (req, res) => {
       model: 'User',
     },
     populate: {
-        path: "replys",
-        model:"Reply" 
+      path: "replys",
+      model: "Reply"
     }
-    
+
   })
 
 
@@ -83,8 +83,8 @@ blogRouter.delete("/:id", asyncHandler(async (req, res) => {
 
 blogRouter.post("/:id/comment", asyncHandler(async (req, res) => {
 
-  const user = await User.findOne({email: req.body.user.email});
-  const comment = new Comment({
+  const user = await User.findOne({ email: req.body.user.email });
+  let comment = new Comment({
     content: req.body.content,
     who: user._id
   })
@@ -93,31 +93,48 @@ blogRouter.post("/:id/comment", asyncHandler(async (req, res) => {
   const { id } = req.params;
   const blog = await Blog.findById(id);
   blog.comments.push(comment._id);
-  
-  blog.save();
 
+  blog.save();
+  comment = await Comment.findById({_id:comment._id}).populate({
+    path: 'who',
+    model: 'User',
+  }).populate({
+    path: "replys",
+    model: "Reply"
+  })
+    .populate({
+      path: "replys",
+      populate: {
+        path: 'who',
+        model: 'User'
+      }
+    })
   res.status(200).json(comment);
 })
 );
 
 blogRouter.post("/:blogId/:commentId/reply", asyncHandler(async (req, res) => {
 
-  const user = await User.findOne({email: req.body.user.email});
-  const reply = new Reply({
+  const user = await User.findOne({ email: req.body.user.email });
+  let reply = new Reply({
     content: req.body.content,
     who: user._id
   })
-  
+
   await reply.save()
 
-  
+
   const { blogId, commentId } = req.params;
-  
-  const comment = await Comment.findOne({_id: commentId});console.log(comment);
+
+  const comment = await Comment.findOne({ _id: commentId }); console.log(comment); 
   comment.replys.push(reply);
-  
+
   comment.save();
 
+  reply = await Reply.findById({_id: reply._id}).populate({
+    path:'who',
+    model: 'User'
+  })
   res.status(200).json(reply);
 })
 );
@@ -132,37 +149,37 @@ blogRouter.get("/group/:groupId", asyncHandler(async (req, res) => {
     },
 
   }).populate({
-      path: "group",
-      populate: {
-        path: "coach",
-        model: "User"
-      }
-    }).populate({
-      path: 'comments',
+    path: "group",
+    populate: {
+      path: "coach",
+      model: "User"
+    }
+  }).populate({
+    path: 'comments',
+    populate: {
+      path: 'who',
+      model: 'User',
+    }
+  }).populate({
+    path: 'comments',
+
+    populate: {
+      path: 'who',
+      model: 'User',
+    },
+    populate: {
+      path: "replys",
+      model: "Reply"
+    },
+    populate: {
+      path: "replys",
       populate: {
         path: 'who',
-        model: 'User',
+        model: 'User'
       }
-    }).populate({
-      path: 'comments',
-  
-      populate: {
-        path: 'who',
-        model: 'User',
-      },
-      populate: {
-          path: "replys",
-          model:"Reply" 
-      },
-      populate: {
-        path: "replys",
-        populate: {
-          path: 'who',
-          model: 'User'
-        }
-      }
-      
-    })
+    }
+
+  })
 
   console.log(response);
   res.status(200).json(response);

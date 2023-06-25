@@ -9,7 +9,7 @@ import moment from 'moment';
 import IconButton from "@mui/material/IconButton";
 import { ReplyAll } from 'react-bootstrap-icons';
 const Comment = ({ comment, blog }) => {
-    console.log(comment)
+   // console.log(comment)
     const { user } = useSelector((state) => state.auth);
     const [commenterPhoto, setCommenterPhoto] = useState('');
     useEffect(async () => {
@@ -19,6 +19,7 @@ const Comment = ({ comment, blog }) => {
 
     const dispatch = useDispatch();
 
+    const [replys, setReplys] = useState(comment.replys);
     const [content, setContent] = useState('');
     const onAddCommentHandler = async () => {
         console.log(user);
@@ -30,7 +31,8 @@ const Comment = ({ comment, blog }) => {
         }
         console.log(data);
         const tt = await dispatch(addReply(data));
-        console.group(tt);
+        console.log(tt.payload);
+        setReplys(prev => [...prev, tt.payload]);
     }
 
     const [expanded, setExpanded] = React.useState(false);
@@ -41,19 +43,22 @@ const Comment = ({ comment, blog }) => {
         <div className='w-3/4 ml-6 m-6 border'>
             <article class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900">
                 <footer class="flex justify-between items-center mb-2">
-                    <div class="flex items-center">
-                        <p class="inline-flex items-center mr-1 text-sm text-gray-900 dark:text-white">
-                            <img
-                                class="mr-2 w-6 h-6 rounded-full"
-                                src={commenterPhoto}
-                                alt="Michael Gough" />{comment.who.userName},</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">{moment(new Date(comment.createdAt)).fromNow()}</p>
-                    </div>
+                <div class="flex items-center ">
+                               
+                               <img
+                               class="mr-2 w-6 h-6 rounded-full"
+                               src={commenterPhoto}
+                               alt="Jese Leos"/>
+                          <div className='flex flex-col'>
+                          <div className='text-sm'> {comment.who.userName}</div>
+                           <div class="text-xs text-gray-600 dark:text-gray-400">{moment(new Date(comment.createdAt)).fromNow()}</div>
+                          </div>
+                       </div>
 
 
 
                 </footer>
-                <p class="text-gray-500 dark:text-gray-400">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
                     {comment.content}
                 </p>
 
@@ -76,7 +81,7 @@ const Comment = ({ comment, blog }) => {
                     </IconButton>
 
                 </div>
-                {comment.replys.map(r => <Reply reply={r} />)}
+                {replys.map(r => <Reply reply={r} />)}
             </Collapse>
 
         </div>
