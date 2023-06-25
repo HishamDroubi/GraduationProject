@@ -1,5 +1,6 @@
 import axios from "axios";
 const createGroup = async (groupData, token) => {
+  console.log(groupData)
   const response = await axios.post("/group/create", groupData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -176,6 +177,37 @@ const getAllBlog = async (data, token) => {
   return response.data;
 };
 
+const deleteBlog = async (data, token) => {
+  console.log(data);
+  const response = await axios.delete(`/blog/${data.blogId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('------------------------------------', response.data);
+  return response.data;
+};
+
+const addComment = async (data, token) => {
+  const response = await axios.post(`/blog/${data.id}/comment`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('im in addComment', response.data);
+  return response.data;
+};
+
+const addReply = async (data, token) => {
+  const response = await axios.post(`/blog/${data.blogId}/${data.commentId}/reply`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('im in addComment', response.data);
+  return response.data;
+};
+
 const groupService = {
   getAllBlog,
   createBlog,
@@ -193,6 +225,9 @@ const groupService = {
   fetchGroupInvitations,
   inviteUser,
   cancelInvitation,
+  deleteBlog,
+  addComment,
+  addReply
 };
 
 export default groupService;

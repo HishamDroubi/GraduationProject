@@ -42,7 +42,7 @@ export default function CardEssa({ groups }) {
                 </Avatar>
               </ListItemAvatar>
 
-              <ListItem component={Link} to={`/group/${g._id}`}>
+              <ListItem component={Link} to={`/group/${g._id}/sheet`}>
                 <ListItemText primary={g.name} secondary="Jan 9, 2014" />
               </ListItem>
             </ListItem>

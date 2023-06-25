@@ -18,6 +18,18 @@ const register = async (userData) => {
   return response.data;
 };
 
+const getByEmail = async (email, token) => {
+  const data = {
+    email: email
+  }
+  console.log(data)
+  const response = await axios.get("/auth/email", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(response);
+}
 const invitationAcceptance = async (invitationIdAndAcceptence, token) => {
   const { data } = await axios.post(
     "/group/respondToInvite",
@@ -37,5 +49,6 @@ const authService = {
   logout,
   register,
   invitationAcceptance,
+  getByEmail
 };
 export default authService;

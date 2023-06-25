@@ -29,7 +29,18 @@ let blogSchema = new Schema({
   },
   heading: {
     type: String,
-  }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    immutable: true,
+  },
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    }
+  ]
 });
 
 let Blog = mongoose.model("Blog", blogSchema, "blogs");

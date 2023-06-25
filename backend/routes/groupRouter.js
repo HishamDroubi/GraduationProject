@@ -117,7 +117,7 @@ groupRouter.post(
       participants: [coach],
     });
     let result = await newGroup.save();
-    res.status(200).json(result);
+    res.status(200).json(req.currentUser);
   })
 );
 

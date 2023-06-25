@@ -12,7 +12,7 @@ import {
 import { toast } from "react-toastify";
 import AttachmentItem from "./AttachmentItem";
 import { useEffect } from "react";
-import BlogItem from "./BlogItem";
+import BlogItem from "./Blogs/BlogItem";
 const Sheet = ({ group, user }) => {
   const [file, setFile] = useState(null);
   const { id } = useParams();
@@ -36,7 +36,7 @@ const Sheet = ({ group, user }) => {
   }, [dispatch, id]);
   return (
     <>
-      {group.coach.email === user.email && <CreateAttachmentForm />}
+      
 
       {blogs && blogs.map((b) => <BlogItem blog={b} key={b._id} />)}
     </>

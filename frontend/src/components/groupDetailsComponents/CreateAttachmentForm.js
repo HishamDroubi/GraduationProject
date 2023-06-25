@@ -19,6 +19,7 @@ import {
 } from "mdb-react-ui-kit";
 import { backgroundColor, color } from "../../theme";
 import { createBlog, uploadFile } from "../../features/group/groupDetailsSlice";
+import ButtonSubmit from "../Utils/ButtonSubmit";
 const CreateAttachmentForm = (props) => {
 
   let order = 1;
@@ -42,7 +43,7 @@ const CreateAttachmentForm = (props) => {
     const formData = new FormData();
     formData.append("attach", file);
     const { payload } = await dispatch(uploadFile({ formData, groupId: id }));
-    attachments.push({attachment: payload._id, order: attachments.length + texts.length});
+    attachments.push({ attachment: payload._id, order: attachments.length + texts.length });
     setAttachments(attachments);
     console.log(attachments);
     setFile(null);
@@ -69,77 +70,86 @@ const CreateAttachmentForm = (props) => {
       return;
     }
 
-    texts.push({content: text, order: attachments.length + texts.length});
+    texts.push({ content: text, order: attachments.length + texts.length });
     setTexts(texts);
     console.log(texts);
     setText("");
-    
+
   };
 
   return (
     <>
-      <Button onClick={toggleShow}>Add Attachment</Button>
+      <button onClick={toggleShow}>Create Blog</button>
+
       <Form
         onSubmit={onSubmitHandler}
         style={{
           marginBottom: "20px",
         }}
       >
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex="-1">
+        <MDBModal className="" show={basicModal} setShow={setBasicModal} tabIndex="-1">
           <MDBModalDialog>
             <MDBModalContent>
               <MDBModalHeader>
-                <MDBModalTitle>Create groupe</MDBModalTitle>
+                <MDBModalTitle>Create Blog</MDBModalTitle>
               </MDBModalHeader>
 
-              <MDBModalBody>
+              <div className="flix p-2">
 
-              <Form.Group controlId="formFile" className="mb-3">
+                <Form.Group controlId="formFile" className="mb-3">
                   <Form.Control
                     type="text"
                     onChange={(e) => setHeading(e.target.value)}
                     placeholder="Heading"
                   />
-               </Form.Group>
-
-                <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Control
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                  />
                 </Form.Group>
+                <hr />
+                <div className="flex flex justify-around ">
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Control
+                      type="file"
+                      onChange={(e) => setFile(e.target.files[0])}
+                    />
+                  </Form.Group>
+                  <ButtonSubmit
 
-                <Button
-                  onClick={submitFileHandler}
-                  variant="primary"
-                  type="submit"
-                >
-                  Submit
-                </Button>
+                    onClickHandler={submitFileHandler}
 
-                <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Control
-                    type="text"
-                    onChange={(e) => setText(e.target.value)}
-                    value={text}
                   />
-                </Form.Group>
-                <Button
-                  onClick={submitTextHandler}
-                  variant="primary"
-                  type="submit"
-                >
-                  Submit
-                </Button>
-              </MDBModalBody>
+
+
+                </div>
+
+
+                <hr />
+                <div className="flex relative">
+
+                  <div className="w-3/4">
+                    <Form.Control
+
+                      as="textarea"
+                      rows={20}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder="Content"
+                    />
+
+                  </div>
+
+
+                  <div className="absolute bottom-0 right-0">
+                    <ButtonSubmit
+
+                    onClickHandler={submitTextHandler}
+
+                  /></div>
+                </div>
+              </div>
 
               <MDBModalFooter>
                 <Button type="button" color="secondary" onClick={toggleShow}>
                   Close
                 </Button>
-                <Button variant="primary" type="submit">
-                  Submit
-                </Button>
+                <ButtonSubmit />
               </MDBModalFooter>
             </MDBModalContent>
           </MDBModalDialog>

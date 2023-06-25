@@ -9,7 +9,7 @@ const initialState = {
   isSuccess: false,
   searchedUsers: null,
   invitations: null,
-  blogs: null,
+  blogs: [],
 };
 export const getGroupDetails = createAsyncThunk(
   "group/:id",
@@ -206,6 +206,65 @@ export const getAllBlog = createAsyncThunk(
   }
 );
 
+export const deleteBlog = createAsyncThunk(
+  "group/:id/deleteBlog",
+  async (data, thunkAPI) => {
+    try {
+      console.log("hahaha");
+      const token = thunkAPI.getState().auth.user.token;
+
+      return await groupService.deleteBlog(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  "group/:id/addComment",
+  async (data, thunkAPI) => {
+    try {
+      console.log("hahaha");
+      const token = thunkAPI.getState().auth.user.token;
+
+      return await groupService.addComment(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const addReply = createAsyncThunk(
+  "group/:blogId/:commentId/addReply",
+  async (data, thunkAPI) => {
+    try {
+      console.log(data);
+      const token = thunkAPI.getState().auth.user.token;
+
+      return await groupService.addReply(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const groupDetailsSlice = createSlice({
   name: "groupDetails",
   initialState,
@@ -302,9 +361,34 @@ export const groupDetailsSlice = createSlice({
         console.log(action.payload);
       })
       .addCase(getAllBlog.fulfilled, (state, action) => {
+        state.blogs = action.payload
         console.log(action.payload);
-        state.blogs = action.payload;
-      });
+      })
+      .addCase(deleteBlog.rejected, (state, action) => {
+        state.message = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(deleteBlog.fulfilled, (state, action) => {
+        
+        console.log(action.payload);
+        state.blogs = state.blogs.filter(b => b._id !== action.payload._id);
+        state.isLoading = false;
+      })
+      .addCase(deleteBlog.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(createBlog.rejected, (state, action) => {
+        state.message = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(createBlog.fulfilled, (state, action) => {
+        console.log(action.payload)
+       // state.blogs.push(action.payload);
+        state.isLoading = false;
+      })
+      .addCase(createBlog.pending, (state, action) => {
+        state.isLoading = true;
+      })
   },
 });
 export const { reset } = groupDetailsSlice.actions;

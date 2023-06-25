@@ -18,6 +18,8 @@ import Requests from "../components/groupDetailsComponents/Requests";
 import { LinkContainer } from "react-router-bootstrap";
 import Sheet from "../components/groupDetailsComponents/Sheet";
 import Invitations from "../components/groupDetailsComponents/Invitations";
+import CreateAttachmentForm from "../components/groupDetailsComponents/CreateAttachmentForm";
+import SideBar from "../components/groupDetailsComponents/SideBar";
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -66,7 +68,10 @@ const GroupDetails = () => {
   }
 
   return (
-    <div style={{ marginLeft: "0px" }}>
+    <div className="flex w-full" >
+      
+      <SideBar group={group}  />
+      <div className="w-5/6">
       <Nav fill variant="tabs" activeKey={activeLink}>
         <Nav.Item>
           <LinkContainer to="sheet">
@@ -125,6 +130,8 @@ const GroupDetails = () => {
           }
         />
       </Routes>
+      </div>
+      
     </div>
   );
 };

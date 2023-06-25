@@ -112,6 +112,12 @@ authRouter.post(
   })
 );
 
+authRouter.get("/email", async(req, res) => {
+  console.log(req.body);
+  const user = await User.findOne({email: req.body.email});
+  console.log(user, '---------------------')
+  res.status(200).json(user);
+})
 //change password
 authRouter.put("/changePassword", protect, async (req, res) => {
   let { curPass, newPass, rePass } = req.body;

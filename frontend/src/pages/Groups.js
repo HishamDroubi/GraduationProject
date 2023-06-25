@@ -72,7 +72,7 @@ const Groups = () => {
               return (
                 <>
                   <GroupCard group={group} key={group._id} />
-                  <Link to={`/profile/${group.participants[0].userName}`}>
+                  <Link to={`/profile/${group.participants[0].userName}/sheet`}>
                     <p>{group.participants[0].userName}</p>
                   </Link>
                 </>
