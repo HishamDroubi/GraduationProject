@@ -28,12 +28,13 @@ const Comments = ({ blog }) => {
     console.log(comments)
     setComments(prev => [...prev, ret.payload]);
     console.log(comments) 
+    setContent('');
   }
   return (
     <div className='w-full border'>
       <div className='font-mono ml-2 mt-2 text-xl font-bold'>Comments</div>
       <div className="flex p-2">
-        <input type="text" id="first_name" class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-900 block w-3/4 p-2.5" placeholder="add your comment"
+        <input type="text" value={content} id="first_name" class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-900 block w-3/4 p-2.5" placeholder="add your comment"
           onChange={(e) => setContent(e.target.value)} />
         <IconButton onClick={onAddCommentHandler}>
           <ReplyAll />

@@ -33,58 +33,65 @@ const AddProblemForm = (props) => {
     };
     dispatch(addProblem(problemData));
   };
+
+  const [basicModal, setBasicModal] = useState(false);
+  const toggleShow = () => setBasicModal(!basicModal);
   return (
+    <> <button onClick={toggleShow}>Add problem</button>
     <Form onSubmit={onSubmit} style={{
       marginBottom: "20px"
     }}>
-      <MDBModal show={props.basicModal} setShow={props.setBasicModal} tabIndex='-1'>
+      <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
         <MDBModalDialog>
           <MDBModalContent>
 
             <MDBModalHeader>
-              <MDBModalTitle>Create groupe</MDBModalTitle>
-              <Button type="button" className='btn-close' color='none' onClick={props.toggleShow}></Button>
+              <MDBModalTitle>Add Problem</MDBModalTitle>
+              <Button type="button" className='btn-close' color='none' onClick={toggleShow}></Button>
             </MDBModalHeader>
 
             <MDBModalBody>
-            <Form.Group className="mb-3" controlId="contest">
 
-              <Form.Label>Contest</Form.Label>
+              <div className="flex flex-col justify-between">
+              
               <Form.Control
+              className="my-3"
+              width={"75%"}
                 type="text"
                 placeholder="Contest Number"
                 name="contest"
                 onChange={onChange}
                 value={contest}
               />
-            </Form.Group>
+           
 
-            <Form.Group className="mb-3" controlId="index">
-              <Form.Label>Index</Form.Label>
+           
               <Form.Control
+              className="my-5"
+              width={"75%"}
                 type="text"
                 placeholder="Problem Index"
                 name="index"
                 onChange={onChange}
                 value={index}
               />
-            </Form.Group>
+              </div>
                
             </MDBModalBody>
 
             <MDBModalFooter>
-              <Button type="button" color='secondary' onClick={props.toggleShow}>
+              <Button type="button" color='secondary' onClick={toggleShow}>
                 Close
               </Button>
               <Button
                 variant="primary"
                 type="submit"
                 style={{
-                  width: 150,
+                  width: 75,
                   marginLeft: 3
                 }}
               >
-                Create Group
+                Add
               </Button>
             </MDBModalFooter>
 
@@ -92,6 +99,7 @@ const AddProblemForm = (props) => {
         </MDBModalDialog>
       </MDBModal>
           </Form>
+          </>
           );
 };
 

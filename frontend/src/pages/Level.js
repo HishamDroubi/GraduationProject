@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
-import CreateLevelForm from "../components/CreateLevelForm";
-import LevelCard from "../components/LevelCard";
+import CreateLevelForm from "../components/levelCompopnents/CreateLevelForm";
+import LevelCard from "../components/levelCompopnents/LevelCard";
 import { fetchLevel } from "../features/level/levelDetailsSlice";
 const Level = () => {
   const [levelsDetails, setLevelsDetails] = useState([]);

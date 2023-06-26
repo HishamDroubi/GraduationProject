@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import FormContainer from "./FormContainer";
+import FormContainer from "../FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { reset } from "../features/level/levelFormSlice";
-import Loader from "./Loader";
-import { create } from "../features/level/levelFormSlice";
+import { reset } from "../../features/level/levelFormSlice";
+import Loader from "../Loader";
+import { create } from "../../features/level/levelFormSlice";
 import {
   MDBBtn,
   MDBModal,

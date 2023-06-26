@@ -12,14 +12,13 @@ import { toast } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Button, Nav, Col, Row, Card } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import Participants from "../components/groupDetailsComponents/Participants";
 import Requests from "../components/groupDetailsComponents/Requests";
 import { LinkContainer } from "react-router-bootstrap";
 import Sheet from "../components/groupDetailsComponents/Sheet";
 import Invitations from "../components/groupDetailsComponents/Invitations";
-import CreateAttachmentForm from "../components/groupDetailsComponents/CreateAttachmentForm";
-import SideBar from "../components/groupDetailsComponents/SideBar";
+import SideBar from "../components/Utils/SideBar";
 const GroupDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ const GroupDetails = () => {
     location.pathname.lastIndexOf("/") + 1
   );
   const { id } = useParams();
-  const { group, isError, isSuccess, message, isLoading } = useSelector(
+  const { group, isError, message, isLoading } = useSelector(
     (state) => state.groupDetails
   );
   const { user } = useSelector((state) => state.auth);

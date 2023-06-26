@@ -101,7 +101,7 @@ console.log(localStorage.getItem('user'))
       <Collapse className="border w-3/4 mt-3 rounded" in={expanded} timeout="auto" unmountOnExit>
         <Comments blog={blog}/>
       </Collapse>
-
+      
     </>
   );
 }

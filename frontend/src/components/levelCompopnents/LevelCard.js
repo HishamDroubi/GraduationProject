@@ -6,8 +6,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { fetchLevel, reset } from "../features/level/levelDetailsSlice";
-import Loader from "./Loader";
+import { fetchLevel, reset } from "../../features/level/levelDetailsSlice";
+import Loader from "../Loader";
 const LevelCard = ({ level }) => {
   console.log(level);
   const solvedPercentage = level.solvedProblems.length / level.problems.length;

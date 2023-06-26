@@ -20,7 +20,7 @@ import {
 import { backgroundColor, color } from "../../theme";
 import { createBlog, uploadFile } from "../../features/group/groupDetailsSlice";
 import ButtonSubmit from "../Utils/ButtonSubmit";
-const CreateAttachmentForm = (props) => {
+const CreateBlogForm = (props) => {
 
   let order = 1;
   const [attachments, setAttachments] = useState([]);
@@ -159,4 +159,4 @@ const CreateAttachmentForm = (props) => {
   );
 };
 
-export default CreateAttachmentForm;
+export default CreateBlogForm;
