@@ -1,0 +1,22 @@
+.container1 {
+    
+    display: flex;
+    position: relative;
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.bar1 {
+    position: absolute;
+    width: 5.2rem;
+    height: 5.2rem;   
+    background: white;
+    border-radius: 50%;
+}
+
+.bar-text1 {
+    position: relative;
+}

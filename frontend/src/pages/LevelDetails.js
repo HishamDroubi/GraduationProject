@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import { useParams } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
-import AddProblemForm from "../components/AddProblemForm";
+import AddProblemForm from "../components/levelCompopnents/AddProblemForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SideBar from "../components/Utils/SideBar";
-import LevelTable from "../components/levelCompopnents/LevelTable";
+import HelperLevelDetails from "../components/levelCompopnents/HelperLevelDetails";
 const LevelDetails = () => {
   const [basicModal, setBasicModal] = useState(false);
   const toggleShow = () => setBasicModal(!basicModal);
@@ -39,7 +39,7 @@ const LevelDetails = () => {
   
   return (
     <>
-     {level && level.problems && level.solvedProblems && (<LevelTable level={level}/>)}
+     {level && level.problems && level.solvedProblems && (<HelperLevelDetails level={level}/>)}
     </>
   );
 };

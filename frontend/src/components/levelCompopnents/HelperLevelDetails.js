@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import SideBar from '../Utils/SideBar'
 import { Table } from 'react-bootstrap'
+import BottomAppBar from '../BottomAppBar';
 
-const LevelTable = ({level }) => {
+const HelperLevelDetails = ({level }) => {
 
     const [problems, setProblems] = useState(level.problems);
    
@@ -72,8 +73,8 @@ const LevelTable = ({level }) => {
                         ))}
                     </tbody>
                 </Table></div>
-            </div></>
+            </div><BottomAppBar/></>
     )
 }
 
-export default LevelTable
+export default HelperLevelDetails

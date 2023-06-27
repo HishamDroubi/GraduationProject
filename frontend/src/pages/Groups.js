@@ -7,14 +7,14 @@ import { reset } from "../features/group/groupSlice";
 import { useDispatch } from "react-redux";
 import { fetchGroups } from "../features/group/groupSlice";
 import Loader from "../components/Loader";
-import CreateGroupForm from "../components/CreateGroupForm";
+import CreateGroupForm from "../components/groupDetailsComponents/CreateGroupForm";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Paginate from "../components/Paginate";
 import { useState } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import GroupCard from "../components/GroupCard";
 import { backgroundColor, color } from "../theme";
-import CardEsaa from "../components/CardEsaa";
+import CardEsaa from "../components/groupDetailsComponents/CardEsaa";
 const Groups = () => {
   const navigate = useNavigate();
   const { pageNumber = 1 } = useParams();

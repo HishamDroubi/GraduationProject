@@ -4,9 +4,9 @@ import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createGroup } from "../../features/group/createGroupSlice";
-import { reset } from "../../features/group/createGroupSlice";
-import Loader from "../Loader";
+import { createGroup } from "../../../features/group/createGroupSlice";
+import { reset } from "../../../features/group/createGroupSlice";
+import Loader from "../../Loader";
 import {
   MDBBtn,
   MDBModal,
@@ -17,9 +17,9 @@ import {
   MDBModalBody,
   MDBModalFooter,
 } from "mdb-react-ui-kit";
-import { backgroundColor, color } from "../../theme";
-import { createBlog, uploadFile } from "../../features/group/groupDetailsSlice";
-import ButtonSubmit from "../Utils/ButtonSubmit";
+import { backgroundColor, color } from "../../../theme";
+import { createBlog, uploadFile } from "../../../features/group/groupDetailsSlice";
+import ButtonSubmit from "../../Utils/ButtonSubmit";
 const CreateBlogForm = (props) => {
 
   let order = 1;

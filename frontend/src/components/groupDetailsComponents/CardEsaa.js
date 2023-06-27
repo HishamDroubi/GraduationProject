@@ -8,7 +8,6 @@ import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import Divider from "@mui/material/Divider";
-import CreateGroupForm from "./CreateGroupForm";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 

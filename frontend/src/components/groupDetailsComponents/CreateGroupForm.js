@@ -4,9 +4,9 @@ import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createGroup } from "../features/group/createGroupSlice";
-import { reset } from "../features/group/createGroupSlice";
-import Loader from "./Loader";
+import { createGroup } from "../../features/group/createGroupSlice"; 
+import { reset } from "../../features/group/createGroupSlice"; 
+import Loader from "../Loader";
 import {
   MDBBtn,
   MDBModal,
@@ -17,8 +17,7 @@ import {
   MDBModalBody,
   MDBModalFooter,
 } from "mdb-react-ui-kit";
-import { backgroundColor, color } from "../theme";
-import CardEsaa from "./CardEsaa";
+import { backgroundColor, color } from "../../theme";
 const CreateGroupForm = (props) => {
 
   const [basicModal, setBasicModal] = useState(false);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { addProblem } from "../features/level/levelDetailsSlice";
+import { addProblem } from "../../features/level/levelDetailsSlice";
 import {
   MDBBtn,
   MDBModal,

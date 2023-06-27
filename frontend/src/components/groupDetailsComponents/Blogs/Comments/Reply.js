@@ -23,7 +23,7 @@ const Reply = ({ reply }) => {
               alt="Jese Leos" />
             <div className='flex flex-col'>
               <div className='text-sm'> {reply.who.userName}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{moment(reply.createdAt).fromNow()}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">{moment(new Date(reply.createdAt), "DD MMM YYYY, HH:mm:ss").fromNow()}</div>
             </div>
           </div>
         </footer>
