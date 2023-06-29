@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { getUserGroups,reset } from "../../features/profile/profileSlice";
+import { getUserGroups, reset } from "../../features/profile/profileSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Loader";
 import Paginate from "../Paginate";
@@ -25,7 +25,7 @@ const GroupsProfile = (props) => {
     };
     fetchUserGroups();
   }, [dispatch, userName, message, isError, pageNumber]);
-  if (isLoading ) {
+  if (isLoading) {
     return <Loader />;
   } else if (pages && isSuccess) {
     if (pageNumber > pages) {
@@ -33,7 +33,7 @@ const GroupsProfile = (props) => {
     }
   }
   return (
-    <Container style={{paddingTop: '20px'}}>
+    <Container style={{ paddingTop: '20px' }}>
       {userGroups.map((group) => (
         <GroupCard group={group} key={group._id} />
       ))}
